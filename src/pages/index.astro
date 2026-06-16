@@ -22,10 +22,10 @@ const articlesJson = JSON.stringify(articles).replace(/</g, '\\u003c');
 
 <Base>
   <script is:inline set:html={`window.__ARTICLES__=${articlesJson};`}></script>
-  <Topbar />
+  <Topbar repo="https://github.com/mikeparcewski/wickedagile" />
   <Hero />
   <Articles articles={articles} />
   <Shipped />
   <About />
-  <Footer />
+  <Footer repo="https://github.com/mikeparcewski/wickedagile" />
 </Base>
