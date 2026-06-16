@@ -1,0 +1,31 @@
+---
+/**
+ * index.astro — the wickedagile.com landing page.
+ * Composes the canonical chrome (Topbar, Footer), the hero terminal, the
+ * articles dispatch feed, the shipped split-editor, and the about chapters.
+ * Articles are fetched at BUILD TIME and baked in (no client-side RSS).
+ */
+import Base from '../layouts/Base.astro';
+import Topbar from '../components/Topbar.astro';
+import Hero from '../components/Hero.astro';
+import Articles from '../components/Articles.astro';
+import Shipped from '../components/Shipped.astro';
+import About from '../components/About.astro';
+import Footer from '../components/Footer.astro';
+import { getArticles } from '../lib/articles.mjs';
+
+const articles = await getArticles();
+// Bake for the hero terminal's /articles command. Escape "<" so a title can
+// never break out of the inline <script>.
+const articlesJson = JSON.stringify(articles).replace(/</g, '\\u003c');
+---
+
+<Base>
+  <script is:inline set:html={`window.__ARTICLES__=${articlesJson};`}></script>
+  <Topbar />
+  <Hero />
+  <Articles articles={articles} />
+  <Shipped />
+  <About />
+  <Footer />
+</Base>

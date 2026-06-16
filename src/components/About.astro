@@ -1,0 +1,365 @@
+---
+/**
+ * About.astro — the "about." chapters section.
+ * Decomposed from index.next.html (#about). ON-BRAND: drives entirely off the
+ * shared theme tokens (var(--canvas-2)/--ink/--muted), recolors in harbor-light,
+ * AA contrast, signal yellow used ONLY as a stamp (the rail progress fill +
+ * active node).
+ *
+ * RAIL + SNAP "chapters" experience:
+ *   - FIVE full-screen panels (min-height:100vh, scroll-snap-align:start),
+ *     content vertically centered — one chapter per screen as you scroll.
+ *   - A LEFT RUNNING RAIL: sticky (top:var(--topbar-h), full viewport height)
+ *     with a faint track, a thick accent progress FILL, 5 numbered nodes
+ *     (01–05), and the active chapter's name shown next to the rail.
+ *
+ * VISIBLE BY DEFAULT: every chapter renders with NO JS (opacity:1). The rail's
+ * active-tracking is PROGRESSIVE ENHANCEMENT — about.js uses an
+ * IntersectionObserver to set the active chapter, grow the fill, and move the
+ * label. Without JS the rail shows a steady visible state; under
+ * prefers-reduced-motion the fill/label still update but with no animation.
+ *
+ * CSS is <style is:global> so class names/ids stay queryable by about.js.
+ * JS lives in ../scripts/about.js and imports nothing from data.js.
+ */
+
+const CHAPTERS = [
+  {
+    n: "01",
+    name: "Chapter 01 — Early Years",
+    quote: "Lucky enough to be in the room early.",
+    body: "I've been building software since before the commercial internet really had a name for what we were doing. My first real job in tech was helping put travel booking online. We had built a white-label platform for a number of large companies — pulling real-time pricing from SABRE, the whole architecture. For Expedia, we got to do something different: I led a two-person team and we designed and built their version from the ground up. I had nothing to do with Expedia's success after that. I was just lucky enough to be in the room early.",
+  },
+  {
+    n: "02",
+    name: "Chapter 02 — Scale",
+    quote: "The tolerance for failure got much smaller.",
+    body: "From there, the work moved into financial services, where the problems got more complex and the tolerance for failure got much smaller. Syndicated data products. Compliance-grade delivery. Global market launches. Clients like UBS and Singapore Exchange who expected things to work the first time.",
+  },
+  {
+    n: "03",
+    name: "Chapter 03 — Architecture",
+    quote: "Was the architecture surviving contact with reality — or just looking impressive in a slide deck?",
+    body: "Over time, the work shifted from building products to shaping how large organizations build them. I have always tried to stay close enough to the code and delivery teams to know whether the architecture was surviving contact with reality or just looking impressive in a slide deck.",
+  },
+  {
+    n: "04",
+    name: "Chapter 04 — AI",
+    quote: "Not a model problem. An organizational one.",
+    body: "The last several years at Accenture have been focused on AI, specifically the gap between what AI looks like in a demo and what it takes to make it work in production. That gap is wider than most people want to admit. Data is fragmented. Systems are older than the teams maintaining them. Workflows everyone agreed to automate are still held together with undocumented tribal knowledge. Getting AI to work in that environment is not just a model problem. It is an organizational one.",
+  },
+  {
+    n: "05",
+    name: "Chapter 05 — Reckoning",
+    quote: "Agents just made it obvious.",
+    body: "I have been wrong about plenty of things over the years. I thought the hardest part of building software was writing the code. Then I thought it was the architecture. Then the process. Now I think the hard part is making an organization operable by something other than the organization itself. That problem was always there. Agents just made it obvious. I am still figuring it out, same as everyone else.",
+  },
+];
+const SHORT = ["Early Years", "Scale", "Architecture", "AI", "Reckoning"];
+---
+
+<!-- ════════════════════════════════════════════════════════════════
+     ABOUT — "chapters." Rail + snap. On-brand, theme-driven.
+     ════════════════════════════════════════════════════════════════ -->
+<section class="about-section" id="about" aria-labelledby="aboutHeading">
+  <div class="about-grid" id="aboutGrid">
+
+    <!-- LEFT RUNNING RAIL (sticky) — progressive-enhancement tracker -->
+    <aside class="about-rail" aria-hidden="true">
+      <div class="rail-inner">
+        <div class="rail-track">
+          <div class="rail-fill" id="railFill"></div>
+        </div>
+        <ol class="rail-nodes" id="railNodes">
+          {CHAPTERS.map((c, i) => (
+            <li class={`rail-node${i === 0 ? " is-active" : ""}`} data-idx={i}>
+              <span class="rail-dot"><span class="rail-numn">{c.n}</span></span>
+            </li>
+          ))}
+        </ol>
+        <p class="rail-label" id="railLabel" data-idx="0">
+          <span class="rail-label-num">01</span>
+          <span class="rail-label-name">{SHORT[0]}</span>
+        </p>
+      </div>
+    </aside>
+
+    <!-- RIGHT: five stacked full-screen chapter panels -->
+    <div class="chapters" id="chapters">
+      <div class="about-masthead chapter-shell" data-masthead>
+        <div class="chapter-pad">
+          <span class="about-kicker">Five chapters · ~25 years</span>
+          <h2 class="about-h2" id="aboutHeading"><span class="stamp">about.</span></h2>
+          <p class="about-sub">One career, read top to bottom. The same problem getting clearer with every chapter.</p>
+        </div>
+      </div>
+
+      {CHAPTERS.map((c, i) => (
+        <article class="chapter chapter-shell" data-idx={i} id={`chapter-${i}`}>
+          <div class="chapter-pad">
+            <span class="ch-num" aria-hidden="true">{c.n}</span>
+            <span class="ch-name">{c.name}</span>
+            <h3 class="ch-quote"><span class="qmark" aria-hidden="true">“</span>{c.quote}</h3>
+            <p class="ch-body">{c.body}</p>
+          </div>
+        </article>
+      ))}
+    </div>
+
+  </div>
+</section>
+
+<style is:global>
+/* ══════════════════════════════════════════════════════════════════
+   ABOUT — "chapters." Rail + scroll-snap. ON-BRAND: every color comes
+   from the shared theme tokens, so this section reads as dark by default
+   and recolors correctly under [data-theme="light"] (harbor blue).
+   Signal yellow (--accent) appears ONLY as a stamp: the section-title
+   swash, the rail progress fill, and the active rail node.
+   ══════════════════════════════════════════════════════════════════ */
+.about-section{
+  position:relative;
+  background:var(--canvas-2);
+  color:var(--ink);
+  border-top:1px solid var(--hairline);
+}
+
+/* 2-column grid: [sticky rail | stacked full-screen chapters].
+   The section is naturally tall (6 × ~100vh shells) so the sticky rail
+   spans the whole run of chapters. */
+.about-grid{
+  position:relative;
+  max-width:1240px;margin:0 auto;
+  display:grid;
+  grid-template-columns:clamp(116px,15vw,210px) minmax(0,1fr);
+  padding:0 28px;
+}
+
+/* ── LEFT RUNNING RAIL ───────────────────────────────────────────── */
+.about-rail{
+  position:sticky;
+  top:var(--topbar-h);
+  height:calc(100vh - var(--topbar-h));
+  align-self:start;
+  z-index:2;
+}
+.rail-inner{
+  position:relative;
+  height:100%;
+  display:flex;align-items:center;
+  padding-left:6px;
+}
+/* faint centered track — runs ~half the viewport (not full height) so the
+   masthead heading + intro stay framed on screen as you enter the section */
+.rail-track{
+  position:absolute;
+  left:14px;top:25%;bottom:25%;
+  width:6px;border-radius:6px;
+  background:var(--hairline-strong);
+  overflow:hidden;
+}
+/* thick accent progress fill — grows from the top to the active chapter */
+.rail-fill{
+  position:absolute;left:0;top:0;right:0;
+  height:0%;
+  background:var(--accent);
+  border-radius:6px;
+  box-shadow:0 0 14px 1px rgba(255,218,25,.45);
+  transition:height .55s var(--ease);
+  will-change:height;
+}
+/* 5 nodes/ticks, evenly distributed alongside the track */
+.rail-nodes{
+  position:absolute;
+  left:0;top:25%;bottom:25%;
+  width:34px;
+  list-style:none;margin:0;padding:0;
+  display:flex;flex-direction:column;justify-content:space-between;
+}
+.rail-node{
+  position:relative;
+  display:flex;align-items:center;
+}
+.rail-dot{
+  position:relative;
+  display:grid;place-items:center;
+  width:20px;height:20px;border-radius:50%;
+  background:var(--canvas-2);
+  border:2px solid var(--faint);
+  color:var(--faint);
+  transition:width .35s var(--ease),height .35s var(--ease),
+             background .35s var(--ease),border-color .35s var(--ease),
+             color .35s var(--ease),box-shadow .35s var(--ease),transform .35s var(--ease);
+}
+.rail-numn{
+  font-family:var(--font-mono);font-weight:600;
+  font-size:.5rem;letter-spacing:.02em;line-height:1;
+}
+/* passed chapters read as DONE — accent ring, ink number */
+.rail-node.is-done .rail-dot{
+  border-color:var(--accent);
+  color:var(--ink);
+}
+/* the ACTIVE node — enlarged, filled accent, soft glow */
+.rail-node.is-active .rail-dot{
+  width:30px;height:30px;
+  background:var(--accent);
+  border-color:var(--accent);
+  color:var(--accent-ink);
+  box-shadow:0 0 0 4px rgba(255,218,25,.16),0 0 18px 2px rgba(255,218,25,.5);
+  transform:translateX(-1px);
+}
+.rail-node.is-active .rail-numn{font-size:.56rem;font-weight:700}
+
+/* active chapter name shown next to the rail */
+.rail-label{
+  position:absolute;
+  left:50px;
+  top:50%;transform:translateY(-50%);
+  display:flex;flex-direction:column;gap:6px;
+  font-family:var(--font-mono);
+  max-width:120px;
+}
+.rail-label-num{
+  font-size:.6rem;letter-spacing:.34em;text-transform:uppercase;
+  color:var(--accent);font-weight:600;
+}
+.rail-label-name{
+  font-size:.78rem;letter-spacing:.04em;
+  color:var(--ink);font-weight:500;line-height:1.25;
+  transition:opacity .35s var(--ease),transform .35s var(--ease);
+}
+/* when JS is tracking, label cross-fades on change */
+.about-tracking .rail-label.is-swap .rail-label-name{opacity:0;transform:translateY(6px)}
+
+/* ── RIGHT: stacked full-screen chapter panels ───────────────────── */
+.chapters{position:relative;min-width:0}
+.chapter-shell{
+  min-height:100vh;
+  display:flex;flex-direction:column;justify-content:center;
+  scroll-snap-align:start;
+  scroll-margin-top:var(--topbar-h);
+  padding:clamp(40px,7vh,96px) 0;
+}
+.chapter-pad{
+  position:relative;
+  padding-left:clamp(8px,3vw,40px);
+  width:100%;
+}
+.chapter + .chapter .chapter-pad,
+.chapter .chapter-pad{border-top:none}
+.chapter{border-top:1px solid var(--hairline)}
+
+/* section masthead — house lowercase-period voice */
+.about-masthead .chapter-pad{display:flex;flex-direction:column;gap:14px}
+.about-kicker{
+  font-family:var(--font-mono);font-size:.66rem;letter-spacing:.3em;text-transform:uppercase;
+  color:var(--muted);font-weight:500;display:inline-flex;align-items:center;gap:11px
+}
+.about-kicker::before{content:'';width:26px;height:1px;background:var(--accent)}
+.about-h2{
+  font-family:var(--font-display);font-weight:900;font-stretch:125%;
+  font-size:clamp(2.6rem,5vw,4.4rem);line-height:.9;letter-spacing:-.035em;
+  color:var(--ink);margin:0
+}
+.about-h2 .stamp{position:relative;display:inline-block}
+.about-h2 .stamp::after{
+  content:'';position:absolute;left:-2px;right:-2px;bottom:.08em;height:.16em;
+  background:var(--accent);z-index:-1;border-radius:1px;transform:rotate(-.6deg)
+}
+.about-sub{
+  font-family:var(--font-mono);font-size:.72rem;letter-spacing:.04em;
+  color:var(--muted);max-width:54ch;line-height:1.6
+}
+
+/* oversized chapter numeral — on-brand: ink at low opacity */
+.ch-num{
+  font-family:var(--font-display);font-weight:900;font-stretch:125%;
+  font-size:clamp(7rem,18vw,15rem);line-height:.74;letter-spacing:-.06em;
+  color:var(--ink);opacity:.07;
+  position:absolute;left:-.02em;top:-.42em;z-index:0;pointer-events:none;user-select:none
+}
+.ch-name{
+  font-family:var(--font-mono);font-size:.66rem;letter-spacing:.34em;text-transform:uppercase;
+  color:var(--muted);font-weight:700;
+  position:relative;z-index:1;display:block;padding-left:2px;margin-bottom:16px
+}
+.ch-quote{
+  position:relative;z-index:1;
+  font-family:var(--font-display);font-weight:800;font-stretch:125%;
+  font-size:clamp(1.8rem,3.8vw,3.3rem);line-height:1.02;letter-spacing:-.03em;
+  color:var(--ink);max-width:20ch;margin:0
+}
+/* one yellow stamp per chapter: a leading quote-mark accent */
+.ch-quote .qmark{
+  font-family:var(--font-display);font-weight:900;color:var(--accent);
+  margin-right:.06em;line-height:0
+}
+.ch-body{
+  position:relative;z-index:1;
+  margin-top:clamp(22px,2.6vw,32px);
+  max-width:62ch;
+  font-family:var(--font-display);font-weight:400;
+  font-size:clamp(1rem,1.25vw,1.18rem);line-height:1.72;
+  color:var(--muted);
+  padding-left:2px
+}
+
+/* ── RESPONSIVE ──────────────────────────────────────────────────── */
+@media(max-width:960px){
+  .about-grid{grid-template-columns:64px minmax(0,1fr);padding:0 22px}
+  /* rail collapses to a slim vertical bar — numbers only, no label */
+  .rail-track{left:10px;width:5px}
+  .rail-nodes{width:26px}
+  .rail-dot{width:18px;height:18px}
+  .rail-node.is-active .rail-dot{width:26px;height:26px}
+  .rail-label{display:none}
+  .ch-num{font-size:clamp(6rem,22vw,11rem)}
+  .ch-quote{max-width:24ch}
+}
+@media(max-width:600px){
+  .about-grid{
+    /* rail becomes a thin top-pinned progress strip above the chapters */
+    display:block;padding:0 18px;
+  }
+  .about-rail{
+    position:sticky;top:var(--topbar-h);
+    height:auto;
+    z-index:3;
+    background:var(--canvas-2);
+    border-bottom:1px solid var(--hairline);
+    margin:0 -18px;padding:10px 18px;
+  }
+  .rail-inner{display:block;height:auto;padding:0}
+  /* horizontal strip: track across the top, nodes in a row */
+  .rail-track{
+    position:relative;left:auto;top:auto;bottom:auto;
+    width:100%;height:5px;margin-bottom:10px;
+  }
+  .rail-fill{top:0;left:0;bottom:0;height:100%;width:0%;
+    transition:width .55s var(--ease)}
+  .rail-nodes{
+    position:relative;left:auto;top:auto;bottom:auto;width:100%;
+    flex-direction:row;justify-content:space-between;
+  }
+  .rail-dot{width:18px;height:18px}
+  .rail-node.is-active .rail-dot{width:22px;height:22px}
+  .rail-label{display:none}
+  /* relax min-height so long chapters never overflow a small screen */
+  .chapter-shell{
+    min-height:calc(100vh - var(--topbar-h) - 60px);
+    padding:clamp(28px,6vh,60px) 0;
+  }
+  .ch-num{font-size:clamp(5rem,26vw,9rem)}
+  .ch-quote{font-size:clamp(1.5rem,7vw,2.2rem);max-width:100%}
+}
+
+/* ── REDUCED MOTION — keep state, drop animation ─────────────────── */
+@media(prefers-reduced-motion:reduce){
+  .rail-fill,.rail-dot,.rail-label-name{transition:none!important}
+}
+</style>
+
+<script>
+import '../scripts/about.js';
+</script>

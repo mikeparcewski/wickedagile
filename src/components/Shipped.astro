@@ -1,0 +1,449 @@
+---
+/**
+ * Shipped.astro — the "shipped." split-editor workspace.
+ * Decomposed from index.next.html (#projects). TREE-ONLY: the
+ * instrument-panel service grid (.svc-grid / .sw-tool) is intentionally
+ * DROPPED — there is no separate packages/service grid, the tree IS the
+ * catalog. Kept: the nine-package explorer file-tree (now FOUR folders)
+ * driving a DUAL-MODE preview pane + readout/status bar. Each of the nine
+ * tree leaves carries an inline one-line description (always visible — the
+ * tree reads as a real catalog, not hover-only) AND a data-idx so every
+ * leaf is clickable.
+ *
+ * Dual-mode preview pane:
+ *   (a) ACCELERATORS — the 3 DEPLOYED sites (data-mode="site") drive the
+ *       browser-frame via local /screenshots/<name>.png (clip-path wipe,
+ *       reduced-motion gated). FEATURED in data.js is ordered
+ *       [interactive, garden, estate] = preview indices 0,1,2.
+ *   (b) LIBRARIES — the other 6 packages (data-mode="lib") have no
+ *       screenshot, so they render a faux code-editor "source file" card
+ *       in the SAME pane: header "<name>.ts", a line-number gutter, and a
+ *       short syntax-highlighted TS snippet (reuses the global t-* tokens).
+ *
+ * The explorer header reads "the packages." (section h2 stays "shipped.").
+ * CSS is <style is:global> so the design's class names/ids stay queryable
+ * by shipped.js. JS lives in ../scripts/shipped.js and imports the shared
+ * data module (FEATURED, esc, safeUrl, delay).
+ */
+---
+
+<!-- ════════════════════════════════════════════════════════════════
+     SHIPPED — THE LIVING IDE split-editor (tree-only, dual-mode preview)
+     shipped. — file-tree of nine packages (4 folders) drives a dual-mode
+     preview pane: browser-frame for the 3 sites, faux code-editor for the
+     6 libraries.
+     ════════════════════════════════════════════════════════════════ -->
+<section class="snap-section zoneB-section" id="projects">
+  <div class="zone-inner">
+    <div class="zone-head">
+      <span class="zone-kicker">WORKSPACE · 9 PACKAGES · 3 DEPLOYED</span>
+      <h2 class="zone-title">shipped.</h2>
+    </div>
+
+    <div class="editor-pane" id="workspacePane">
+      <div class="ide-chrome">
+        <span class="dot dot-r"></span><span class="dot dot-y"></span><span class="dot dot-g"></span>
+        <span class="ide-chrome-title">wicked.code-workspace — the packages</span>
+      </div>
+
+      <div class="split-editor">
+        <!-- LEFT: EXPLORER tree (the nine packages, FOUR folders) -->
+        <aside class="ide-explorer" aria-label="Package explorer">
+          <div class="explorer-head"><span>the packages.</span><span class="ws">wicked.code-workspace</span></div>
+          <p class="tree-root-comment"># AI is an org problem, not a model problem.</p>
+
+          <!-- accelerators/ — hue #ffda19 (signal) — the 3 DEPLOYED sites -->
+          <div class="tree-folder" data-cat="accelerators" id="folder-accelerators">
+            <button class="folder-row" type="button" aria-expanded="true" aria-controls="children-accelerators">
+              <span class="caret" aria-hidden="true">▾</span><span class="fname--accelerators">accelerators/</span>
+            </button>
+            <div class="folder-children" id="children-accelerators" role="group">
+              <a class="tree-leaf" href="https://wi.wickedagile.com" target="_blank" rel="noopener" data-idx="0" data-mode="site" data-preview="0">
+                <span class="leaf-line"><span class="leaf-glyph" aria-hidden="true">TS</span><span class="leaf-name">wicked-interactive.ts</span><span class="leaf-tag">npm·MIT·wi.wickedagile.com</span></span>
+                <span class="leaf-desc">// Say the thing. Watch it build. Point at what's wrong. Ship.</span>
+              </a>
+              <a class="tree-leaf" href="https://wg.wickedagile.com" target="_blank" rel="noopener" data-idx="1" data-mode="site" data-preview="1">
+                <span class="leaf-line"><span class="leaf-glyph" aria-hidden="true">TS</span><span class="leaf-name">wicked-garden.ts</span><span class="leaf-tag">npm·MIT·wg.wickedagile.com</span></span>
+                <span class="leaf-desc">// Orchestration without the org chart.</span>
+              </a>
+              <a class="tree-leaf" href="https://we.wickedagile.com" target="_blank" rel="noopener" data-idx="2" data-mode="site" data-preview="2">
+                <span class="leaf-line"><span class="leaf-glyph" aria-hidden="true">TS</span><span class="leaf-name">wicked-estate.ts</span><span class="leaf-tag">npm·MIT·we.wickedagile.com</span></span>
+                <span class="leaf-desc">// Every agentic environment eventually becomes a crime scene. This is the forensics kit.</span>
+              </a>
+            </div>
+          </div>
+
+          <!-- intelligence/ — hue #79c0ff (sky) -->
+          <div class="tree-folder" data-cat="intelligence" id="folder-intelligence">
+            <button class="folder-row" type="button" aria-expanded="true" aria-controls="children-intelligence">
+              <span class="caret" aria-hidden="true">▾</span><span class="fname--intelligence">intelligence/</span>
+            </button>
+            <div class="folder-children" id="children-intelligence" role="group">
+              <a class="tree-leaf" href="https://github.com/mikeparcewski/wicked-brain" target="_blank" rel="noopener" data-idx="3" data-mode="lib" data-lib="wicked-brain">
+                <span class="leaf-line"><span class="leaf-glyph" aria-hidden="true">TS</span><span class="leaf-name">wicked-brain.ts</span><span class="leaf-tag">npm·MIT</span></span>
+                <span class="leaf-desc">// Agents forget everything. This one doesn't.</span>
+              </a>
+              <a class="tree-leaf" href="https://github.com/mikeparcewski/wicked-understanding" target="_blank" rel="noopener" data-idx="4" data-mode="lib" data-lib="wicked-understanding">
+                <span class="leaf-line"><span class="leaf-glyph" aria-hidden="true">TS</span><span class="leaf-name">wicked-understanding.ts</span><span class="leaf-tag">npm·MIT</span></span>
+                <span class="leaf-desc">// Not what the code does — why it does it.</span>
+              </a>
+            </div>
+          </div>
+
+          <!-- quality & compliance/ — hue #56d364 (green) -->
+          <div class="tree-folder" data-cat="quality" id="folder-quality">
+            <button class="folder-row" type="button" aria-expanded="true" aria-controls="children-quality">
+              <span class="caret" aria-hidden="true">▾</span><span class="fname--quality">quality &amp; compliance/</span>
+            </button>
+            <div class="folder-children" id="children-quality" role="group">
+              <a class="tree-leaf" href="https://github.com/mikeparcewski/wicked-vault" target="_blank" rel="noopener" data-idx="5" data-mode="lib" data-lib="wicked-vault">
+                <span class="leaf-line"><span class="leaf-glyph" aria-hidden="true">TS</span><span class="leaf-name">wicked-vault.ts</span><span class="leaf-tag">npm·MIT</span></span>
+                <span class="leaf-desc">// The diff said it worked. The vault says what actually happened.</span>
+              </a>
+              <a class="tree-leaf" href="https://github.com/mikeparcewski/wicked-testing" target="_blank" rel="noopener" data-idx="6" data-mode="lib" data-lib="wicked-testing">
+                <span class="leaf-line"><span class="leaf-glyph" aria-hidden="true">TS</span><span class="leaf-name">wicked-testing.ts</span><span class="leaf-tag">npm·MIT</span></span>
+                <span class="leaf-desc">// AI-generated tests that actually require proof. Novel concept.</span>
+              </a>
+            </div>
+          </div>
+
+          <!-- utilities/ — hue #c97f87 (wine) -->
+          <div class="tree-folder" data-cat="utilities" id="folder-utilities">
+            <button class="folder-row" type="button" aria-expanded="true" aria-controls="children-utilities">
+              <span class="caret" aria-hidden="true">▾</span><span class="fname--utilities">utilities/</span>
+            </button>
+            <div class="folder-children" id="children-utilities" role="group">
+              <a class="tree-leaf" href="https://github.com/mikeparcewski/wicked-bus" target="_blank" rel="noopener" data-idx="7" data-mode="lib" data-lib="wicked-bus">
+                <span class="leaf-line"><span class="leaf-glyph" aria-hidden="true">TS</span><span class="leaf-name">wicked-bus.ts</span><span class="leaf-tag">npm·MIT</span></span>
+                <span class="leaf-desc">// Fire-and-forget. Minus the forgetting.</span>
+              </a>
+              <a class="tree-leaf" href="https://github.com/mikeparcewski/wicked-loom" target="_blank" rel="noopener" data-idx="8" data-mode="lib" data-lib="wicked-loom">
+                <span class="leaf-line"><span class="leaf-glyph" aria-hidden="true">TS</span><span class="leaf-name">wicked-loom.ts</span><span class="leaf-tag">npm·MIT</span></span>
+                <span class="leaf-desc">// Teaches the agent what you built before you got here.</span>
+              </a>
+            </div>
+          </div>
+        </aside>
+
+        <!-- RIGHT: PREVIEW pane (DUAL-MODE) -->
+        <div class="ide-preview" id="idePreview" data-mode="site">
+          <div class="preview-tabs" id="previewTabs" role="tablist" aria-label="Shipped site previews">
+            <button class="editor-tab" id="editorTab-0" role="tab" data-idx="0" aria-selected="true" aria-controls="previewPanel" tabindex="0">
+              <span class="close-dot" aria-hidden="true"></span>wicked-interactive
+            </button>
+            <button class="editor-tab" id="editorTab-1" role="tab" data-idx="1" aria-selected="false" aria-controls="previewPanel" tabindex="-1">
+              <span class="close-dot" aria-hidden="true"></span>wicked-garden
+            </button>
+            <button class="editor-tab" id="editorTab-2" role="tab" data-idx="2" aria-selected="false" aria-controls="previewPanel" tabindex="-1">
+              <span class="close-dot" aria-hidden="true"></span>wicked-estate
+            </button>
+          </div>
+
+          <div class="preview-stage" id="previewPanel" role="tabpanel" aria-labelledby="editorTab-0">
+            <div class="preview-breadcrumb">shipped <span aria-hidden="true">›</span> <b id="crumbName">wicked-interactive</b> <span aria-hidden="true">›</span> preview</div>
+
+            <!-- MODE (a): SITE — browser-frame -->
+            <div class="browser-frame" id="browserFrame">
+              <div class="browser-chrome">
+                <span class="lights" aria-hidden="true"><i></i><i></i><i></i></span>
+                <span class="url" id="previewUrl">wi.wickedagile.com</span>
+                <span class="live"><span class="pulse" aria-hidden="true"></span>Live</span>
+              </div>
+              <div class="browser-shot" id="browserShot">
+                <div class="shot-bg shot-bg-back"></div>
+                <div class="shot-bg shot-bg-front"></div>
+              </div>
+            </div>
+
+            <!-- MODE (b): LIBRARY — faux code-editor card -->
+            <div class="code-card" id="codeCard" hidden aria-hidden="true">
+              <div class="code-card-chrome">
+                <span class="cc-glyph" aria-hidden="true">TS</span>
+                <span class="cc-file" id="codeFile">wicked-brain.ts</span>
+                <span class="cc-badge">read-only</span>
+              </div>
+              <div class="code-card-body">
+                <pre class="code-block" id="codeBlock"><code></code></pre>
+              </div>
+            </div>
+          </div>
+
+          <div class="preview-readout">
+            <div class="readout-desc" id="readoutDesc">Say the thing. Watch it build. Point at what's wrong. Ship.</div>
+            <a class="readout-cta" id="readoutCta" href="https://wi.wickedagile.com" target="_blank" rel="noopener">Open Preview ↗</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- bottom STATUS BAR (workspace, chrome aria-hidden) -->
+      <div class="ide-statusbar" aria-hidden="true">
+        <span class="sb-left"><span class="sb-branch">⎇ main</span><span>9 packages</span><span>3 deployed</span></span>
+        <span class="sb-right"><span id="sbTheme">dark · #0d0f12</span></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style is:global>
+/* ══════════════════════════════════════════════════════════════════
+   SHIPPED — THE LIVING IDE split-editor (tree-only, dual-mode preview)
+   Reuses #0d0f12 editor black, 12px radius, hero 0 32px 80px shadow.
+   ══════════════════════════════════════════════════════════════════ */
+
+/* shared editor body — the "same window" as the hero terminal.
+   LIGHT-THEME DECISION (intentional): the editor pane (workspace) is hardcoded
+   near-black (#0d0f12) in BOTH themes, exactly like the hero terminal .term-window,
+   which is also always #0d0f12 regardless of theme. The conceit is one continuous
+   "editor window" — an editor chrome stays dark even in a light OS theme. In
+   harbor-blue light theme the section GROUND turns blue (var(--canvas)) while this
+   pane stays dark on purpose, so it reads as an inset editor surface, NOT an
+   unfinished theme. Do NOT drive its surface from theme tokens. */
+.editor-pane{
+  background:#0d0f12;border-radius:12px;
+  box-shadow:0 32px 80px rgba(0,0,0,.7),0 0 0 1px rgba(255,255,255,.06);
+  overflow:hidden;display:flex;flex-direction:column;width:100%;
+  font-family:var(--font-mono)
+}
+.ide-chrome{
+  background:#1a1d21;border-bottom:1px solid rgba(255,255,255,.06);
+  height:34px;display:flex;align-items:center;padding:0 12px;gap:6px;
+  flex-shrink:0;position:relative
+}
+.ide-chrome-title{
+  position:absolute;left:50%;transform:translateX(-50%);
+  font-family:var(--font-mono);font-size:.62rem;color:rgba(255,255,255,.30);
+  pointer-events:none;white-space:nowrap;max-width:78%;overflow:hidden;text-overflow:ellipsis
+}
+
+/* ── SHIPPED : split-editor workspace ──────────────────────────── */
+.zoneB-section{
+  background:var(--canvas);border-top:1px solid var(--hairline);
+  scroll-snap-align:start;min-height:100vh;
+  display:flex;flex-direction:column;justify-content:center;
+  padding:calc(var(--topbar-h) + 20px) 0 44px
+}
+/* title→content gap raised 18px → 33px to match the articles section */
+.zone-inner{max-width:1240px;width:100%;margin:0 auto;padding:0 28px;display:flex;flex-direction:column;gap:33px}
+.zone-title{
+  font-family:var(--font-display);font-weight:900;font-stretch:125%;
+  font-size:clamp(2.2rem,3.8vw,3.4rem);color:var(--ink);
+  line-height:.93;letter-spacing:-.03em;margin:0
+}
+.split-editor{display:grid;grid-template-columns:38% 62%;min-height:520px}
+
+/* LEFT — EXPLORER tree */
+.ide-explorer{
+  border-right:1px solid var(--hairline);padding:14px 12px 16px;
+  display:flex;flex-direction:column;gap:2px;overflow:hidden
+}
+.explorer-head{
+  display:flex;align-items:center;justify-content:space-between;gap:8px;
+  font-family:var(--font-mono);font-size:.56rem;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--muted);padding:2px 6px 10px
+}
+.explorer-head .ws{color:var(--faint);text-transform:none;letter-spacing:.02em}
+.tree-root-comment{
+  font-family:var(--font-mono);font-size:.62rem;color:#8a98a6;
+  padding:4px 6px 10px;border-bottom:1px solid var(--hairline);margin-bottom:6px;line-height:1.4
+}
+.tree-folder{margin-bottom:2px}
+.folder-row{
+  appearance:none;width:100%;background:transparent;border:none;cursor:pointer;text-align:left;
+  display:flex;align-items:center;gap:7px;padding:6px 6px;border-radius:6px;
+  font-family:var(--font-mono);font-size:.68rem;font-weight:700;letter-spacing:.02em;
+  transition:background .15s
+}
+.folder-row:hover{background:rgba(255,255,255,.03)}
+.folder-row:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+.folder-row .caret{font-size:.6rem;transition:transform .2s var(--ease);display:inline-block}
+.tree-folder.is-collapsed .caret{transform:rotate(-90deg)}
+/* FOUR folders, one on-brand hue each (AA on the #0d0f12 editor body) */
+.folder-row .fname--accelerators{color:#ffda19} /* signal */
+.folder-row .fname--intelligence{color:#79c0ff} /* sky */
+.folder-row .fname--quality{color:#56d364}      /* green */
+.folder-row .fname--utilities{color:#d99aa1}    /* wine — lifted from #c97f87 for AA on dark */
+.folder-children{display:flex;flex-direction:column;overflow:hidden;transition:max-height .26s var(--ease),opacity .2s var(--ease);max-height:600px;opacity:1}
+.tree-folder.is-collapsed .folder-children{max-height:0;opacity:0}
+
+.tree-leaf{
+  position:relative;display:block;text-decoration:none;color:inherit;
+  padding:7px 8px 9px 22px;border-radius:6px;margin-left:8px;cursor:pointer;
+  transition:background .15s var(--ease)
+}
+.tree-leaf:hover{background:rgba(255,255,255,.04)}
+/* diff-gutter "+" staged beat */
+.tree-leaf::before{
+  content:'+';position:absolute;left:6px;top:7px;
+  font-family:var(--font-mono);font-size:.74rem;font-weight:700;color:#56d364;
+  opacity:0;transform:translateX(-4px);transition:opacity .18s var(--ease),transform .18s var(--ease)
+}
+.tree-leaf:hover::before{opacity:1;transform:none}
+.leaf-line{display:flex;align-items:center;gap:7px}
+.leaf-glyph{font-family:var(--font-mono);font-size:.66rem;opacity:.55;flex-shrink:0}
+.leaf-name{font-family:var(--font-mono);font-size:.74rem;font-weight:500;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* leaf-name tint = the folder hue, one step brighter for AA on dark */
+.tree-folder[data-cat="accelerators"] .leaf-name{color:#ffe45c}
+.tree-folder[data-cat="intelligence"] .leaf-name{color:#9ecbff}
+.tree-folder[data-cat="quality"] .leaf-name{color:#7ee787}
+.tree-folder[data-cat="utilities"] .leaf-name{color:#e6adb3}
+.leaf-tag{font-family:var(--font-mono);font-size:.52rem;color:var(--muted);letter-spacing:.06em;flex-shrink:0}
+/* TREE-ONLY catalog: each leaf carries its one-line description INLINE,
+   always visible (not hover-only) so the tree reads as a real catalog. */
+.leaf-desc{
+  font-family:var(--font-mono);font-size:.6rem;color:#8a98a6;line-height:1.4;
+  padding-left:23px;margin-top:3px;display:block
+}
+.tree-leaf[aria-current="true"]{background:rgba(255,255,255,.05)}
+.tree-leaf[aria-current="true"] .leaf-name{color:var(--accent)!important}
+.tree-leaf:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+
+/* RIGHT — PREVIEW pane */
+.ide-preview{display:flex;flex-direction:column;min-width:0}
+/* file-tab strip — visible only in SITE mode (accelerators) */
+.preview-tabs{
+  display:flex;align-items:stretch;background:#15181c;border-bottom:1px solid var(--hairline);
+  overflow-x:auto;scrollbar-width:none;flex-shrink:0
+}
+.preview-tabs::-webkit-scrollbar{display:none}
+.ide-preview[data-mode="lib"] .preview-tabs{display:none} /* libraries: no site tab strip */
+.editor-tab{
+  appearance:none;background:transparent;border:none;cursor:pointer;
+  font-family:var(--font-mono);font-size:.62rem;color:rgba(201,209,217,.55);
+  padding:9px 14px;display:inline-flex;align-items:center;gap:8px;
+  border-right:1px solid var(--hairline);border-bottom:2px solid transparent;
+  transition:color .16s,background .16s,border-color .16s;white-space:nowrap;flex-shrink:0
+}
+.editor-tab:hover{color:var(--muted);background:rgba(255,255,255,.025)}
+.editor-tab[aria-selected="true"]{color:var(--ink);background:rgba(255,255,255,.04);border-bottom-color:var(--muted)}
+.editor-tab:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+.editor-tab .close-dot{width:7px;height:7px;border-radius:50%;background:var(--hairline-strong);flex-shrink:0;transition:background .16s}
+.editor-tab[aria-selected="true"] .close-dot{background:var(--accent)} /* "modified" dot — the lit yellow stamp */
+
+/* browser-chrome PREVIEW frame */
+.preview-stage{flex:1;display:flex;flex-direction:column;padding:16px 18px 0;min-height:0}
+.preview-breadcrumb{
+  font-family:var(--font-mono);font-size:.58rem;color:var(--muted);letter-spacing:.03em;
+  padding:0 2px 10px
+}
+.preview-breadcrumb b{color:var(--ink);font-weight:700}
+.browser-frame{
+  flex:1;display:flex;flex-direction:column;border-radius:10px;overflow:hidden;
+  border:1px solid var(--hairline-strong);background:#080c10;min-height:0;
+  box-shadow:0 12px 40px rgba(0,0,0,.5)
+}
+.browser-frame[hidden]{display:none}
+.browser-chrome{
+  display:flex;align-items:center;gap:9px;padding:9px 13px;flex:0 0 auto;
+  background:#14181d;border-bottom:1px solid var(--hairline)
+}
+.browser-chrome .lights{display:flex;gap:6px}
+.browser-chrome .lights i{width:9px;height:9px;border-radius:999px;background:var(--hairline-strong)}
+.browser-chrome .url{
+  flex:1;font-family:var(--font-mono);font-size:.62rem;color:var(--muted);
+  background:rgba(230,237,243,.05);padding:5px 11px;border-radius:7px;
+  border:1px solid var(--hairline);white-space:nowrap;overflow:hidden;text-overflow:ellipsis
+}
+.browser-chrome .live{
+  font-family:var(--font-mono);font-size:.54rem;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--muted);display:inline-flex;align-items:center;gap:6px;flex-shrink:0
+}
+.browser-chrome .live .pulse{width:7px;height:7px;border-radius:999px;background:var(--accent);animation:livePulse 1.8s ease-in-out infinite}
+@keyframes livePulse{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(255,218,25,.55)}50%{opacity:.6;box-shadow:0 0 0 5px rgba(255,218,25,0)}}
+.browser-shot{position:relative;flex:1;overflow:hidden;background:#080c10;min-height:240px}
+.shot-bg{position:absolute;inset:0;background-size:cover;background-position:top center}
+.shot-bg-back{z-index:1}
+.shot-bg-front{z-index:2}
+.browser-shot::before{
+  content:'';position:absolute;inset:0;z-index:5;pointer-events:none;
+  background:linear-gradient(160deg,rgba(0,0,0,.06) 0%,transparent 42%,rgba(0,0,0,.4) 100%)
+}
+
+/* ── MODE (b): LIBRARY — faux code-editor "source file" card ───────
+   Same pane, swapped in when a library leaf is selected. Legible on the
+   #0d0f12 editor body; reuses the global t-* syntax tokens. */
+.code-card{
+  flex:1;display:flex;flex-direction:column;border-radius:10px;overflow:hidden;
+  border:1px solid var(--hairline-strong);background:#0d0f12;min-height:0;
+  box-shadow:0 12px 40px rgba(0,0,0,.5)
+}
+.code-card[hidden]{display:none}
+.code-card-chrome{
+  display:flex;align-items:center;gap:9px;padding:9px 13px;flex:0 0 auto;
+  background:#14181d;border-bottom:1px solid var(--hairline)
+}
+.code-card-chrome .cc-glyph{
+  font-family:var(--font-mono);font-size:.56rem;font-weight:700;letter-spacing:.04em;
+  color:#79c0ff;background:rgba(121,192,255,.12);border-radius:4px;padding:2px 6px;flex-shrink:0
+}
+.code-card-chrome .cc-file{
+  flex:1;font-family:var(--font-mono);font-size:.66rem;color:var(--ink);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis
+}
+.code-card-chrome .cc-badge{
+  font-family:var(--font-mono);font-size:.5rem;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--muted);border:1px solid var(--hairline);border-radius:5px;padding:2px 7px;flex-shrink:0
+}
+.code-card-body{flex:1;overflow:auto;background:#0d0f12;min-height:240px}
+.code-card-body::-webkit-scrollbar{width:4px;height:4px}
+.code-card-body::-webkit-scrollbar-thumb{background:rgba(255,255,255,.08);border-radius:2px}
+.code-block{margin:0;padding:14px 16px 16px 0;font-family:var(--font-mono);font-size:.74rem;line-height:1.85}
+.code-block code{display:block}
+/* line rows + a real line-number gutter */
+.code-line{display:flex;align-items:flex-start;white-space:pre-wrap;word-break:break-word}
+.code-line .ln{
+  flex:0 0 auto;width:34px;padding-right:14px;text-align:right;user-select:none;
+  color:rgba(255,255,255,.22);font-variant-numeric:tabular-nums
+}
+.code-line .lc{flex:1;min-width:0;color:#c9d1d9}
+/* syntax-highlight feel — mirrors the hero terminal t-* tokens.
+   (t-y/t-g/t-c/t-b/t-d are global from Hero.astro; these are aliases so
+   the snippet stays legible even if loaded in isolation.) */
+.code-line .cm{color:#56d364;opacity:.85} /* comments — muted green */
+.code-line .kw{color:#ff7b72}             /* keywords */
+.code-line .st{color:#a5d6ff}             /* strings */
+.code-line .fn{color:#d2a8ff}             /* function/identifier */
+.code-line .nm{color:#79c0ff}             /* namespace/import target */
+
+/* bottom READOUT bar */
+.preview-readout{
+  flex:0 0 auto;display:flex;align-items:center;justify-content:space-between;gap:14px;
+  padding:13px 18px 16px;border-top:1px solid var(--hairline)
+}
+.readout-desc{font-size:.84rem;color:#c9d1d9;line-height:1.4;min-width:0}
+.readout-cta{
+  font-family:var(--font-mono);font-size:.62rem;font-weight:700;letter-spacing:.06em;
+  color:var(--accent);text-decoration:none;white-space:nowrap;flex-shrink:0;
+  border-bottom:1px solid rgba(255,218,25,.32);padding-bottom:1px;transition:opacity .15s
+}
+.readout-cta:hover{opacity:.78}
+.readout-cta:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:2px}
+
+/* ── BOTTOM STATUS BAR (workspace) ─────────────────────────────── */
+.ide-statusbar{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  font-family:var(--font-mono);font-size:.6rem;letter-spacing:.04em;
+  color:rgba(255,255,255,.55);background:#14181d;
+  border-top:1px solid rgba(255,255,255,.06);padding:7px 14px
+}
+.ide-statusbar .sb-left,.ide-statusbar .sb-right{display:inline-flex;align-items:center;gap:14px}
+.ide-statusbar .sb-branch{color:#56d364}
+
+/* RESPONSIVE (shipped) */
+@media(max-width:960px){
+  .split-editor{grid-template-columns:1fr}
+  .ide-explorer{border-right:none;border-bottom:1px solid var(--hairline)}
+}
+@media(max-width:600px){
+  .preview-readout{flex-direction:column;align-items:flex-start;gap:9px}
+}
+
+/* REDUCED MOTION — freeze every kinetic to a steady state */
+@media(prefers-reduced-motion:reduce){
+  .browser-chrome .live .pulse{animation:none}
+  .shot-bg-front{transition:none!important}
+}
+</style>
+
+<script>
+import '../scripts/shipped.js';
+</script>

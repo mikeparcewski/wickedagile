@@ -1,0 +1,358 @@
+---
+/**
+ * Articles.astro — the "yes, and." MISSION CONTROL dispatch / news console.
+ * Articles are fetched at BUILD TIME (src/lib/articles.mjs) and passed in as
+ * `articles`, then rendered SERVER-SIDE here: priority dispatch = articles[0],
+ * dispatch log = articles[1..4]. No client-side RSS fetch (cross-origin RSS is
+ * unreliable). articles.js only adds the staggered reveal as enhancement.
+ * CSS is <style is:global> so the class names/ids stay stable.
+ */
+const { articles = [] } = Astro.props;
+const fmt = (pd) => { const d = new Date(pd || ''); return isNaN(d.getTime()) ? '' : d.toLocaleString('en', { month: 'short' }) + ' ' + d.getFullYear(); };
+const feat = articles[0] || null;
+const rest = articles.slice(1, 5);
+---
+
+<!-- ════════════════════════════════════════════════════════════════
+     ARTICLES — MISSION CONTROL : DISPATCH FEED
+     yes, and. — live Medium RSS featured + dispatch log
+     ════════════════════════════════════════════════════════════════ -->
+<section class="content-section mc-wall" id="content">
+  <div class="content-inner">
+    <div class="zone-head">
+      <span class="zone-kicker">INCIDENT LOG · MEDIUM/@MIKE.PARCEWSKI</span>
+      <h2 class="content-title">yes, and.</h2>
+    </div>
+    <div class="mc-frame">
+      <div class="reg-ticks" aria-hidden="true"></div>
+      <div class="reg-ticks-b" aria-hidden="true"></div>
+      <div class="mc-frame-pad">
+        <div class="dispatch-console">
+          <div class="dispatch-scrubber" aria-hidden="true"></div>
+
+          <!-- LEFT: priority dispatch = articles[0] (baked at build) -->
+          {feat ? (
+            <a class={`priority${feat.thumbnail ? ' has-thumb' : ''}`} id="dispatchPriority" href={feat.link} target="_blank" rel="noopener">
+              <div class="priority-bg" id="priorityBg" style={feat.thumbnail ? `background-image:url('${feat.thumbnail}')` : ''}></div>
+              <div class="priority-overlay"></div>
+              <div class="scanlines" aria-hidden="true"></div>
+              <div class="ghost-index" aria-hidden="true">01</div>
+              <div class="priority-body">
+                <span class="priority-hd"><span class="beam-dot" aria-hidden="true"></span><span id="priorityStatus">PRIORITY · LIVE</span></span>
+                <h3 class="priority-title" id="priorityTitle">{feat.title}</h3>
+                <div class="priority-meta" id="priorityMeta">{`● ${fmt(feat.pubDate) ? fmt(feat.pubDate) + ' · ' : ''}${feat.readTime} min read · SOURCE medium`}</div>
+                <span class="priority-cta" id="priorityCta">OPEN DISPATCH ↗</span>
+              </div>
+            </a>
+          ) : (
+            <a class="priority" id="dispatchPriority" href="https://medium.com/@mike.parcewski" target="_blank" rel="noopener">
+              <div class="priority-overlay"></div>
+              <div class="ghost-index" aria-hidden="true">01</div>
+              <div class="priority-body">
+                <span class="priority-hd"><span class="beam-dot" aria-hidden="true"></span><span id="priorityStatus">DISPATCHES</span></span>
+                <h3 class="priority-title" id="priorityTitle">The latest writing lives on Medium</h3>
+                <div class="priority-meta" id="priorityMeta">● medium.com/@mike.parcewski</div>
+                <span class="priority-cta" id="priorityCta">OPEN MEDIUM ↗</span>
+              </div>
+            </a>
+          )}
+
+          <!-- RIGHT: dispatch log = articles[1..4] -->
+          <div class="dispatch-log">
+            <div class="dispatch-log-hd">
+              <span class="dispatch-log-kicker">DISPATCH LOG</span>
+              <a class="dispatch-log-link" href="https://medium.com/@mike.parcewski" target="_blank" rel="noopener">MEDIUM ↗</a>
+            </div>
+            <ul class="dispatch-rows" id="dispatchLog">
+              {rest.length ? rest.map((art, i) => (
+                <li class={`dispatch-row${art.thumbnail ? ' has-thumb' : ''}`} data-reveal>
+                  <a class="dispatch-row-inner" href={art.link} target="_blank" rel="noopener">
+                    <span class="dispatch-tick"></span>
+                    <span class="dispatch-idx">{`T-${String(i + 2).padStart(2, '0')}`}</span>
+                    {art.thumbnail && <span class="dispatch-thumb" style={`background-image:url('${art.thumbnail}')`}></span>}
+                    <span class="dispatch-body">
+                      <span class="dispatch-title">{art.title}</span>
+                      <span class="dispatch-row-meta">{`${fmt(art.pubDate) ? fmt(art.pubDate) + ' · ' : ''}${art.readTime} min read`}</span>
+                    </span>
+                  </a>
+                  <span class="dispatch-open" aria-hidden="true">OPEN ↗</span>
+                </li>
+              )) : (
+                <li class="dispatch-row">
+                  <a class="dispatch-row-inner" href="https://medium.com/@mike.parcewski" target="_blank" rel="noopener">
+                    <span class="dispatch-tick"></span><span class="dispatch-idx">T-—</span>
+                    <span class="dispatch-body"><span class="dispatch-title">Read direct on Medium</span><span class="dispatch-row-meta">medium.com/@mike.parcewski</span></span>
+                  </a>
+                  <span class="dispatch-open" aria-hidden="true">OPEN ↗</span>
+                </li>
+              )}
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style is:global>
+/* ════════════════════════════════════════════════════════════════
+   ARTICLES — MISSION CONTROL dispatch / news console
+   One bezel'd monitor-wall frame, corner registration ticks, hairline
+   grid, and a single roving yellow attention beam.
+   ════════════════════════════════════════════════════════════════ */
+
+/* shared ops tokens */
+:root{
+  --mc-tick:14px;          /* corner registration tick length */
+  --mc-bezel:#0c1016;      /* deep bezel */
+  --beam:#ffda19;
+  --beam-glow:rgba(255,218,25,.42);
+  --lane-k:#79c0ff;        /* knowledge */
+  --lane-q:#56d364;        /* quality   */
+  --lane-i:#ffda19;        /* infra     */
+}
+[data-theme="light"]{
+  --mc-bezel:#142a37;
+}
+
+/* The articles zone = ONE monitor wall */
+.mc-wall{
+  background:var(--canvas-2);border-top:1px solid var(--hairline);
+}
+.mc-frame{
+  position:relative;
+  border:1px solid var(--hairline-strong);
+  background:
+    linear-gradient(180deg,rgba(255,255,255,.018),transparent 140px),
+    var(--mc-bezel);
+  border-radius:14px;
+  box-shadow:0 40px 120px -40px rgba(0,0,0,.8),inset 0 0 0 1px rgba(255,255,255,.02);
+}
+/* faint hairline grid behind everything inside the frame */
+.mc-frame::before{
+  content:'';position:absolute;inset:0;pointer-events:none;z-index:0;border-radius:14px;
+  background-image:
+    linear-gradient(var(--hairline) 1px,transparent 1px),
+    linear-gradient(90deg,var(--hairline) 1px,transparent 1px);
+  background-size:46px 46px;
+  -webkit-mask-image:radial-gradient(ellipse 90% 80% at 50% 30%,#000 0%,transparent 92%);
+          mask-image:radial-gradient(ellipse 90% 80% at 50% 30%,#000 0%,transparent 92%);
+  opacity:.6
+}
+.mc-frame>*{position:relative;z-index:1}
+/* corner registration ticks on the wall frame (reusable .reg-ticks) */
+.reg-ticks{position:absolute;inset:0;pointer-events:none;z-index:2}
+.reg-ticks::before,.reg-ticks::after{
+  content:'';position:absolute;width:var(--mc-tick);height:var(--mc-tick);
+  border:1px solid var(--hairline-strong)
+}
+.reg-ticks::before{top:10px;left:10px;border-right:0;border-bottom:0}
+.reg-ticks::after{top:10px;right:10px;border-left:0;border-bottom:0}
+.reg-ticks-b{position:absolute;inset:0;pointer-events:none;z-index:2}
+.reg-ticks-b::before,.reg-ticks-b::after{
+  content:'';position:absolute;width:var(--mc-tick);height:var(--mc-tick);
+  border:1px solid var(--hairline-strong)
+}
+.reg-ticks-b::before{bottom:10px;left:10px;border-right:0;border-top:0}
+.reg-ticks-b::after{bottom:10px;right:10px;border-left:0;border-top:0}
+
+.mc-frame-pad{padding:clamp(20px,3.4vw,40px)}
+
+/* ARTICLES section shell */
+.content-section{
+  scroll-snap-align:start;min-height:100vh;
+  display:flex;align-items:center;justify-content:center;
+  padding:calc(var(--topbar-h) + 16px) 0 24px
+}
+.content-inner{
+  display:flex;flex-direction:column;gap:33px;max-width:1240px;width:100%;padding:0 28px
+}
+/* heads: keep the lowercase-period h2s. gap = kicker→title space (shared by
+   #content + #projects via global .zone-head). */
+.zone-head{display:flex;flex-direction:column;gap:18px}
+.zone-kicker{
+  font-family:var(--font-mono);font-size:.62rem;letter-spacing:.26em;
+  text-transform:uppercase;color:var(--muted);display:inline-flex;align-items:center;gap:9px
+}
+.zone-kicker::before{content:'';width:18px;height:1px;background:var(--hairline-strong)}
+.content-title{
+  font-family:var(--font-display);font-weight:900;font-stretch:125%;
+  font-size:clamp(2.2rem,3.8vw,3.4rem);color:var(--ink);
+  line-height:.93;letter-spacing:-.03em;margin:0
+}
+
+/* ── DISPATCH FEED ────────────────────────────────────────────── */
+.dispatch-console{
+  display:grid;grid-template-columns:1.6fr 1fr;gap:14px;width:100%
+}
+/* top scrubber bar = decorative 6s sweep */
+.dispatch-scrubber{
+  grid-column:1/-1;height:3px;border-radius:2px;overflow:hidden;
+  background:var(--hairline);position:relative
+}
+.dispatch-scrubber::after{
+  content:'';position:absolute;top:0;bottom:0;width:34%;border-radius:2px;
+  background:linear-gradient(90deg,transparent,var(--beam),transparent);
+  opacity:.7;left:-34%;animation:scrub 6s linear infinite
+}
+@keyframes scrub{0%{left:-34%}100%{left:100%}}
+
+/* LEFT: priority dispatch monitor */
+.priority{
+  position:relative;border:1px solid var(--hairline-strong);border-radius:12px;
+  overflow:hidden;background:var(--surface);min-height:380px;
+  display:flex;flex-direction:column;justify-content:flex-end;
+  text-decoration:none;color:inherit;
+  transition:border-color .25s var(--ease),box-shadow .25s var(--ease)
+}
+.priority:hover{border-color:var(--hairline-strong)}
+.priority-bg{
+  position:absolute;inset:0;z-index:0;background-size:cover;background-position:center top;
+  transition:transform .6s var(--ease)
+}
+.priority:hover .priority-bg{transform:scale(1.03)}
+.priority-overlay{
+  position:absolute;inset:0;z-index:1;
+  background:linear-gradient(to top,rgba(0,0,0,.94) 0%,rgba(0,0,0,.58) 42%,rgba(0,0,0,.2) 100%)
+}
+/* scanline overlay (CSS-only graft) */
+.scanlines{
+  position:absolute;inset:0;z-index:2;pointer-events:none;
+  background:repeating-linear-gradient(transparent,transparent 3px,rgba(255,255,255,.04) 3px,rgba(255,255,255,.04) 4px)
+}
+/* ghosted index watermark for thumbless degrade */
+.ghost-index{
+  position:absolute;right:14px;bottom:6px;z-index:2;pointer-events:none;
+  font-family:var(--font-mono);font-weight:700;font-size:8rem;line-height:1;
+  color:var(--ink);opacity:.05;letter-spacing:-.04em
+}
+.priority.has-thumb .ghost-index{display:none}
+.priority:not(.has-thumb){background:var(--surface-2)}
+.priority:not(.has-thumb) .priority-overlay{background:linear-gradient(to top,rgba(0,0,0,.5),transparent 60%)}
+.priority-body{position:relative;z-index:3;padding:26px 24px;display:flex;flex-direction:column;gap:11px}
+.priority-hd{
+  display:inline-flex;align-items:center;gap:9px;
+  font-family:var(--font-mono);font-size:.56rem;letter-spacing:.22em;
+  text-transform:uppercase;color:var(--muted)
+}
+/* the section's single steady beam dot */
+.beam-dot{
+  width:9px;height:9px;border-radius:50%;flex-shrink:0;
+  background:var(--beam);box-shadow:0 0 0 0 var(--beam-glow);
+  animation:beampulse 2.2s var(--ease) infinite
+}
+@keyframes beampulse{0%{box-shadow:0 0 0 0 var(--beam-glow)}70%{box-shadow:0 0 0 8px rgba(255,218,25,0)}100%{box-shadow:0 0 0 0 rgba(255,218,25,0)}}
+.priority-title{
+  font-family:var(--font-display);font-weight:900;font-stretch:125%;
+  font-size:clamp(1.4rem,2.2vw,2rem);color:#fff;line-height:1.08;letter-spacing:-.025em
+}
+.priority:not(.has-thumb) .priority-title{color:var(--ink)}
+/* a11y: dispatch caption text was on rgba(.5) over a dark gradient — bump to AA-safe value */
+.priority-meta{font-family:var(--font-mono);font-size:.56rem;color:rgba(255,255,255,.72);letter-spacing:.04em}
+.priority:not(.has-thumb) .priority-meta{color:var(--muted)}
+.priority-cta{
+  font-family:var(--font-mono);font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--beam);margin-top:2px;display:inline-flex;align-items:center;gap:5px
+}
+/* SIGNAL LOST state — composed, muted, never red */
+.priority.signal-lost .beam-dot{background:var(--faint);animation:none;box-shadow:none}
+.priority.signal-lost .priority-cta{color:var(--muted)}
+.priority.signal-lost .priority-title{color:var(--ink)}
+/* loading: acquiring signal pulse */
+.priority.acquiring .beam-dot{animation:beampulse 1.1s var(--ease) infinite}
+
+/* RIGHT: dispatch log */
+.dispatch-log{
+  border:1px solid var(--hairline-strong);border-radius:12px;background:var(--surface);
+  overflow:hidden;display:flex;flex-direction:column
+}
+.dispatch-log-hd{
+  padding:12px 15px;border-bottom:1px solid var(--hairline-strong);
+  display:flex;justify-content:space-between;align-items:center;
+  background:rgba(255,255,255,.025)
+}
+[data-theme="light"] .dispatch-log-hd{background:rgba(255,255,255,.05)}
+.dispatch-log-kicker{font-family:var(--font-mono);font-size:.56rem;letter-spacing:.22em;text-transform:uppercase;color:var(--muted)}
+.dispatch-log-link{font-family:var(--font-mono);font-size:.56rem;color:var(--beam);letter-spacing:.06em;transition:opacity .15s}
+.dispatch-log-link:hover{opacity:.7}
+.dispatch-rows{list-style:none;flex:1;display:flex;flex-direction:column}
+.dispatch-row{position:relative;border-bottom:1px solid var(--hairline)}
+.dispatch-row:last-child{border-bottom:none}
+.dispatch-row-inner{
+  display:grid;grid-template-columns:3px 3.4ch 1fr;gap:11px;align-items:center;
+  padding:12px 15px 12px 13px;text-decoration:none;color:inherit;
+  transition:background .18s var(--ease)
+}
+.dispatch-row.has-thumb .dispatch-row-inner{grid-template-columns:3px 3.4ch 40px 1fr}
+.dispatch-row-inner:hover,.dispatch-row-inner:focus-visible{background:rgba(255,218,25,.045)}
+/* left status-tick bar — hairline default, lights yellow on hover/focus */
+.dispatch-tick{
+  width:3px;align-self:stretch;border-radius:2px;background:var(--hairline-strong);
+  transition:background .2s var(--ease),box-shadow .2s var(--ease)
+}
+.dispatch-row-inner:hover .dispatch-tick,
+.dispatch-row-inner:focus-visible .dispatch-tick{background:var(--beam);box-shadow:0 0 8px var(--beam-glow)}
+.dispatch-idx{font-family:var(--font-mono);font-size:.6rem;font-weight:700;color:var(--muted);letter-spacing:.02em;align-self:start;padding-top:1px}
+.dispatch-thumb{
+  width:40px;height:40px;border-radius:4px;background:var(--surface-2);
+  background-size:cover;background-position:center;flex-shrink:0;
+  border:1px solid var(--hairline-strong)
+}
+.dispatch-body{display:flex;flex-direction:column;gap:4px;min-width:0}
+.dispatch-title{
+  font-size:.82rem;font-weight:700;color:var(--ink);line-height:1.3;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis
+}
+/* a11y FIX: contract-required date · N min read meta must clear AA.
+   Was --faint (near-invisible). Now --muted in BOTH themes. */
+.dispatch-row-meta{font-family:var(--font-mono);font-size:.52rem;color:var(--muted);letter-spacing:.02em}
+/* a11y FIX (light): --muted (rgba .58) only reaches ~3.63:1 on the harbor-blue
+   surface for this .52rem mono text. Bump to an opaque AA tone (>=4.5:1 on every
+   light surface: .78 alpha -> ~5.2:1 worst case). Scoped to the light override only.
+   (The source's .sw-tele selector is dropped — the service grid was removed.) */
+[data-theme="light"] .dispatch-row-meta,
+[data-theme="light"] .priority:not(.has-thumb) .priority-meta{color:rgba(234,229,182,.78)}
+/* 1px inset highlight + sliding OPEN tag */
+.dispatch-row::after{
+  content:'';position:absolute;inset:0;border-radius:2px;pointer-events:none;
+  box-shadow:inset 0 0 0 1px rgba(255,218,25,0);transition:box-shadow .2s var(--ease)
+}
+.dispatch-row:hover::after,.dispatch-row:focus-within::after{box-shadow:inset 0 0 0 1px rgba(255,218,25,.18)}
+.dispatch-open{
+  position:absolute;top:50%;right:13px;transform:translate(14px,-50%);
+  font-family:var(--font-mono);font-size:.5rem;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--beam);opacity:0;transition:transform .22s var(--ease),opacity .22s var(--ease);
+  pointer-events:none;z-index:4
+}
+.dispatch-row:hover .dispatch-open,.dispatch-row:focus-within .dispatch-open{transform:translate(0,-50%);opacity:1}
+/* shimmer skeleton rows for loading */
+.dispatch-skel .dispatch-body span{
+  height:9px;border-radius:3px;
+  background:linear-gradient(90deg,var(--hairline) 25%,var(--hairline-strong) 37%,var(--hairline) 63%);
+  background-size:300% 100%;animation:shimmer 1.4s linear infinite;display:block
+}
+.dispatch-skel .dispatch-body span:first-child{width:78%}
+.dispatch-skel .dispatch-body span:last-child{width:42%;height:7px;margin-top:5px}
+@keyframes shimmer{0%{background-position:130% 0}100%{background-position:-130% 0}}
+/* IO staggered clip-path reveal */
+.dispatch-row.reveal{clip-path:inset(0 100% 0 0);transition:clip-path .55s var(--ease)}
+.dispatch-row.reveal.is-in{clip-path:inset(0 0 0 0)}
+
+/* RESPONSIVE (articles) */
+@media(max-width:960px){
+  .dispatch-console{grid-template-columns:1fr}
+  .priority{min-height:300px}
+}
+@media(max-width:600px){
+  .mc-frame-pad{padding:16px}
+}
+
+/* REDUCED MOTION — freeze every kinetic to a steady state */
+@media(prefers-reduced-motion:reduce){
+  .dispatch-scrubber::after{animation:none;left:0;width:100%;opacity:.4}
+  .beam-dot{animation:none!important;box-shadow:0 0 8px var(--beam-glow)!important}
+  .dispatch-skel .dispatch-body span{animation:none}
+  .dispatch-row.reveal{clip-path:inset(0 0 0 0)!important;transition:none}
+  .priority-bg,.priority:hover .priority-bg{transition:none}
+}
+</style>
