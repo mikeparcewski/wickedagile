@@ -5,13 +5,13 @@
  * articles dispatch feed, the shipped split-editor, and the about chapters.
  * Articles are fetched at BUILD TIME and baked in (no client-side RSS).
  */
-import Base from '../layouts/Base.astro';
-import Topbar from '../components/Topbar.astro';
+import Base from 'wicked-web/layouts/Base.astro';
+import Topbar from 'wicked-web/components/Topbar.astro';
 import Hero from '../components/Hero.astro';
 import Articles from '../components/Articles.astro';
 import Shipped from '../components/Shipped.astro';
 import About from '../components/About.astro';
-import Footer from '../components/Footer.astro';
+import Footer from 'wicked-web/components/Footer.astro';
 import { getArticles } from '../lib/articles.mjs';
 
 const articles = await getArticles();
