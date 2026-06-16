@@ -33,7 +33,9 @@
      preview pane: browser-frame for the 3 sites, faux code-editor for the
      6 libraries.
      ════════════════════════════════════════════════════════════════ -->
-<section class="snap-section zoneB-section" id="projects">
+<section class="zoneB-section" id="projects">
+  <div class="ide-track">
+    <div class="ide-stage">
   <div class="zone-inner">
     <div class="zone-head">
       <span class="zone-kicker">WORKSPACE · 9 PACKAGES · 3 DEPLOYED</span>
@@ -55,7 +57,7 @@
           <!-- accelerators/ — hue #ffda19 (signal) — the 3 DEPLOYED sites -->
           <div class="tree-folder" data-cat="accelerators" id="folder-accelerators">
             <button class="folder-row" type="button" aria-expanded="true" aria-controls="children-accelerators">
-              <span class="caret" aria-hidden="true">▾</span><span class="fname--accelerators">accelerators/</span>
+              <span class="caret" aria-hidden="true">▾</span><span class="fname--accelerators">ecosystem/</span>
             </button>
             <div class="folder-children" id="children-accelerators" role="group">
               <a class="tree-leaf" href="https://wi.wickedagile.com" target="_blank" rel="noopener" data-idx="0" data-mode="site" data-preview="0">
@@ -68,14 +70,14 @@
               </a>
               <a class="tree-leaf" href="https://we.wickedagile.com" target="_blank" rel="noopener" data-idx="2" data-mode="site" data-preview="2">
                 <span class="leaf-line"><span class="leaf-glyph" aria-hidden="true">TS</span><span class="leaf-name">wicked-estate.ts</span><span class="leaf-tag">npm·MIT·we.wickedagile.com</span></span>
-                <span class="leaf-desc">// Every agentic environment eventually becomes a crime scene. This is the forensics kit.</span>
+                <span class="leaf-desc">// Every agentic env becomes a crime scene. Forensics kit.</span>
               </a>
             </div>
           </div>
 
           <!-- intelligence/ — hue #79c0ff (sky) -->
-          <div class="tree-folder" data-cat="intelligence" id="folder-intelligence">
-            <button class="folder-row" type="button" aria-expanded="true" aria-controls="children-intelligence">
+          <div class="tree-folder is-collapsed" data-cat="intelligence" id="folder-intelligence">
+            <button class="folder-row" type="button" aria-expanded="false" aria-controls="children-intelligence">
               <span class="caret" aria-hidden="true">▾</span><span class="fname--intelligence">intelligence/</span>
             </button>
             <div class="folder-children" id="children-intelligence" role="group">
@@ -91,26 +93,26 @@
           </div>
 
           <!-- quality & compliance/ — hue #56d364 (green) -->
-          <div class="tree-folder" data-cat="quality" id="folder-quality">
-            <button class="folder-row" type="button" aria-expanded="true" aria-controls="children-quality">
+          <div class="tree-folder is-collapsed" data-cat="quality" id="folder-quality">
+            <button class="folder-row" type="button" aria-expanded="false" aria-controls="children-quality">
               <span class="caret" aria-hidden="true">▾</span><span class="fname--quality">quality &amp; compliance/</span>
             </button>
             <div class="folder-children" id="children-quality" role="group">
               <a class="tree-leaf" href="https://github.com/mikeparcewski/wicked-vault" target="_blank" rel="noopener" data-idx="5" data-mode="lib" data-lib="wicked-vault">
                 <span class="leaf-line"><span class="leaf-glyph" aria-hidden="true">TS</span><span class="leaf-name">wicked-vault.ts</span><span class="leaf-tag">npm·MIT</span></span>
-                <span class="leaf-desc">// The diff said it worked. The vault says what actually happened.</span>
+                <span class="leaf-desc">// The diff said it worked. The vault says what happened.</span>
               </a>
               <a class="tree-leaf" href="https://github.com/mikeparcewski/wicked-testing" target="_blank" rel="noopener" data-idx="6" data-mode="lib" data-lib="wicked-testing">
                 <span class="leaf-line"><span class="leaf-glyph" aria-hidden="true">TS</span><span class="leaf-name">wicked-testing.ts</span><span class="leaf-tag">npm·MIT</span></span>
-                <span class="leaf-desc">// AI-generated tests that actually require proof. Novel concept.</span>
+                <span class="leaf-desc">// AI-generated tests that require proof. Novel concept.</span>
               </a>
             </div>
           </div>
 
           <!-- utilities/ — hue #c97f87 (wine) -->
-          <div class="tree-folder" data-cat="utilities" id="folder-utilities">
-            <button class="folder-row" type="button" aria-expanded="true" aria-controls="children-utilities">
-              <span class="caret" aria-hidden="true">▾</span><span class="fname--utilities">utilities/</span>
+          <div class="tree-folder is-collapsed" data-cat="utilities" id="folder-utilities">
+            <button class="folder-row" type="button" aria-expanded="false" aria-controls="children-utilities">
+              <span class="caret" aria-hidden="true">▾</span><span class="fname--utilities">infrastructure/</span>
             </button>
             <div class="folder-children" id="children-utilities" role="group">
               <a class="tree-leaf" href="https://github.com/mikeparcewski/wicked-bus" target="_blank" rel="noopener" data-idx="7" data-mode="lib" data-lib="wicked-bus">
@@ -182,6 +184,9 @@
       </div>
     </div>
   </div>
+    </div>
+    <div class="ide-steps" aria-hidden="true"><i class="ide-step" data-step="0"></i><i class="ide-step" data-step="1"></i><i class="ide-step" data-step="2"></i><i class="ide-step" data-step="3"></i><i class="ide-step" data-step="4"></i><i class="ide-step" data-step="5"></i><i class="ide-step" data-step="6"></i><i class="ide-step" data-step="7"></i><i class="ide-step" data-step="8"></i></div>
+  </div>
 </section>
 
 <style is:global>
@@ -217,11 +222,19 @@
 
 /* ── SHIPPED : split-editor workspace ──────────────────────────── */
 .zoneB-section{
-  background:var(--canvas);border-top:1px solid var(--hairline);
-  scroll-snap-align:start;min-height:100vh;
-  display:flex;flex-direction:column;justify-content:center;
-  padding:calc(var(--topbar-h) + 20px) 0 44px
+  border-top:1px solid var(--hairline);
 }
+/* SCROLL-DRIVEN IDE: a tall track holds 9 invisible snap steps; the IDE stage
+   pins (sticky) and scrolling snaps step-by-step, each step = one package. */
+.ide-track{position:relative;min-height:calc(9 * 56vh)}
+.ide-stage{
+  position:sticky;top:var(--topbar-h);z-index:2;
+  height:calc(100vh - var(--topbar-h));
+  display:flex;flex-direction:column;justify-content:center;
+  padding:clamp(14px,2.6vh,30px) 0
+}
+.ide-steps{position:absolute;inset:0;z-index:1;pointer-events:none}
+.ide-step{display:block;height:56vh;scroll-snap-align:start;scroll-snap-stop:always;scroll-margin-top:var(--topbar-h)}
 /* title→content gap raised 18px → 33px to match the articles section */
 .zone-inner{max-width:1240px;width:100%;margin:0 auto;padding:0 28px;display:flex;flex-direction:column;gap:33px}
 .zone-title{

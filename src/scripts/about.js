@@ -65,6 +65,16 @@ function buildAbout(){
   var section = document.getElementById('about');
   if(section) section.classList.add('about-tracking');
 
+  /* publish the pinned masthead's REAL height as --about-mast-h so each
+     chapter can offset its snap position to lock just below the band (and
+     size itself to the area beneath it). Re-measure on resize/orientation. */
+  var masthead = document.querySelector('.about-masthead');
+  function syncMastH(){
+    if(section && masthead) section.style.setProperty('--about-mast-h', masthead.offsetHeight + 'px');
+  }
+  syncMastH();
+  window.addEventListener('resize', syncMastH);
+
   /* No IntersectionObserver → leave the default steady state intact. */
   if(!('IntersectionObserver' in window)){
     setActive(0);

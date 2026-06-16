@@ -20,7 +20,7 @@ import '../styles/global.css';
 ---
 
 <!doctype html>
-<html lang="en" data-theme="dark">
+<html lang="en" data-theme="light">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -38,7 +38,7 @@ import '../styles/global.css';
   <script is:inline>
     (function () {
       try {
-        var t = localStorage.getItem('wa-theme') || 'dark';
+        var t = localStorage.getItem('wa-theme') || 'light';
         document.documentElement.setAttribute('data-theme', t);
       } catch (e) {}
     })();
@@ -46,5 +46,8 @@ import '../styles/global.css';
 </head>
 <body>
   <slot />
+  <script>
+    import '../scripts/scroll-wheel.js';
+  </script>
 </body>
 </html>

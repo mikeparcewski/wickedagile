@@ -22,8 +22,24 @@
   --accent:#ffda19;--accent-ink:#1c2c36;--link:#79c0ff;
 }
 
-html{-webkit-font-smoothing:antialiased;scroll-snap-type:y proximity;overflow-x:clip}
-body{background:var(--canvas);color:var(--ink);font-family:var(--font-display);line-height:1.5;overflow-x:clip}
+html{-webkit-font-smoothing:antialiased;scroll-snap-type:y mandatory;overflow-x:clip;background:var(--canvas)}
+body{background:transparent;color:var(--ink);font-family:var(--font-display);line-height:1.5;overflow-x:clip}
+/* GLOBAL BACKGROUND — line grid + accent color-pop, fixed behind ALL content.
+   Sections are transparent (below) so this shows through the whole page;
+   theme-aware via --ink/--accent so it reads in light AND dark. */
+body::before{
+  content:'';position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background-image:
+    linear-gradient(to right, color-mix(in oklab, var(--ink) 7%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in oklab, var(--ink) 7%, transparent) 1px, transparent 1px);
+  background-size:64px 64px
+}
+body::after{
+  content:'';position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background:
+    radial-gradient(ellipse 48% 55% at 6% 4%,  color-mix(in oklab, var(--accent) 18%, transparent), transparent 60%),
+    radial-gradient(ellipse 52% 52% at 94% 98%, color-mix(in oklab, var(--link) 14%, transparent), transparent 62%)
+}
 ::selection{background:var(--accent);color:var(--accent-ink)}
 a{color:var(--link);text-decoration:none}
 :focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:2px}

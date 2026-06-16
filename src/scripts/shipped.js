@@ -34,8 +34,8 @@ var LIB_SNIPPETS = {
     tagline: 'Agents forget everything. This one doesn\'t.',
     repo: 'https://github.com/mikeparcewski/wicked-brain',
     lines: [
-      "import { brain } from 'wicked-brain'",
       "// agents forget everything. this one doesn't.",
+      "import { brain } from 'wicked-brain'",
       "await brain.remember(decision)",
       "const ctx = await brain.recall('why sqlite?')  // cited · ranked · local"
     ]
@@ -44,8 +44,8 @@ var LIB_SNIPPETS = {
     tagline: 'Not what the code does — why it does it.',
     repo: 'https://github.com/mikeparcewski/wicked-understanding',
     lines: [
-      "import { why } from 'wicked-understanding'",
       "// not what the code does — why it does it.",
+      "import { why } from 'wicked-understanding'",
       "const rationale = await why('PaymentService')"
     ]
   },
@@ -53,8 +53,8 @@ var LIB_SNIPPETS = {
     tagline: 'The diff said it worked. The vault says what actually happened.',
     repo: 'https://github.com/mikeparcewski/wicked-vault',
     lines: [
-      "import { vault } from 'wicked-vault'",
       "// the diff said it worked. the vault says what happened.",
+      "import { vault } from 'wicked-vault'",
       "await vault.record(evidence).attest()  // re-derived, never asserted"
     ]
   },
@@ -62,8 +62,8 @@ var LIB_SNIPPETS = {
     tagline: 'AI tests that actually require proof.',
     repo: 'https://github.com/mikeparcewski/wicked-testing',
     lines: [
-      "import { acceptance } from 'wicked-testing'",
       "// AI tests that actually require proof.",
+      "import { acceptance } from 'wicked-testing'",
       "const verdict = await acceptance(scenario)  // PASS | FAIL, evidence-gated"
     ]
   },
@@ -71,8 +71,8 @@ var LIB_SNIPPETS = {
     tagline: 'Fire-and-forget. Minus the forgetting.',
     repo: 'https://github.com/mikeparcewski/wicked-bus',
     lines: [
-      "import { bus } from 'wicked-bus'",
       "// fire-and-forget. minus the forgetting.",
+      "import { bus } from 'wicked-bus'",
       "bus.emit('order.placed', payload)   // at-least-once",
       "bus.subscribe('order.*', handle)"
     ]
@@ -81,8 +81,8 @@ var LIB_SNIPPETS = {
     tagline: 'Teaches the agent what you built before you got here.',
     repo: 'https://github.com/mikeparcewski/wicked-loom',
     lines: [
-      "import { loom } from 'wicked-loom'",
       "// teaches the agent what you built before you got here.",
+      "import { loom } from 'wicked-loom'",
       "const playbook = await loom.weave(repo)"
     ]
   }
@@ -257,6 +257,46 @@ function boot(){
     showSite(featIdx, leaf?parseInt(leaf.dataset.idx,10):activeLeafIdx);
   }
 
+  /* ── SCROLL-DRIVEN WALK ───────────────────────────────────────────
+     The Shipped section is a tall "track" with a pinned IDE stage and 9
+     invisible snap steps (.ide-step, data-step 0..8). Scrolling snaps
+     step-by-step; an IntersectionObserver maps the most-visible step → the
+     matching package (data-idx), opening that folder, closing the rest, and
+     driving the preview. No timer — the visitor's scroll IS the walk. */
+  function setFolderOpen(folder,open){
+    folder.classList.toggle('is-collapsed',!open);
+    var b=folder.querySelector('.folder-row');
+    if(b)b.setAttribute('aria-expanded',open?'true':'false');
+  }
+  function openOnly(folder){
+    document.querySelectorAll('.tree-folder').forEach(function(f){setFolderOpen(f,f===folder);});
+  }
+  function activate(i){
+    var leaf=allLeaves[i]; if(!leaf)return;
+    var folder=leaf.closest('.tree-folder');
+    if(folder && folder.classList.contains('is-collapsed'))openOnly(folder);
+    selectLeaf(leaf);
+  }
+  var ideSteps=Array.prototype.slice.call(document.querySelectorAll('.ide-step'));
+  function scrollToStep(i){
+    if(ideSteps[i])ideSteps[i].scrollIntoView({behavior:PREFERS_REDUCED?'auto':'smooth'});
+  }
+  function wireScrollSteps(){
+    if(!ideSteps.length || !('IntersectionObserver' in window))return;
+    var ratios=new Array(ideSteps.length); for(var i=0;i<ratios.length;i++)ratios[i]=0;
+    var cur=-1;
+    var io=new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        var idx=parseInt(e.target.getAttribute('data-step'),10);
+        if(!isNaN(idx))ratios[idx]=e.isIntersecting?e.intersectionRatio:0;
+      });
+      var best=cur,br=-1;
+      for(var k=0;k<ratios.length;k++){if(ratios[k]>br){br=ratios[k];best=k;}}
+      if(br>0 && best!==cur){cur=best;activate(best);}
+    },{threshold:[0,0.25,0.5,0.75,1]});
+    ideSteps.forEach(function(s){io.observe(s);});
+  }
+
   function initPreview(){
     /* paint the first accelerator without the wipe transition */
     var p=FEATURED[0];
@@ -271,27 +311,16 @@ function boot(){
   function buildPreview(){
     initPreview();
 
-    /* auto-rotate the active accelerator every 4200ms — ONLY the 3 sites.
-       Pause on hover/focus, honor document.hidden, pause while a library is
-       selected, and disable entirely under prefers-reduced-motion. */
-    var timer=null;
-    function tick(){
-      if(document.hidden)return;
-      if(mode!=='site')return;            /* never yank the user off a lib view */
-      selectSiteByPreview((activeSite+1)%FEATURED.length);
-    }
-    function start(){if(PREFERS_REDUCED)return;stop();timer=setInterval(tick,4200);}
-    function stop(){if(timer){clearInterval(timer);timer=null;}}
-    start();
+    /* the visitor's scroll position drives the package walk (no timer) */
+    wireScrollSteps();
 
-    workspacePane.addEventListener('mouseenter',stop);
-    workspacePane.addEventListener('mouseleave',start);
-    workspacePane.addEventListener('focusin',stop);
-    workspacePane.addEventListener('focusout',start);
-
-    /* editor-tab click → swap accelerator (site mode) */
+    /* editor-tab click → jump to that accelerator's step (scroll-synced) */
     editorTabs.forEach(function(tab){
-      tab.addEventListener('click',function(){selectSiteByPreview(parseInt(tab.dataset.idx,10));});
+      tab.addEventListener('click',function(){
+        var fi=parseInt(tab.dataset.idx,10);
+        selectSiteByPreview(fi);
+        scrollToStep(fi);
+      });
     });
 
     /* roving-tabindex arrow-key nav on the preview tab strip (role=tab) */
@@ -305,7 +334,7 @@ function boot(){
         else if(e.key==='ArrowLeft'||e.key==='ArrowUp')next=(idx-1+editorTabs.length)%editorTabs.length;
         else if(e.key==='Home')next=0;
         else if(e.key==='End')next=editorTabs.length-1;
-        if(next>=0){e.preventDefault();editorTabs[next].focus();selectSiteByPreview(next);}
+        if(next>=0){e.preventDefault();editorTabs[next].focus();selectSiteByPreview(next);scrollToStep(next);}
       });
     }
 
@@ -318,6 +347,7 @@ function boot(){
         if(e.metaKey||e.ctrlKey||e.shiftKey||e.button===1)return; /* let new-tab through */
         e.preventDefault();
         selectLeaf(leaf);
+        scrollToStep(parseInt(leaf.dataset.idx,10));
       });
     });
   }

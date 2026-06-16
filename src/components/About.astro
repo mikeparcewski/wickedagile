@@ -88,7 +88,7 @@ const SHORT = ["Early Years", "Scale", "Architecture", "AI", "Reckoning"];
     <div class="chapters" id="chapters">
       <div class="about-masthead chapter-shell" data-masthead>
         <div class="chapter-pad">
-          <span class="about-kicker">Five chapters · ~25 years</span>
+          <span class="about-kicker">Five chapters · ~30 years</span>
           <h2 class="about-h2" id="aboutHeading"><span class="stamp">about.</span></h2>
           <p class="about-sub">One career, read top to bottom. The same problem getting clearer with every chapter.</p>
         </div>
@@ -119,9 +119,10 @@ const SHORT = ["Early Years", "Scale", "Architecture", "AI", "Reckoning"];
    ══════════════════════════════════════════════════════════════════ */
 .about-section{
   position:relative;
-  background:var(--canvas-2);
   color:var(--ink);
   border-top:1px solid var(--hairline);
+  /* full-container dark-blue panel at 75% opacity → the grid shows faintly through */
+  background:color-mix(in oklab, var(--canvas-2) 50%, transparent);
 }
 
 /* 2-column grid: [sticky rail | stacked full-screen chapters].
@@ -237,7 +238,10 @@ const SHORT = ["Early Years", "Scale", "Architecture", "AI", "Reckoning"];
 .chapter-shell{
   min-height:100vh;
   display:flex;flex-direction:column;justify-content:center;
-  scroll-snap-align:start;
+  /* about scrolls freely UNDER the pinned masthead — snapping the chapters
+     here would land them behind the sticky band. The rail still tracks the
+     active chapter via IntersectionObserver. */
+  scroll-snap-align:none;
   scroll-margin-top:var(--topbar-h);
   padding:clamp(40px,7vh,96px) 0;
 }
@@ -249,6 +253,41 @@ const SHORT = ["Early Years", "Scale", "Architecture", "AI", "Reckoning"];
 .chapter + .chapter .chapter-pad,
 .chapter .chapter-pad{border-top:none}
 .chapter{border-top:1px solid var(--hairline)}
+
+/* each chapter LOCKS into place below the pinned masthead. The scroll offset
+   clears the sticky band (its real height is measured into --about-mast-h by
+   about.js; 240px fallback for no-JS), and the chapter is sized to the area
+   BELOW the band and top-aligned, so EVERY chapter lands in the same spot —
+   header + numeral fully visible — regardless of how long its text is. */
+.chapter.chapter-shell{
+  scroll-snap-align:start;
+  scroll-snap-stop:always;
+  scroll-margin-top:calc(var(--topbar-h) + var(--about-mast-h, 240px));
+  min-height:calc(100svh - var(--topbar-h) - var(--about-mast-h, 240px));
+  justify-content:flex-start;
+  padding:clamp(44px,7.5vh,88px) 0 clamp(24px,4vh,40px);
+}
+
+/* masthead pins as a compact header so "about." + the intro stay on screen
+   the whole time the five chapters scroll beneath it */
+.about-masthead.chapter-shell{
+  min-height:auto;
+  position:sticky;
+  top:var(--topbar-h);
+  z-index:6;
+  justify-content:flex-start;
+  padding:clamp(18px,3.5vh,34px) 0 clamp(14px,2.6vh,22px);
+  border-bottom:1px solid var(--hairline);
+  scroll-snap-align:none;
+  /* SOLID header that reuses the gridded theme background — opaque so the
+     scrolling chapters don't show through it, but colour + lines match the
+     rest of the section instead of being a flat block */
+  background-color:color-mix(in oklab, var(--canvas-2) 50%, var(--canvas));
+  background-image:
+    linear-gradient(to right, color-mix(in oklab, var(--ink) 6%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in oklab, var(--ink) 6%, transparent) 1px, transparent 1px);
+  background-size:64px 64px;
+}
 
 /* section masthead — house lowercase-period voice */
 .about-masthead .chapter-pad{display:flex;flex-direction:column;gap:14px}
@@ -263,10 +302,7 @@ const SHORT = ["Early Years", "Scale", "Architecture", "AI", "Reckoning"];
   color:var(--ink);margin:0
 }
 .about-h2 .stamp{position:relative;display:inline-block}
-.about-h2 .stamp::after{
-  content:'';position:absolute;left:-2px;right:-2px;bottom:.08em;height:.16em;
-  background:var(--accent);z-index:-1;border-radius:1px;transform:rotate(-.6deg)
-}
+.about-h2 .stamp::after{ display:none }
 .about-sub{
   font-family:var(--font-mono);font-size:.72rem;letter-spacing:.04em;
   color:var(--muted);max-width:54ch;line-height:1.6
@@ -277,7 +313,7 @@ const SHORT = ["Early Years", "Scale", "Architecture", "AI", "Reckoning"];
   font-family:var(--font-display);font-weight:900;font-stretch:125%;
   font-size:clamp(7rem,18vw,15rem);line-height:.74;letter-spacing:-.06em;
   color:var(--ink);opacity:.07;
-  position:absolute;left:-.02em;top:-.42em;z-index:0;pointer-events:none;user-select:none
+  position:absolute;left:-.02em;top:-.16em;z-index:0;pointer-events:none;user-select:none
 }
 .ch-name{
   font-family:var(--font-mono);font-size:.66rem;letter-spacing:.34em;text-transform:uppercase;
