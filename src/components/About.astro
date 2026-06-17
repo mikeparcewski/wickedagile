@@ -289,6 +289,9 @@ const SHORT = ["Early Years", "Scale", "Architecture", "AI", "Reckoning"];
   background-size:64px 64px;
 }
 
+/* masthead hides once scrolled past all chapters (toggled by about.js) */
+.about-masthead.mast-gone{opacity:0;visibility:hidden;transition:opacity .3s var(--ease),visibility .3s var(--ease)}
+
 /* section masthead — house lowercase-period voice */
 .about-masthead .chapter-pad{display:flex;flex-direction:column;gap:14px}
 .about-kicker{

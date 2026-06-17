@@ -28,4 +28,10 @@ const articlesJson = JSON.stringify(articles).replace(/</g, '\\u003c');
   <Shipped />
   <About />
   <Footer repo="https://github.com/mikeparcewski/wickedagile" />
+  <script>
+    // Wheel streamliner — agile-specific (its section classes match the
+    // selectors). NOT in the shared Base: on sites whose sections don't match,
+    // it mis-computes snap points and runs the page to the bottom.
+    import 'wicked-web/scripts/scroll-wheel.js';
+  </script>
 </Base>
