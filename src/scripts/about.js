@@ -101,12 +101,27 @@ function buildAbout(){
       current = best;
       setActive(current);
     }
-    /* hide the pinned masthead once NO chapter is in view (scrolled past the
-       last chapter) — it should only show while chapter content is visible. */
-    var anyVisible = false;
-    for(var v = 0; v < total; v++){ if(ratios[v] > 0){ anyVisible = true; break; } }
-    if(masthead) masthead.classList.toggle('mast-gone', !anyVisible);
   }, { threshold:[0, 0.25, 0.5, 0.55, 0.6, 0.75, 1] });
+
+  /* Hide the pinned masthead once the LAST chapter has scrolled up past the
+     masthead band (no chapter content remains beside/below it) — and also
+     before the first chapter arrives. Geometric check on scroll is reliable
+     where "any chapter intersecting" is not (a tall last chapter lingers). */
+  var firstChapter = chapters[0];
+  var afterAbout = document.querySelector('.footer'); /* what follows the chapters on this page */
+  function syncMastVisibility(){
+    if(!masthead || !firstChapter) return;
+    var vh = window.innerHeight;
+    var firstTop = firstChapter.getBoundingClientRect().top;
+    /* gone once we've scrolled into the footer (past the chapter content), or
+       before the first chapter has reached the viewport. */
+    var pastChapters = afterAbout ? afterAbout.getBoundingClientRect().top < vh * 0.92 : false;
+    var beforeChapters = firstTop >= vh;
+    masthead.classList.toggle('mast-gone', pastChapters || beforeChapters);
+  }
+  window.addEventListener('scroll', syncMastVisibility, { passive: true });
+  window.addEventListener('resize', syncMastVisibility);
+  syncMastVisibility();
 
   chapters.forEach(function(c){ io.observe(c); });
 
