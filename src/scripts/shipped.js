@@ -33,6 +33,7 @@ var LIB_SNIPPETS = {
   'wicked-brain': {
     tagline: 'Agents forget everything. This one doesn\'t.',
     repo: 'https://github.com/mikeparcewski/wicked-brain',
+    ext: 'js', glyph: 'JS', install: 'npm i',
     lines: [
       "// agents forget everything. this one doesn't.",
       "import { brain } from 'wicked-brain'",
@@ -43,15 +44,17 @@ var LIB_SNIPPETS = {
   'wicked-understanding': {
     tagline: 'Not what the code does — why it does it.',
     repo: 'https://github.com/mikeparcewski/wicked-understanding',
+    ext: 'py', glyph: 'PY', install: 'pip install',
     lines: [
-      "// not what the code does — why it does it.",
-      "import { why } from 'wicked-understanding'",
-      "const rationale = await why('PaymentService')"
+      "# not what the code does — why it does it.",
+      "from wicked_understanding import why",
+      "rationale = await why('PaymentService')"
     ]
   },
   'wicked-vault': {
     tagline: 'The diff said it worked. The vault says what actually happened.',
     repo: 'https://github.com/mikeparcewski/wicked-vault',
+    ext: 'js', glyph: 'JS', install: 'npm i',
     lines: [
       "// the diff said it worked. the vault says what happened.",
       "import { vault } from 'wicked-vault'",
@@ -61,6 +64,7 @@ var LIB_SNIPPETS = {
   'wicked-testing': {
     tagline: 'AI tests that actually require proof.',
     repo: 'https://github.com/mikeparcewski/wicked-testing',
+    ext: 'js', glyph: 'JS', install: 'npm i',
     lines: [
       "// AI tests that actually require proof.",
       "import { acceptance } from 'wicked-testing'",
@@ -70,6 +74,7 @@ var LIB_SNIPPETS = {
   'wicked-bus': {
     tagline: 'Fire-and-forget. Minus the forgetting.',
     repo: 'https://github.com/mikeparcewski/wicked-bus',
+    ext: 'js', glyph: 'JS', install: 'npm i',
     lines: [
       "// fire-and-forget. minus the forgetting.",
       "import { bus } from 'wicked-bus'",
@@ -80,15 +85,17 @@ var LIB_SNIPPETS = {
   'wicked-loom': {
     tagline: 'Teaches the agent what you built before you got here.',
     repo: 'https://github.com/mikeparcewski/wicked-loom',
+    ext: 'py', glyph: 'PY', install: 'pip install',
     lines: [
-      "// teaches the agent what you built before you got here.",
-      "import { loom } from 'wicked-loom'",
-      "const playbook = await loom.weave(repo)"
+      "# teaches the agent what you built before you got here.",
+      "from wicked_loom import loom",
+      "playbook = await loom.weave(repo)"
     ]
   }
 };
 
-var TS_KEYWORDS = { 'import': 1, 'from': 1, 'await': 1, 'const': 1, 'let': 1, 'var': 1, 'return': 1, 'new': 1 };
+/* keyword set spans JS/TS + Python (a few extra keywords highlight harmlessly) */
+var TS_KEYWORDS = { 'import': 1, 'from': 1, 'await': 1, 'const': 1, 'let': 1, 'var': 1, 'return': 1, 'new': 1, 'def': 1, 'async': 1, 'class': 1, 'for': 1, 'in': 1, 'with': 1, 'None': 1, 'True': 1, 'False': 1, 'not': 1, 'and': 1, 'or': 1 };
 
 /* highlightLine — tokenizes ONE escaped-safe TS line into syntax spans.
    Comments (everything from // onward) → .cm. Strings ('...') → .st.
@@ -103,6 +110,7 @@ function highlightLine(raw){
     if(inStr){ if(ch===q) inStr=false; continue; }
     if(ch==="'"||ch==='"'){ inStr=true; q=ch; continue; }
     if(ch==='/' && raw[i+1]==='/'){ code = raw.slice(0,i); comment = raw.slice(i); break; }
+    if(ch==='#'){ code = raw.slice(0,i); comment = raw.slice(i); break; }  /* Python comment */
   }
 
   var html = '';
@@ -137,6 +145,7 @@ function boot(){
   var browserFrame=document.getElementById('browserFrame');
   var codeCard=document.getElementById('codeCard');
   var codeFile=document.getElementById('codeFile');
+  var ccGlyph=document.querySelector('#codeCard .cc-glyph');
   var codeBlock=document.getElementById('codeBlock');
   var previewUrl=document.getElementById('previewUrl');
   var crumbName=document.getElementById('crumbName');
@@ -224,10 +233,11 @@ function boot(){
     if(browserFrame)browserFrame.hidden=true;
     if(codeCard){codeCard.hidden=false;codeCard.setAttribute('aria-hidden','false');}
 
-    if(codeFile)codeFile.textContent=libKey+'.ts';
+    if(codeFile)codeFile.textContent=libKey+'.'+(snip.ext||'ts');
+    if(ccGlyph)ccGlyph.textContent=snip.glyph||'TS';
     if(crumbName)crumbName.textContent=libKey;
     if(readoutDesc)readoutDesc.textContent=snip.tagline;
-    if(readoutCta){readoutCta.href=safeUrl(snip.repo);readoutCta.textContent='npm i '+libKey+' ↗';}
+    if(readoutCta){readoutCta.href=safeUrl(snip.repo);readoutCta.textContent=(snip.install||'npm i')+' '+libKey+' ↗';}
 
     /* render the snippet with a real line-number gutter + syntax spans */
     if(codeBlock){
