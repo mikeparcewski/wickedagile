@@ -12,6 +12,7 @@ import Hero from '../components/Hero.astro';
 import Articles from '../components/Articles.astro';
 import Shipped from '../components/Shipped.astro';
 import About from '../components/About.astro';
+import SameGarden from 'wicked-web/components/SameGarden.astro';
 import Footer from 'wicked-web/components/Footer.astro';
 import { getArticles } from '../lib/articles.mjs';
 
@@ -28,6 +29,7 @@ const articlesJson = JSON.stringify(articles).replace(/</g, '\\u003c');
   <Articles articles={articles} />
   <Shipped />
   <About />
+  <SameGarden current="wickedagile" />
   <Footer repo="https://github.com/mikeparcewski/wickedagile" />
   <script>
     // Wheel streamliner — agile-specific (its section classes match the
