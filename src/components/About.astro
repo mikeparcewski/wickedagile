@@ -121,6 +121,8 @@ const SHORT = ["Early Years", "Scale", "Architecture", "AI", "Reckoning"];
   position:relative;
   color:var(--ink);
   border-top:1px solid var(--hairline);
+  border-left:1px solid var(--hairline);
+  border-right:1px solid var(--hairline);
   /* full-container dark-blue panel at 75% opacity → the grid shows faintly through */
   background:color-mix(in oklab, var(--canvas-2) 50%, transparent);
 }
@@ -279,14 +281,10 @@ const SHORT = ["Early Years", "Scale", "Architecture", "AI", "Reckoning"];
   padding:clamp(18px,3.5vh,34px) 0 clamp(14px,2.6vh,22px);
   border-bottom:1px solid var(--hairline);
   scroll-snap-align:none;
-  /* SOLID header that reuses the gridded theme background — opaque so the
-     scrolling chapters don't show through it, but colour + lines match the
-     rest of the section instead of being a flat block */
+  /* SOLID header — flat opaque colour, no grid/motif, so the scrolling chapters
+     (and the page's AI-flow background) don't show through it */
   background-color:color-mix(in oklab, var(--canvas-2) 50%, var(--canvas));
-  background-image:
-    linear-gradient(to right, color-mix(in oklab, var(--ink) 6%, transparent) 1px, transparent 1px),
-    linear-gradient(to bottom, color-mix(in oklab, var(--ink) 6%, transparent) 1px, transparent 1px);
-  background-size:64px 64px;
+  background-image:none;
 }
 
 /* masthead hides once scrolled past all chapters (toggled by about.js) */

@@ -1,0 +1,21 @@
+/* ──────────────────────────────────────────────────────────────────────────
+   wickedagile background motif = AI-FLOW (messy inputs → transformation hub →
+   clean product outputs). Quality · velocity · execution — chaos turned into
+   shipped product.
+
+   Same fixed, palette-recoloured approach as estate's graph: one masked SVG
+   spanning the whole page behind everything. Overrides the shared grid
+   (tokens.css body::before), leaves the shared burst-of-light (body::after).
+   UNLAYERED so it beats the shared @layer base rule.
+   ────────────────────────────────────────────────────────────────────────── */
+body::before {
+  content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none;
+  background-image: none;              /* drop the shared line-grid gradients */
+  background-color: var(--ink);        /* recolours the motif with the palette */
+  opacity: 0.12;                       /* less subtle than the grid/Gantt */
+  -webkit-mask-image: url("/motifs/ai-flow.svg");
+          mask-image: url("/motifs/ai-flow.svg");
+  -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
+  -webkit-mask-position: center;  mask-position: center;
+  -webkit-mask-size: cover;       mask-size: cover;
+}
