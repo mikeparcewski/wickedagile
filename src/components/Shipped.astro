@@ -25,6 +25,20 @@
  * by shipped.js. JS lives in ../scripts/shipped.js and imports the shared
  * data module (FEATURED, esc, safeUrl, delay).
  */
+
+// Mobile view: the nine packages in order. The three with a `shot` are the
+// deployed sites (rendered with their screenshot); the rest are libraries.
+const packages = [
+  { name: 'wicked-interactive', lang: 'JS', site: 'wi.wickedagile.com', href: 'https://wi.wickedagile.com', shot: '/screenshots/wicked-interactive.png', desc: 'Say the thing. Watch it build. Point at what’s wrong. Ship.' },
+  { name: 'wicked-garden', lang: 'PY', site: 'wg.wickedagile.com', href: 'https://wg.wickedagile.com', shot: '/screenshots/wicked-garden.png', desc: 'Orchestration without the org chart.' },
+  { name: 'wicked-estate', lang: 'RS', site: 'we.wickedagile.com', href: 'https://we.wickedagile.com', shot: '/screenshots/wicked-estate.png', desc: 'Every agentic env becomes a crime scene. Forensics kit.' },
+  { name: 'wicked-brain', lang: 'JS', href: 'https://github.com/mikeparcewski/wicked-brain', desc: 'Agents forget everything. This one doesn’t.' },
+  { name: 'wicked-understanding', lang: 'PY', href: 'https://github.com/mikeparcewski/wicked-understanding', desc: 'Not what the code does — why it does it.' },
+  { name: 'wicked-vault', lang: 'JS', href: 'https://github.com/mikeparcewski/wicked-vault', desc: 'The diff said it worked. The vault says what happened.' },
+  { name: 'wicked-testing', lang: 'JS', href: 'https://github.com/mikeparcewski/wicked-testing', desc: 'AI-generated tests that require proof. Novel concept.' },
+  { name: 'wicked-bus', lang: 'JS', href: 'https://github.com/mikeparcewski/wicked-bus', desc: 'Fire-and-forget. Minus the forgetting.' },
+  { name: 'wicked-loom', lang: 'PY', href: 'https://github.com/mikeparcewski/wicked-loom', desc: 'Teaches the agent what you built before you got here.' },
+];
 ---
 
 <!-- ════════════════════════════════════════════════════════════════
@@ -175,6 +189,24 @@
             <a class="readout-cta" id="readoutCta" href="https://wi.wickedagile.com">Open Preview ↗</a>
           </div>
         </div>
+      </div>
+
+      <!-- MOBILE: shipped is just the package list in order; deployed sites show their screenshot -->
+      <div class="shipped-mobile">
+        {packages.map((p, i) => (
+          <a class={`shm-item${p.shot ? ' has-shot' : ''}`} href={p.href} target={p.shot ? '_self' : '_blank'} rel="noopener">
+            <div class="shm-row">
+              <span class="shm-idx">{String(i + 1).padStart(2, '0')}</span>
+              <span class="shm-name">{p.name}</span>
+              {p.site
+                ? (<span class="shm-badge shm-badge--live"><span class="shm-dot" aria-hidden="true"></span>live</span>)
+                : (<span class="shm-badge">{p.lang}</span>)}
+            </div>
+            {p.shot && (<div class="shm-shot" style={`background-image:url('${p.shot}')`}></div>)}
+            <div class="shm-desc">{p.desc}</div>
+            {p.site && (<div class="shm-url">{p.site} ↗</div>)}
+          </a>
+        ))}
       </div>
 
       <!-- bottom STATUS BAR (workspace, chrome aria-hidden) -->
@@ -455,6 +487,33 @@
   .browser-chrome .live .pulse{animation:none}
   .shot-bg-front{transition:none!important}
 }
+
+/* ── MOBILE (≤640): drop the scroll-driven split-editor; show the nine
+   packages as a simple ordered list. Deployed sites render with their
+   screenshot. Kills the 9×56vh sticky track on phones. ─────────────────── */
+.shipped-mobile{display:none}
+@media(max-width:640px){
+  .ide-track{min-height:0!important}
+  .ide-stage{position:static!important;height:auto!important;padding:0!important}
+  .ide-steps{display:none}
+  .zone-inner{padding-left:20px;padding-right:20px}
+  .split-editor{display:none}
+  .shipped-mobile{display:flex;flex-direction:column}
+  /* breathing room between "yes, and..." and "shipped." — they were flush on mobile */
+  .zoneB-section{padding-top:52px}
+}
+.shm-item{display:block;text-decoration:none;color:inherit;padding:15px 16px;border-bottom:1px solid rgba(255,255,255,.06);transition:background .15s}
+.shm-item:last-child{border-bottom:none}
+.shm-item:active{background:rgba(255,255,255,.03)}
+.shm-row{display:flex;align-items:center;gap:10px}
+.shm-idx{font-family:var(--font-mono);font-size:.62rem;font-weight:700;color:rgba(255,255,255,.32);font-variant-numeric:tabular-nums;flex-shrink:0}
+.shm-name{font-family:var(--font-mono);font-size:.94rem;font-weight:700;color:#e6edf3;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.shm-badge{font-family:var(--font-mono);font-size:.54rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(201,209,217,.6);border:1px solid rgba(255,255,255,.14);border-radius:5px;padding:2px 7px;flex-shrink:0}
+.shm-badge--live{color:#56d364;border-color:rgba(86,211,100,.4);display:inline-flex;align-items:center;gap:5px}
+.shm-dot{width:6px;height:6px;border-radius:50%;background:#56d364;flex-shrink:0}
+.shm-shot{margin-top:12px;aspect-ratio:16/10;border-radius:8px;border:1px solid rgba(255,255,255,.12);background-size:cover;background-position:top center;background-color:#080c10}
+.shm-desc{font-family:var(--font-mono);font-size:.7rem;color:#8a98a6;line-height:1.5;margin-top:11px}
+.shm-url{font-family:var(--font-mono);font-size:.58rem;letter-spacing:.06em;color:var(--accent);margin-top:8px}
 </style>
 
 <script>

@@ -94,6 +94,21 @@ const feat = list[0] || null;
             </ul>
           </div>
         </div>
+
+        <!-- MOBILE: just the first 3 articles as hero-image cards -->
+        <div class="art-mobile">
+          {list.slice(0, 3).map((art, i) => (
+            <a class="artm-card" href={art.link} target="_blank" rel="noopener">
+              <div class="artm-shot" style={art.thumbnail ? `background-image:url('${art.thumbnail}')` : ''}>
+                <span class="artm-idx">{String(i + 1).padStart(2, '0')}</span>
+              </div>
+              <div class="artm-body">
+                <h3 class="artm-title">{art.title}</h3>
+                <div class="artm-meta">{`${fmt(art.pubDate) ? fmt(art.pubDate) + ' · ' : ''}${art.readTime} min read`}</div>
+              </div>
+            </a>
+          ))}
+        </div>
       </div>
     </div>
   </div>
@@ -377,6 +392,28 @@ const feat = list[0] || null;
   .dispatch-row.reveal{clip-path:inset(0 0 0 0)!important;transition:none}
   .priority-bg,.priority:hover .priority-bg{transition:none}
 }
+
+/* ── MOBILE (≤640): drop the scroll-driven dispatch console; show just the
+   first 3 articles as hero-image cards. Kills the tall sticky track that
+   created huge blank scroll regions on phones. ─────────────────────────── */
+.art-mobile{display:none}
+@media(max-width:640px){
+  .art-track{min-height:0!important}
+  .art-stage{position:static!important;min-height:0!important;padding:0!important}
+  .art-steps{display:none}
+  .content-inner{padding-left:20px;padding-right:20px}
+  .dispatch-console{display:none}
+  .art-mobile{display:flex;flex-direction:column;gap:14px}
+  /* drop the "INCIDENT LOG…" kicker + "yes, and..." title on mobile so the hero
+     flows straight into the article images (scoped to articles, not shipped) */
+  .mc-wall .zone-head{display:none}
+}
+.artm-card{display:flex;flex-direction:column;border:1px solid var(--hairline-strong);border-radius:12px;overflow:hidden;background:var(--surface);text-decoration:none;color:inherit}
+.artm-shot{position:relative;aspect-ratio:16/9;background-size:cover;background-position:center top;background-color:var(--surface-2)}
+.artm-idx{position:absolute;top:8px;left:10px;font-family:var(--font-mono);font-size:.6rem;font-weight:700;color:#fff;background:rgba(0,0,0,.55);padding:2px 7px;border-radius:5px;letter-spacing:.08em}
+.artm-body{padding:13px 15px 15px}
+.artm-title{font-family:var(--font-display);font-weight:900;font-stretch:115%;font-size:clamp(1.05rem,4.6vw,1.4rem);line-height:1.12;letter-spacing:-.02em;color:var(--ink)}
+.artm-meta{font-family:var(--font-mono);font-size:.62rem;color:var(--muted);letter-spacing:.04em;margin-top:8px}
 </style>
 
 <script>

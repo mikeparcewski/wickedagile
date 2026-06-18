@@ -59,7 +59,7 @@
 /* row 1: full-width title */
 .hero-title{
   font-family:var(--font-display);font-weight:900;font-stretch:125%;
-  font-size:clamp(3.2rem,6vw,5.8rem);color:var(--ink);
+  font-size:clamp(2rem,8vw,5.8rem);color:var(--ink);
   line-height:.9;letter-spacing:-.03em
 }
 .hero-title span{color:var(--accent)}
@@ -67,7 +67,7 @@
 .hero-row{display:grid;grid-template-columns:1fr 2fr;gap:44px;align-items:center}
 .hero-text-side{display:flex;flex-direction:column;gap:22px}
 .hero-text{
-  font-size:2.5rem;color:var(--muted);
+  font-size:clamp(1.35rem,5.2vw,2.5rem);color:var(--muted);
   line-height:1.24;font-weight:400;letter-spacing:-.02em
 }
 .hero-kicker{
@@ -122,6 +122,15 @@
   .hero-row{grid-template-columns:1fr;gap:24px}
   .hero-text{max-width:100%}
   .term-window{height:min(40vh,360px)}
+}
+@media(max-width:600px){
+  /* kill the forced 100vh fill (.snap-section min-height) so there's no dead
+     space between the hero and "yes, and..." */
+  #terminal-section{min-height:auto}
+  .terminal-section{padding-left:20px;padding-right:20px;gap:26px;min-height:auto;padding-bottom:8px}
+  /* Phones: kill the auto-typing terminal — it reads as an input you can't use on
+     mobile. Hero stays text + CTAs; imagery comes from the article/shipped sections. */
+  .term-window{display:none}
 }
 </style>
 

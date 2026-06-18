@@ -359,14 +359,11 @@ const SHORT = ["Early Years", "Scale", "Architecture", "AI", "Reckoning"];
     /* rail becomes a thin top-pinned progress strip above the chapters */
     display:block;padding:0 18px;
   }
-  .about-rail{
-    position:sticky;top:var(--topbar-h);
-    height:auto;
-    z-index:3;
-    background:var(--canvas-2);
-    border-bottom:1px solid var(--hairline);
-    margin:0 -18px;padding:10px 18px;
-  }
+  /* Phones: no fixed "header treatment" — hide the 01–05 step-counter rail and
+     let the masthead + chapters just scroll normally. */
+  .about-rail{display:none}
+  .about-masthead.chapter-shell{position:static}
+  .chapter.chapter-shell{min-height:auto}
   .rail-inner{display:block;height:auto;padding:0}
   /* horizontal strip: track across the top, nodes in a row */
   .rail-track{
