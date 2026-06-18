@@ -13,6 +13,9 @@ function boot(){
   var slashMenu=document.getElementById('slashMenu');
   /* hero markup absent (e.g. another page) — nothing to run */
   if(!termOutput||!termBody||!termCursorText||!slashMenu)return;
+  /* phones: the terminal is display:none (mobile kills the interactive), so don't
+     run the typing machinery on hidden elements — bail to save CPU/battery. */
+  if(window.matchMedia&&window.matchMedia('(max-width:600px)').matches)return;
 
   /* TERMINAL COPY BANKS */
   var ART_I=['surfacing the latest thinking from the field...','here\'s what\'s been keeping me up at night...','recent dispatches from production.','field notes. unfiltered.','the good stuff. no padding.','things that needed to be written down.','dispatches from the build.','pulled from Medium. the real stuff.'];
