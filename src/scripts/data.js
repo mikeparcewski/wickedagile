@@ -38,5 +38,11 @@ export var FEATURED=[
   {name:'wicked-garden',url:'https://wg.wickedagile.com',screenshot:'/screenshots/wicked-garden.png',
    desc:'Orchestration without the org chart.'},
   {name:'wicked-estate',url:'https://we.wickedagile.com',screenshot:'/screenshots/wicked-estate.png',
-   desc:'The code graph agents actually trust.'}
+   desc:'The code graph agents actually trust.'},
+  {name:'wicked-signals',url:'https://github.com/mikeparcewski/wicked-signals',screenshot:null,
+   desc:'Text in. Intent out.'},
+  {name:'wicked-crew',url:'https://github.com/mikeparcewski/wicked-crew',screenshot:null,
+   desc:'The session layer your agent teams need.'},
+  {name:'wicked-studio',url:'https://github.com/mikeparcewski/wicked-studio',screenshot:null,
+   desc:'The UI your agent should have.'},
 ];
