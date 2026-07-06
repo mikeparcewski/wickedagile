@@ -19,7 +19,7 @@
    FEATURED + shared helpers come from the data module — no helper is
    redefined here.
    ────────────────────────────────────────────────────────────── */
-import { FEATURED, esc, safeUrl, delay } from './data.js';
+import { FEATURED, esc, safeUrl } from './data.js';
 
 var PREFERS_REDUCED = window.matchMedia && window.matchMedia('(prefers-reduced-motion:reduce)').matches;
 
@@ -30,6 +30,39 @@ var PREFERS_REDUCED = window.matchMedia && window.matchMedia('(prefers-reduced-m
    verbatim text and tokenize at render time with a tiny TS highlighter so
    the source stays exactly as authored. */
 var LIB_SNIPPETS = {
+  'wicked-signals': {
+    tagline: 'Text in. Intent out.',
+    repo: 'https://github.com/mikeparcewski/wicked-signals',
+    ext: 'ts', glyph: 'TS', install: 'npm i',
+    lines: [
+      "// classify any signal. route it. store it.",
+      "import { ingestText } from 'wicked-signals'",
+      "const result = await ingestText('Build a dark mode toggle')",
+      "// → { signal_id, route_target: 'crew_idd', confidence: 0.87 }"
+    ]
+  },
+  'wicked-crew': {
+    tagline: 'The session layer your agent teams need.',
+    repo: 'https://github.com/mikeparcewski/wicked-crew',
+    ext: 'js', glyph: 'JS', install: 'npm i',
+    lines: [
+      "// phase-gated sessions. hitl. council. audit trail.",
+      "$ wicked-crew crew launch --type feature \\",
+      "    --problem 'Add OAuth to the API'",
+      "// → { session_id, current_phase: 'clarify', status: 'Open' }"
+    ]
+  },
+  'wicked-studio': {
+    tagline: 'The UI your agent should have.',
+    repo: 'https://github.com/mikeparcewski/wicked-studio',
+    ext: 'rs', glyph: 'RS', install: 'cargo add',
+    lines: [
+      "// desktop hitl shell. tauri. stateful. offline.",
+      "use wicked_studio::HitlStore;",
+      "let mut store = HitlStore::new();",
+      "store.open_session(session_id, prompt)?;"
+    ]
+  },
   'wicked-brain': {
     tagline: 'Agents forget everything. This one doesn\'t.',
     repo: 'https://github.com/mikeparcewski/wicked-brain',
