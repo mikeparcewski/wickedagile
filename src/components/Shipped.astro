@@ -26,23 +26,24 @@
  * data module (FEATURED, esc, safeUrl, delay).
  */
 
-// Mobile view: the twelve packages in order. The three with a `shot` are the
-// deployed sites (rendered with their screenshot); the rest are libraries.
+// Mobile view: the ten MARKETED packages in order. The three with a `shot` are
+// the deployed sites (rendered with their screenshot); the rest are libraries.
+// This is the marketed set only — the 5 products + the 5-repo foundation.
+// Absorbed packages (wicked-loom, wicked-memory/knowledge/overlay, wicked-agent)
+// and wicked-vault (a wicked-garden peer, not a headline product) are excluded.
 const packages = [
-  // ── products/ — 6 products ───────────────────────────────────────────────
-  { name: ‘wicked-signals’, lang: ‘TS’, href: ‘https://github.com/mikeparcewski/wicked-signals’, desc: ‘Text in. Intent out. Routes any signal to the right crew.’ },
-  { name: ‘wicked-crew’, lang: ‘JS’, href: ‘https://github.com/mikeparcewski/wicked-crew’, desc: ‘Phase-gated sessions. HITL. Council. Audit trail.’ },
-  { name: ‘wicked-interactive’, lang: ‘JS’, site: ‘wi.wickedagile.com’, href: ‘https://wi.wickedagile.com’, shot: ‘/screenshots/wicked-interactive.png’, desc: ‘Say the thing. Watch it build. Point at what\’s wrong. Ship.’ },
-  { name: ‘wicked-studio’, lang: ‘RS’, href: ‘https://github.com/mikeparcewski/wicked-studio’, desc: ‘Desktop HITL shell — Tauri, stateful, offline.’ },
-  { name: ‘wicked-testing’, lang: ‘JS’, href: ‘https://github.com/mikeparcewski/wicked-testing’, desc: ‘AI-generated tests that require proof. Novel concept.’ },
-  { name: ‘wicked-garden’, lang: ‘PY’, site: ‘wg.wickedagile.com’, href: ‘https://wg.wickedagile.com’, shot: ‘/screenshots/wicked-garden.png’, desc: ‘Orchestration without the org chart.’ },
-  // ── platform/ — infrastructure ───────────────────────────────────────────
-  { name: ‘wicked-estate’, lang: ‘RS’, site: ‘we.wickedagile.com’, href: ‘https://we.wickedagile.com’, shot: ‘/screenshots/wicked-estate.png’, desc: ‘Every agentic env becomes a crime scene. Forensics kit.’ },
-  { name: ‘wicked-bus’, lang: ‘JS’, href: ‘https://github.com/mikeparcewski/wicked-bus’, desc: ‘Fire-and-forget. Minus the forgetting.’ },
-  { name: ‘wicked-brain’, lang: ‘JS’, href: ‘https://github.com/mikeparcewski/wicked-brain’, desc: ‘Agents forget everything. This one doesn\’t.’ },
-  { name: ‘wicked-understanding’, lang: ‘PY’, href: ‘https://github.com/mikeparcewski/wicked-understanding’, desc: ‘Not what the code does — why it does it.’ },
-  { name: ‘wicked-vault’, lang: ‘JS’, href: ‘https://github.com/mikeparcewski/wicked-vault’, desc: ‘The diff said it worked. The vault says what happened.’ },
-  { name: ‘wicked-loom’, lang: ‘PY’, href: ‘https://github.com/mikeparcewski/wicked-loom’, desc: ‘Teaches the agent what you built before you got here.’ },
+  // ── products/ — the 5 agent-facing products ──────────────────────────────
+  { name: 'wicked-signals', lang: 'TS', href: 'https://github.com/mikeparcewski/wicked-signals', desc: 'Text in. Intent out. Classifies and routes every agent signal.' },
+  { name: 'wicked-testing', lang: 'JS', href: 'https://github.com/mikeparcewski/wicked-testing', desc: "A complete QE team for AI coding CLIs that can't self-grade." },
+  { name: 'wicked-interactive', lang: 'JS', site: 'wi.wickedagile.com', href: 'https://wi.wickedagile.com', shot: '/screenshots/wicked-interactive.png', desc: 'Describe it, watch it build in your browser, ship it.' },
+  { name: 'wicked-studio', lang: 'TS', href: 'https://github.com/mikeparcewski/wicked-studio', desc: 'Browser operator console for human-in-the-loop agent sessions.' },
+  { name: 'wicked-garden', lang: 'JS', site: 'wg.wickedagile.com', href: 'https://wg.wickedagile.com', shot: '/screenshots/wicked-garden.png', desc: "Curated toolkit for what coding agents can't do alone." },
+  // ── platform/ — the shared local-first foundation ─────────────────────────
+  { name: 'wicked-estate', lang: 'RS', site: 'we.wickedagile.com', href: 'https://we.wickedagile.com', shot: '/screenshots/wicked-estate.png', desc: 'The code graph agents actually trust.' },
+  { name: 'wicked-core', lang: 'RS', href: 'https://github.com/mikeparcewski/wicked-core', desc: 'The runtime that makes wicked-estate concurrency-safe.' },
+  { name: 'wicked-bus', lang: 'JS', href: 'https://github.com/mikeparcewski/wicked-bus', desc: 'Local-first SQLite event bus for AI agents and dev tools.' },
+  { name: 'wicked-brain', lang: 'JS', href: 'https://github.com/mikeparcewski/wicked-brain', desc: "Your AI agent's memory — markdown and SQLite, no vector DB." },
+  { name: 'wicked-crew', lang: 'JS', href: 'https://github.com/mikeparcewski/wicked-crew', desc: 'External daemon that governs multi-phase AI workflows.' },
 ];
 ---
 
@@ -57,7 +58,7 @@ const packages = [
     <div class="ide-stage">
   <div class="zone-inner">
     <div class="zone-head">
-      <span class="zone-kicker">WORKSPACE · 12 PACKAGES · 3 DEPLOYED</span>
+      <span class="zone-kicker">WORKSPACE · 10 PACKAGES · 3 DEPLOYED</span>
       <h2 class="zone-title">shipped.</h2>
     </div>
 
@@ -68,73 +69,65 @@ const packages = [
       </div>
 
       <div class="split-editor">
-        <!-- LEFT: EXPLORER tree (the twelve packages, TWO folders) -->
+        <!-- LEFT: EXPLORER tree (the ten marketed packages, TWO folders) -->
         <aside class="ide-explorer" aria-label="Package explorer">
           <div class="explorer-head"><span>the packages.</span><span class="ws">wicked.code-workspace</span></div>
           <p class="tree-root-comment"># AI is an org problem, not a model problem.</p>
 
-          <!-- products/ — hue #ffe45c (signal yellow) — the 6 agent-facing products -->
+          <!-- products/ — hue #ffe45c (signal yellow) — the 5 agent-facing products -->
           <div class="tree-folder" data-cat="products" id="folder-products">
             <button class="folder-row" type="button" aria-expanded="true" aria-controls="children-products">
               <span class="caret" aria-hidden="true">▾</span><span class="fname--products">products/</span>
             </button>
             <div class="folder-children" id="children-products" role="group">
               <a class="tree-leaf" href="https://github.com/mikeparcewski/wicked-signals" target="_blank" rel="noopener" data-idx="0" data-mode="lib" data-lib="wicked-signals">
-                <span class="leaf-line"><span class="leaf-glyph" aria-hidden="true">TS</span><span class="leaf-name">wicked-signals.ts</span><span class="leaf-tag">npm·MIT</span></span>
-                <span class="leaf-desc">// Text in. Intent out. Routes any signal to the right crew.</span>
+                <span class="leaf-line"><span class="leaf-glyph" aria-hidden="true">TS</span><span class="leaf-name">wicked-signals.ts</span><span class="leaf-tag">git·MIT</span></span>
+                <span class="leaf-desc">// Text in. Intent out. Classifies and routes every agent signal.</span>
               </a>
-              <a class="tree-leaf" href="https://github.com/mikeparcewski/wicked-crew" target="_blank" rel="noopener" data-idx="1" data-mode="lib" data-lib="wicked-crew">
-                <span class="leaf-line"><span class="leaf-glyph" aria-hidden="true">JS</span><span class="leaf-name">wicked-crew.js</span><span class="leaf-tag">npm·MIT</span></span>
-                <span class="leaf-desc">// Phase-gated sessions. HITL. Council. Audit trail.</span>
+              <a class="tree-leaf" href="https://github.com/mikeparcewski/wicked-testing" target="_blank" rel="noopener" data-idx="1" data-mode="lib" data-lib="wicked-testing">
+                <span class="leaf-line"><span class="leaf-glyph" aria-hidden="true">JS</span><span class="leaf-name">wicked-testing.js</span><span class="leaf-tag">npm·MIT</span></span>
+                <span class="leaf-desc">// A complete QE team for AI coding CLIs that can't self-grade.</span>
               </a>
               <a class="tree-leaf" href="https://wi.wickedagile.com" data-idx="2" data-mode="site" data-preview="0">
                 <span class="leaf-line"><span class="leaf-glyph" aria-hidden="true">JS</span><span class="leaf-name">wicked-interactive.js</span><span class="leaf-tag">npm·MIT·wi.wickedagile.com</span></span>
-                <span class="leaf-desc">// Say the thing. Watch it build. Point at what's wrong. Ship.</span>
+                <span class="leaf-desc">// Describe it, watch it build in your browser, ship it.</span>
               </a>
               <a class="tree-leaf" href="https://github.com/mikeparcewski/wicked-studio" target="_blank" rel="noopener" data-idx="3" data-mode="lib" data-lib="wicked-studio">
-                <span class="leaf-line"><span class="leaf-glyph" aria-hidden="true">RS</span><span class="leaf-name">wicked-studio.rs</span><span class="leaf-tag">crate·MIT</span></span>
-                <span class="leaf-desc">// Desktop HITL shell — Tauri, stateful, offline.</span>
+                <span class="leaf-line"><span class="leaf-glyph" aria-hidden="true">TS</span><span class="leaf-name">wicked-studio.tsx</span><span class="leaf-tag">web·MIT</span></span>
+                <span class="leaf-desc">// Browser operator console for human-in-the-loop agent sessions.</span>
               </a>
-              <a class="tree-leaf" href="https://github.com/mikeparcewski/wicked-testing" target="_blank" rel="noopener" data-idx="4" data-mode="lib" data-lib="wicked-testing">
-                <span class="leaf-line"><span class="leaf-glyph" aria-hidden="true">JS</span><span class="leaf-name">wicked-testing.js</span><span class="leaf-tag">npm·MIT</span></span>
-                <span class="leaf-desc">// AI-generated tests that require proof. Novel concept.</span>
-              </a>
-              <a class="tree-leaf" href="https://wg.wickedagile.com" data-idx="5" data-mode="site" data-preview="1">
-                <span class="leaf-line"><span class="leaf-glyph" aria-hidden="true">PY</span><span class="leaf-name">wicked-garden.py</span><span class="leaf-tag">pip·MIT·wg.wickedagile.com</span></span>
-                <span class="leaf-desc">// Orchestration without the org chart.</span>
+              <a class="tree-leaf" href="https://wg.wickedagile.com" data-idx="4" data-mode="site" data-preview="1">
+                <span class="leaf-line"><span class="leaf-glyph" aria-hidden="true">JS</span><span class="leaf-name">wicked-garden.js</span><span class="leaf-tag">npm·MIT·wg.wickedagile.com</span></span>
+                <span class="leaf-desc">// Curated toolkit for what coding agents can't do alone.</span>
               </a>
             </div>
           </div>
 
-          <!-- platform/ — hue #e6adb3 (wine/pink) — foundational infrastructure -->
+          <!-- platform/ — hue #e6adb3 (wine/pink) — the shared local-first foundation -->
           <div class="tree-folder is-collapsed" data-cat="platform" id="folder-platform">
             <button class="folder-row" type="button" aria-expanded="false" aria-controls="children-platform">
               <span class="caret" aria-hidden="true">▾</span><span class="fname--platform">platform/</span>
             </button>
             <div class="folder-children" id="children-platform" role="group">
-              <a class="tree-leaf" href="https://we.wickedagile.com" data-idx="6" data-mode="site" data-preview="2">
+              <a class="tree-leaf" href="https://we.wickedagile.com" data-idx="5" data-mode="site" data-preview="2">
                 <span class="leaf-line"><span class="leaf-glyph" aria-hidden="true">RS</span><span class="leaf-name">wicked-estate.rs</span><span class="leaf-tag">crate·MIT·we.wickedagile.com</span></span>
-                <span class="leaf-desc">// Every agentic env becomes a crime scene. Forensics kit.</span>
+                <span class="leaf-desc">// The code graph agents actually trust.</span>
+              </a>
+              <a class="tree-leaf" href="https://github.com/mikeparcewski/wicked-core" target="_blank" rel="noopener" data-idx="6" data-mode="lib" data-lib="wicked-core">
+                <span class="leaf-line"><span class="leaf-glyph" aria-hidden="true">RS</span><span class="leaf-name">wicked-core.rs</span><span class="leaf-tag">src·MIT</span></span>
+                <span class="leaf-desc">// The runtime that makes wicked-estate concurrency-safe.</span>
               </a>
               <a class="tree-leaf" href="https://github.com/mikeparcewski/wicked-bus" target="_blank" rel="noopener" data-idx="7" data-mode="lib" data-lib="wicked-bus">
                 <span class="leaf-line"><span class="leaf-glyph" aria-hidden="true">JS</span><span class="leaf-name">wicked-bus.js</span><span class="leaf-tag">npm·MIT</span></span>
-                <span class="leaf-desc">// Fire-and-forget. Minus the forgetting.</span>
+                <span class="leaf-desc">// Local-first SQLite event bus for AI agents and dev tools.</span>
               </a>
               <a class="tree-leaf" href="https://github.com/mikeparcewski/wicked-brain" target="_blank" rel="noopener" data-idx="8" data-mode="lib" data-lib="wicked-brain">
                 <span class="leaf-line"><span class="leaf-glyph" aria-hidden="true">JS</span><span class="leaf-name">wicked-brain.js</span><span class="leaf-tag">npm·MIT</span></span>
-                <span class="leaf-desc">// Agents forget everything. This one doesn't.</span>
+                <span class="leaf-desc">// Your AI agent's memory — markdown and SQLite, no vector DB.</span>
               </a>
-              <a class="tree-leaf" href="https://github.com/mikeparcewski/wicked-understanding" target="_blank" rel="noopener" data-idx="9" data-mode="lib" data-lib="wicked-understanding">
-                <span class="leaf-line"><span class="leaf-glyph" aria-hidden="true">PY</span><span class="leaf-name">wicked-understanding.py</span><span class="leaf-tag">pip·MIT</span></span>
-                <span class="leaf-desc">// Not what the code does — why it does it.</span>
-              </a>
-              <a class="tree-leaf" href="https://github.com/mikeparcewski/wicked-vault" target="_blank" rel="noopener" data-idx="10" data-mode="lib" data-lib="wicked-vault">
-                <span class="leaf-line"><span class="leaf-glyph" aria-hidden="true">JS</span><span class="leaf-name">wicked-vault.js</span><span class="leaf-tag">npm·MIT</span></span>
-                <span class="leaf-desc">// The diff said it worked. The vault says what happened.</span>
-              </a>
-              <a class="tree-leaf" href="https://github.com/mikeparcewski/wicked-loom" target="_blank" rel="noopener" data-idx="11" data-mode="lib" data-lib="wicked-loom">
-                <span class="leaf-line"><span class="leaf-glyph" aria-hidden="true">PY</span><span class="leaf-name">wicked-loom.py</span><span class="leaf-tag">pip·MIT</span></span>
-                <span class="leaf-desc">// Teaches the agent what you built before you got here.</span>
+              <a class="tree-leaf" href="https://github.com/mikeparcewski/wicked-crew" target="_blank" rel="noopener" data-idx="9" data-mode="lib" data-lib="wicked-crew">
+                <span class="leaf-line"><span class="leaf-glyph" aria-hidden="true">JS</span><span class="leaf-name">wicked-crew.js</span><span class="leaf-tag">npm·MIT</span></span>
+                <span class="leaf-desc">// External daemon that governs multi-phase AI workflows.</span>
               </a>
             </div>
           </div>
@@ -210,13 +203,13 @@ const packages = [
 
       <!-- bottom STATUS BAR (workspace, chrome aria-hidden) -->
       <div class="ide-statusbar" aria-hidden="true">
-        <span class="sb-left"><span class="sb-branch">⎇ main</span><span>12 packages</span><span>3 deployed</span></span>
+        <span class="sb-left"><span class="sb-branch">⎇ main</span><span>10 packages</span><span>3 deployed</span></span>
         <span class="sb-right"><span id="sbTheme">dark · #0d0f12</span></span>
       </div>
     </div>
   </div>
     </div>
-    <div class="ide-steps" aria-hidden="true"><i class="ide-step" data-step="0"></i><i class="ide-step" data-step="1"></i><i class="ide-step" data-step="2"></i><i class="ide-step" data-step="3"></i><i class="ide-step" data-step="4"></i><i class="ide-step" data-step="5"></i><i class="ide-step" data-step="6"></i><i class="ide-step" data-step="7"></i><i class="ide-step" data-step="8"></i><i class="ide-step" data-step="9"></i><i class="ide-step" data-step="10"></i><i class="ide-step" data-step="11"></i></div>
+    <div class="ide-steps" aria-hidden="true"><i class="ide-step" data-step="0"></i><i class="ide-step" data-step="1"></i><i class="ide-step" data-step="2"></i><i class="ide-step" data-step="3"></i><i class="ide-step" data-step="4"></i><i class="ide-step" data-step="5"></i><i class="ide-step" data-step="6"></i><i class="ide-step" data-step="7"></i><i class="ide-step" data-step="8"></i><i class="ide-step" data-step="9"></i></div>
   </div>
 </section>
 
@@ -257,7 +250,7 @@ const packages = [
 }
 /* SCROLL-DRIVEN IDE: a tall track holds 12 invisible snap steps; the IDE stage
    pins (sticky) and scrolling snaps step-by-step, each step = one package. */
-.ide-track{position:relative;min-height:calc(12 * 56vh)}
+.ide-track{position:relative;min-height:calc(10 * 56vh)}
 .ide-stage{
   position:sticky;top:var(--topbar-h);z-index:2;
   height:calc(100vh - var(--topbar-h));

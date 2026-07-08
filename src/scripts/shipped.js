@@ -5,12 +5,12 @@
      (a) SITE  — the 3 DEPLOYED accelerators (FEATURED[0..2]) drive the
          browser-frame: /screenshots/<name>.png via a clip-path wipe,
          3 editor-tabs + auto-rotation (all gated by prefers-reduced-motion).
-     (b) LIB   — the other 6 packages have no screenshot; selecting one
+     (b) LIB   — the other 7 packages have no screenshot; selecting one
          hides the browser-frame and renders a faux code-editor card in the
          SAME pane (header "<name>.ts", line-number gutter, short
          syntax-highlighted TS snippet) with an "npm i <name> ↗" CTA.
 
-   EVERY one of the nine tree leaves is clickable (data-idx 0..8). Exactly
+   EVERY one of the ten tree leaves is clickable (data-idx 0..9). Exactly
    one active state is kept across the tab strip + the tree (aria-selected /
    aria-current). Auto-rotation cycles ONLY the 3 accelerators and pauses on
    hover/focus, when document.hidden, when a library is selected, and is
@@ -31,98 +31,79 @@ var PREFERS_REDUCED = window.matchMedia && window.matchMedia('(prefers-reduced-m
    the source stays exactly as authored. */
 var LIB_SNIPPETS = {
   'wicked-signals': {
-    tagline: 'Text in. Intent out.',
+    tagline: 'Text in. Intent out. Classifies and routes every agent signal.',
     repo: 'https://github.com/mikeparcewski/wicked-signals',
-    ext: 'ts', glyph: 'TS', install: 'npm i',
+    ext: 'ts', glyph: 'TS', cta: 'view on github ↗',
     lines: [
-      "// classify any signal. route it. store it.",
+      "// classify any signal. route it. store it. store-first.",
       "import { ingestText } from 'wicked-signals'",
       "const result = await ingestText('Build a dark mode toggle')",
       "// → { signal_id, route_target: 'crew_idd', confidence: 0.87 }"
     ]
   },
-  'wicked-crew': {
-    tagline: 'The session layer your agent teams need.',
-    repo: 'https://github.com/mikeparcewski/wicked-crew',
-    ext: 'js', glyph: 'JS', install: 'npm i',
-    lines: [
-      "// phase-gated sessions. hitl. council. audit trail.",
-      "$ wicked-crew crew launch --type feature \\",
-      "    --problem 'Add OAuth to the API'",
-      "// → { session_id, current_phase: 'clarify', status: 'Open' }"
-    ]
-  },
-  'wicked-studio': {
-    tagline: 'The UI your agent should have.',
-    repo: 'https://github.com/mikeparcewski/wicked-studio',
-    ext: 'rs', glyph: 'RS', install: 'cargo add',
-    lines: [
-      "// desktop hitl shell. tauri. stateful. offline.",
-      "use wicked_studio::HitlStore;",
-      "let mut store = HitlStore::new();",
-      "store.open_session(session_id, prompt)?;"
-    ]
-  },
-  'wicked-brain': {
-    tagline: 'Agents forget everything. This one doesn\'t.',
-    repo: 'https://github.com/mikeparcewski/wicked-brain',
-    ext: 'js', glyph: 'JS', install: 'npm i',
-    lines: [
-      "// agents forget everything. this one doesn't.",
-      "import { brain } from 'wicked-brain'",
-      "await brain.remember(decision)",
-      "const ctx = await brain.recall('why sqlite?')  // cited · ranked · local"
-    ]
-  },
-  'wicked-understanding': {
-    tagline: 'Not what the code does — why it does it.',
-    repo: 'https://github.com/mikeparcewski/wicked-understanding',
-    ext: 'py', glyph: 'PY', install: 'pip install',
-    lines: [
-      "# not what the code does — why it does it.",
-      "from wicked_understanding import why",
-      "rationale = await why('PaymentService')"
-    ]
-  },
-  'wicked-vault': {
-    tagline: 'The diff said it worked. The vault says what actually happened.',
-    repo: 'https://github.com/mikeparcewski/wicked-vault',
-    ext: 'js', glyph: 'JS', install: 'npm i',
-    lines: [
-      "// the diff said it worked. the vault says what happened.",
-      "import { vault } from 'wicked-vault'",
-      "await vault.record(evidence).attest()  // re-derived, never asserted"
-    ]
-  },
   'wicked-testing': {
-    tagline: 'AI tests that actually require proof.',
+    tagline: "A complete QE team for AI coding CLIs that can't self-grade.",
     repo: 'https://github.com/mikeparcewski/wicked-testing',
     ext: 'js', glyph: 'JS', install: 'npm i',
     lines: [
-      "// AI tests that actually require proof.",
+      "// writer runs the tests. reviewer never sees the executor.",
       "import { acceptance } from 'wicked-testing'",
       "const verdict = await acceptance(scenario)  // PASS | FAIL, evidence-gated"
     ]
   },
+  'wicked-studio': {
+    tagline: 'Browser operator console for human-in-the-loop agent sessions.',
+    repo: 'https://github.com/mikeparcewski/wicked-studio',
+    ext: 'tsx', glyph: 'TS', cta: 'ships in wicked-crew ↗',
+    lines: [
+      "// the operator console the wicked-crew daemon serves at localhost.",
+      "// HITL gate approvals · live monitoring · PTY-backed terminal.",
+      "$ wicked-crew daemon   // → http://127.0.0.1:7701",
+      "// approve / reject / modify each gate — an explicit HITL state machine"
+    ]
+  },
+  'wicked-core': {
+    tagline: 'The runtime that makes wicked-estate concurrency-safe.',
+    repo: 'https://github.com/mikeparcewski/wicked-core',
+    ext: 'rs', glyph: 'RS', cta: 'view on github ↗',
+    lines: [
+      "// one thread owns the SQLite file. no consumer races on the DB.",
+      "let core = WickedCore::spawn(config)?;",
+      "let mut events = core.subscribe();  // live CoreEvent stream, not polling",
+      "core.command(Command::Index(repo)).await?;"
+    ]
+  },
+  'wicked-brain': {
+    tagline: "Your AI agent's memory — markdown and SQLite, no vector DB.",
+    repo: 'https://github.com/mikeparcewski/wicked-brain',
+    ext: 'js', glyph: 'JS', install: 'npm i',
+    lines: [
+      "// no embeddings. no vector db. markdown + SQLite FTS5.",
+      "import { brain } from 'wicked-brain'",
+      "await brain.remember(decision)",
+      "const ctx = await brain.recall('why sqlite?')  // cited · [[backlinked]] · local"
+    ]
+  },
   'wicked-bus': {
-    tagline: 'Fire-and-forget. Minus the forgetting.',
+    tagline: 'Local-first SQLite event bus for AI agents and dev tools.',
     repo: 'https://github.com/mikeparcewski/wicked-bus',
     ext: 'js', glyph: 'JS', install: 'npm i',
     lines: [
-      "// fire-and-forget. minus the forgetting.",
+      "// zero-infra. no network. no running server. at-least-once.",
       "import { bus } from 'wicked-bus'",
-      "bus.emit('order.placed', payload)   // at-least-once",
+      "bus.emit('order.placed', payload)   // cursor-poll delivery",
       "bus.subscribe('order.*', handle)"
     ]
   },
-  'wicked-loom': {
-    tagline: 'Teaches the agent what you built before you got here.',
-    repo: 'https://github.com/mikeparcewski/wicked-loom',
-    ext: 'py', glyph: 'PY', install: 'pip install',
+  'wicked-crew': {
+    tagline: 'External daemon that governs multi-phase AI workflows.',
+    repo: 'https://github.com/mikeparcewski/wicked-crew',
+    ext: 'js', glyph: 'JS', install: 'npm i',
     lines: [
-      "# teaches the agent what you built before you got here.",
-      "from wicked_loom import loom",
-      "playbook = await loom.weave(repo)"
+      "// governs the work without owning it. deterministic, deny-dominates gates.",
+      "$ wicked-crew crew launch --type feature \\",
+      "    --problem 'Add OAuth to the API'",
+      "// → { session_id, current_phase: 'clarify', status: 'Open' }"
     ]
   }
 };
@@ -270,7 +251,7 @@ function boot(){
     if(ccGlyph)ccGlyph.textContent=snip.glyph||'TS';
     if(crumbName)crumbName.textContent=libKey;
     if(readoutDesc)readoutDesc.textContent=snip.tagline;
-    if(readoutCta){readoutCta.href=safeUrl(snip.repo);readoutCta.textContent=(snip.install||'npm i')+' '+libKey+' ↗';}
+    if(readoutCta){readoutCta.href=safeUrl(snip.repo);readoutCta.textContent=snip.cta||((snip.install||'npm i')+' '+libKey+' ↗');}
 
     /* render the snippet with a real line-number gutter + syntax spans */
     if(codeBlock){
@@ -381,7 +362,7 @@ function boot(){
       });
     }
 
-    /* EVERY tree leaf (all nine) drives the preview pane — site OR lib.
+    /* EVERY tree leaf (all ten) drives the preview pane — site OR lib.
        Left-click without modifiers updates the in-page preview; the leaf
        keeps its href so cmd/ctrl-click and the keyboard still open the
        real destination in a new tab. */
