@@ -22,7 +22,7 @@ const articles = await getArticles();
 const articlesJson = JSON.stringify(articles).replace(/</g, '\\u003c');
 ---
 
-<Base>
+<Base description="One architect's body of work — ten local-first, AI-native developer tools.">
   <script is:inline set:html={`window.__ARTICLES__=${articlesJson};`}></script>
   <Topbar repo="https://github.com/mikeparcewski" />
   <Hero />
