@@ -1,0 +1,451 @@
+---
+/**
+ * Board.astro — THE OPERABILITY BOARD.
+ *
+ * Replaces the old scroll-driven "shipped." split-editor (deleted) AND the
+ * scroll-gimmick "one toolbox" idea with ONE hands-on analog control panel the
+ * visitor drives entirely by CLICK / KEYBOARD — no scroll involved, no pinned
+ * sticky track, no split-editor reuse.
+ *
+ * The thesis made tactile: a blind, amnesiac, self-grading, isolated agent
+ * becomes OPERABLE one physical switch at a time. Center = a live AGENT VITALS
+ * readout (4 failure lamps + a segmented COVERAGE meter). Around it, three
+ * engraved switch-banks holding the real marketed set as physical toggles:
+ *   BUILD  — garden, interactive
+ *   OPERATE— crew, testing        (testing moved to Operate per wave-3)
+ *   FOUNDATION — estate, bus, brain
+ * plus a master UMBRELLA switch (throws all) and a RESET (throws all off).
+ *
+ * Throwing a switch lights its LED signal-yellow, flips the matching vital from
+ * red-failure to green-capability, and fills the coverage meter. Flip all seven
+ * and the master lamp lights + the readout stamps OPERABLE. Each switch also
+ * deep-links to that product's site/repo. Fully keyboard-operable; under
+ * prefers-reduced-motion the levers snap instead of travelling.
+ *
+ * Surface decision (matches the hero terminal + old editor): the panel is
+ * hardcoded near-black brushed metal (#0d0f12) in BOTH themes — it's a physical
+ * machine, not themed web chrome. The section GROUND still uses theme tokens.
+ *
+ * Behaviour lives in ../scripts/board.js (vanilla, no deps). CSS is is:global so
+ * class names stay queryable by the script.
+ */
+
+const BANKS = [
+  {
+    id: 'build', legend: 'BUILD', sub: 'the build layer',
+    products: [
+      { key: 'garden', name: 'garden', href: 'https://wg.wickedagile.com', link: 'wg.wickedagile.com', vital: null, fix: 're-derives “done” from evidence' },
+      { key: 'interactive', name: 'interactive', href: 'https://wi.wickedagile.com', link: 'wi.wickedagile.com', vital: null, fix: 'say it, watch it build' },
+    ],
+  },
+  {
+    id: 'operate', legend: 'OPERATE', sub: 'run the work',
+    products: [
+      { key: 'crew', name: 'crew', href: 'https://wc.wickedagile.com', link: 'wc.wickedagile.com', vital: null, fix: 'governed phase lifecycle' },
+      { key: 'testing', name: 'testing', href: 'https://wt.wickedagile.com', link: 'wt.wickedagile.com', vital: 'judges', fix: 'can’t grade its own homework' },
+    ],
+  },
+  {
+    id: 'foundation', legend: 'FOUNDATION', sub: 'what it stands on',
+    products: [
+      { key: 'estate', name: 'estate', href: 'https://we.wickedagile.com', link: 'we.wickedagile.com', vital: 'sees', fix: 'queries a typed graph' },
+      { key: 'bus', name: 'bus', href: 'https://github.com/mikeparcewski/wicked-bus', link: 'wicked-bus · repo', vital: 'coordinates', fix: 'at-least-once event bus' },
+      { key: 'brain', name: 'brain', href: 'https://github.com/mikeparcewski/wicked-brain', link: 'wicked-brain · repo', vital: 'remembers', fix: 'markdown + SQLite memory' },
+    ],
+  },
+];
+
+// Left-to-right readout of the four things a raw agent gets wrong.
+const VITALS = [
+  { id: 'sees', name: 'SEES', fail: 'greps files', cure: 'queries a typed graph', by: 'estate' },
+  { id: 'remembers', name: 'REMEMBERS', fail: 'amnesiac', cure: 'markdown + SQLite memory', by: 'brain' },
+  { id: 'judges', name: 'JUDGES', fail: 'self-grades', cure: 'can’t grade its own homework', by: 'testing' },
+  { id: 'coordinates', name: 'COORDINATES', fail: 'isolated', cure: 'at-least-once event bus', by: 'bus' },
+];
+
+const ALL = BANKS.flatMap((b) => b.products); // 7 products drive the coverage meter
+---
+
+<!-- ════════════════════════════════════════════════════════════════
+     THE BOARD — the Operability Board (click / keyboard driven)
+     ════════════════════════════════════════════════════════════════ -->
+<section class="board-section snap-section" id="projects" aria-labelledby="boardHeading">
+  <div class="board-wrap">
+    <div class="board-head">
+      <span class="board-kicker">THE BOARD · ONE MACHINE, MANY TOOLS</span>
+      <h2 class="board-title" id="boardHeading">the board.</h2>
+      <p class="board-lede">Make your agent <span>operable</span>. Throw a switch — watch a red failure turn green.</p>
+    </div>
+
+    <!-- THE PANEL: brushed near-black metal, four corner rivets -->
+    <div class="panel" id="opBoard" data-operable="false">
+      <span class="rivet rivet-tl" aria-hidden="true"></span>
+      <span class="rivet rivet-tr" aria-hidden="true"></span>
+      <span class="rivet rivet-bl" aria-hidden="true"></span>
+      <span class="rivet rivet-br" aria-hidden="true"></span>
+
+      <!-- brand plate + master status lamp -->
+      <div class="panel-brand">
+        <span class="plate-name">OPERABILITY&nbsp;BOARD</span>
+        <span class="plate-model">wicked&#8209;* · rev. 2026</span>
+        <div class="op-status" id="opStatus" aria-live="polite">
+          <span class="op-lamp" aria-hidden="true"></span>
+          <span class="op-word" id="opWord">STANDBY</span>
+        </div>
+      </div>
+
+      <!-- ── AGENT VITALS readout (the payoff cluster) ───────────── -->
+      <div class="readout" aria-label="Agent vitals">
+        <div class="readout-head">
+          <span class="readout-tag">AGENT VITALS</span>
+          <span class="readout-note" id="opLog" aria-live="polite">raw agent — all systems failing</span>
+        </div>
+        <div class="vitals">
+          {VITALS.map((v) => (
+            <div class="vital" data-vital={v.id} data-state="fail">
+              <span class="vital-lamp" aria-hidden="true"></span>
+              <span class="vital-body">
+                <span class="vital-name">{v.name}</span>
+                <span class="vital-state">
+                  <span class="vs-fail">{v.fail}</span>
+                  <span class="vs-cure">{v.cure}</span>
+                </span>
+              </span>
+            </div>
+          ))}
+        </div>
+        <!-- segmented VU-style COVERAGE meter — one segment per product -->
+        <div class="cov">
+          <span class="cov-tag">COVERAGE</span>
+          <div class="cov-bar" role="meter" aria-valuemin="0" aria-valuemax="7" aria-valuenow="0" aria-label="Operability coverage">
+            {ALL.map((p) => (<i class="cov-seg" data-key={p.key}></i>))}
+          </div>
+          <span class="cov-pct" id="covPct">0%</span>
+        </div>
+      </div>
+
+      <!-- ── THREE ENGRAVED SWITCH-BANKS ─────────────────────────── -->
+      <div class="banks">
+        {BANKS.map((bank) => (
+          <div class="bank" data-bank={bank.id}>
+            <div class="bank-legend">
+              <span class="bank-name">{bank.legend}</span>
+              <span class="bank-sub">{bank.sub}</span>
+            </div>
+            <div class="bank-switches">
+              {bank.products.map((p) => (
+                <div class="sw-unit" data-key={p.key}>
+                  <button
+                    class="sw-toggle"
+                    type="button"
+                    role="switch"
+                    aria-checked="false"
+                    data-key={p.key}
+                    data-vital={p.vital || ''}
+                    data-name={p.name}
+                    data-fix={p.fix}
+                    aria-label={`${p.name} — ${p.fix}. Off.`}
+                  >
+                    <span class="sw-well" aria-hidden="true"><span class="sw-bat"></span></span>
+                    <span class="sw-led" aria-hidden="true"></span>
+                  </button>
+                  <div class="sw-meta">
+                    <span class="sw-name">{p.name}</span>
+                    <span class="sw-fix">{p.fix}</span>
+                  </div>
+                  <a class="sw-link" href={p.href} target="_blank" rel="noopener" aria-label={`Open ${p.name}`}>{p.link}<span aria-hidden="true"> ↗</span></a>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <!-- ── MASTER CONTROLS ─────────────────────────────────────── -->
+      <div class="controls">
+        <button class="master-sw" type="button" role="switch" aria-checked="false" id="masterSw" data-role="master">
+          <span class="master-well" aria-hidden="true"><span class="master-bat"></span></span>
+          <span class="master-label"><b>UMBRELLA</b><span>throw all seven</span></span>
+        </button>
+        <button class="reset-sw" type="button" id="resetSw" data-role="reset">RESET · all off</button>
+      </div>
+    </div>
+
+    <p class="board-foot">Seven real products. Flip them all and the board reads <b>OPERABLE</b>. Every switch links to its site or repo.</p>
+  </div>
+</section>
+
+<style is:global>
+/* ══════════════════════════════════════════════════════════════════
+   THE OPERABILITY BOARD — analog mission-control hardware.
+   Family tokens only (palette/type); a distinct tactile LAYOUT. The panel
+   surface is hardcoded near-black brushed metal in BOTH themes (a physical
+   machine), exactly like the hero terminal. Signal-yellow = live, red =
+   failing vital, green = cured.
+   ══════════════════════════════════════════════════════════════════ */
+.board-section{
+  border-top:1px solid var(--hairline);
+  display:flex;flex-direction:column;justify-content:center;
+  padding:clamp(40px,7vh,88px) 0;
+}
+.board-wrap{max-width:1240px;margin:0 auto;padding:0 28px;width:100%}
+.board-head{margin-bottom:clamp(20px,3.4vh,34px)}
+.board-kicker{
+  font-family:var(--font-mono);font-size:.66rem;letter-spacing:.3em;text-transform:uppercase;
+  color:var(--muted);font-weight:500;display:inline-flex;align-items:center;gap:11px
+}
+.board-kicker::before{content:'';width:26px;height:1px;background:var(--accent)}
+.board-title{
+  font-family:var(--font-display);font-weight:900;font-stretch:125%;
+  font-size:clamp(2.2rem,4.4vw,3.6rem);color:var(--ink);
+  line-height:.92;letter-spacing:-.03em;margin:12px 0 0
+}
+.board-lede{
+  font-family:var(--font-mono);font-size:.82rem;color:var(--muted);
+  margin:14px 0 0;line-height:1.6;max-width:56ch
+}
+.board-lede span{color:var(--accent);font-weight:700}
+
+/* ── THE PANEL ─────────────────────────────────────────────────── */
+.panel{
+  position:relative;
+  border-radius:16px;
+  padding:clamp(20px,2.6vw,34px);
+  /* brushed near-black metal — subtle vertical grain + top sheen */
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,0) 90px),
+    repeating-linear-gradient(90deg, rgba(255,255,255,.014) 0 2px, rgba(0,0,0,0) 2px 4px),
+    #0d0f12;
+  box-shadow:
+    0 40px 90px rgba(0,0,0,.62),
+    0 0 0 1px rgba(255,255,255,.07),
+    inset 0 1px 0 rgba(255,255,255,.06),
+    inset 0 -2px 6px rgba(0,0,0,.55);
+  display:grid;gap:clamp(16px,2vw,26px);
+  grid-template-columns:1fr;
+}
+/* corner rivets / screw-heads */
+.rivet{
+  position:absolute;width:13px;height:13px;border-radius:50%;
+  background:radial-gradient(circle at 38% 32%, #3a3f46, #14171b 68%, #0a0c0f);
+  box-shadow:inset 0 1px 1px rgba(255,255,255,.25), inset 0 -1px 2px rgba(0,0,0,.7), 0 1px 2px rgba(0,0,0,.6);
+}
+.rivet::after{content:'';position:absolute;inset:4px;border-top:1px solid rgba(255,255,255,.14);transform:rotate(24deg)}
+.rivet-tl{top:12px;left:12px}.rivet-tr{top:12px;right:12px}
+.rivet-bl{bottom:12px;left:12px}.rivet-br{bottom:12px;right:12px}
+
+/* brand plate row */
+.panel-brand{
+  display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+  padding:2px 6px 14px;border-bottom:1px solid rgba(255,255,255,.08)
+}
+.plate-name{
+  font-family:var(--font-mono);font-weight:700;font-size:.82rem;letter-spacing:.24em;
+  color:#c9d1d9;text-shadow:0 1px 0 rgba(0,0,0,.8), 0 -1px 0 rgba(255,255,255,.05)
+}
+.plate-model{font-family:var(--font-mono);font-size:.6rem;letter-spacing:.16em;color:rgba(255,255,255,.32)}
+.op-status{
+  margin-left:auto;display:inline-flex;align-items:center;gap:9px;
+  padding:6px 13px;border-radius:8px;
+  background:rgba(0,0,0,.4);box-shadow:inset 0 0 0 1px rgba(255,255,255,.07), inset 0 2px 6px rgba(0,0,0,.6)
+}
+.op-lamp{
+  width:12px;height:12px;border-radius:50%;flex-shrink:0;
+  background:#3a1114;box-shadow:inset 0 0 3px rgba(0,0,0,.9), 0 0 0 1px rgba(0,0,0,.5);
+  transition:background .3s var(--ease), box-shadow .3s var(--ease)
+}
+.op-word{font-family:var(--font-mono);font-weight:700;font-size:.66rem;letter-spacing:.2em;color:rgba(255,255,255,.5);transition:color .3s var(--ease)}
+.panel[data-operable="true"] .op-lamp{background:#3fb950;box-shadow:0 0 10px 2px rgba(63,185,80,.7), inset 0 0 3px rgba(255,255,255,.5)}
+.panel[data-operable="true"] .op-word{color:#7ee787}
+
+/* ── AGENT VITALS readout ──────────────────────────────────────── */
+.readout{
+  border-radius:12px;padding:clamp(14px,1.8vw,20px);
+  background:linear-gradient(180deg,#070a0d,#0b0f13);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.06), inset 0 6px 20px rgba(0,0,0,.6)
+}
+.readout-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:14px}
+.readout-tag{font-family:var(--font-mono);font-weight:700;font-size:.62rem;letter-spacing:.26em;color:rgba(255,255,255,.44)}
+.readout-note{font-family:var(--font-mono);font-size:.62rem;letter-spacing:.04em;color:var(--accent);text-align:right;min-width:0}
+.vitals{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.vital{
+  display:flex;align-items:flex-start;gap:10px;
+  padding:12px 12px;border-radius:9px;
+  background:rgba(255,255,255,.015);box-shadow:inset 0 0 0 1px rgba(255,255,255,.05);
+  transition:box-shadow .3s var(--ease), background .3s var(--ease)
+}
+.vital-lamp{
+  width:11px;height:11px;border-radius:50%;flex-shrink:0;margin-top:3px;
+  background:#f0413f;
+  box-shadow:0 0 8px 1px rgba(240,65,63,.6), inset 0 0 2px rgba(255,255,255,.5);
+  animation:vitalPulse 1.5s ease-in-out infinite;
+  transition:background .3s var(--ease), box-shadow .3s var(--ease)
+}
+@keyframes vitalPulse{0%,100%{opacity:1}50%{opacity:.55}}
+.vital-body{display:flex;flex-direction:column;gap:3px;min-width:0}
+.vital-name{font-family:var(--font-mono);font-weight:700;font-size:.66rem;letter-spacing:.14em;color:#e6edf3}
+.vital-state{position:relative;font-family:var(--font-mono);font-size:.6rem;line-height:1.35}
+.vs-fail{color:#f0908e}
+.vs-cure{color:#7ee787;display:none}
+.vital[data-state="ok"] .vs-fail{display:none}
+.vital[data-state="ok"] .vs-cure{display:inline}
+.vital[data-state="ok"]{background:rgba(63,185,80,.05);box-shadow:inset 0 0 0 1px rgba(63,185,80,.22)}
+.vital[data-state="ok"] .vital-lamp{
+  background:#3fb950;box-shadow:0 0 9px 1px rgba(63,185,80,.65), inset 0 0 2px rgba(255,255,255,.5);
+  animation:none
+}
+
+/* segmented coverage meter */
+.cov{display:flex;align-items:center;gap:12px;margin-top:16px}
+.cov-tag{font-family:var(--font-mono);font-weight:700;font-size:.58rem;letter-spacing:.22em;color:rgba(255,255,255,.4);flex-shrink:0}
+.cov-bar{flex:1;display:flex;gap:5px;min-width:0}
+.cov-seg{
+  flex:1;height:16px;border-radius:3px;
+  background:rgba(255,255,255,.05);box-shadow:inset 0 0 0 1px rgba(255,255,255,.06), inset 0 1px 2px rgba(0,0,0,.5);
+  transition:background .25s var(--ease), box-shadow .25s var(--ease)
+}
+.cov-seg.is-lit{
+  background:var(--accent);
+  box-shadow:0 0 8px 1px rgba(255,218,25,.55), inset 0 0 2px rgba(255,255,255,.4)
+}
+.panel[data-operable="true"] .cov-seg.is-lit{
+  background:#3fb950;box-shadow:0 0 9px 1px rgba(63,185,80,.6), inset 0 0 2px rgba(255,255,255,.4)
+}
+.cov-pct{font-family:var(--font-mono);font-weight:700;font-size:.74rem;color:#e6edf3;flex-shrink:0;font-variant-numeric:tabular-nums;min-width:3.2ch;text-align:right}
+
+/* ── SWITCH BANKS ──────────────────────────────────────────────── */
+.banks{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(12px,1.4vw,18px)}
+.bank{
+  border-radius:11px;padding:14px 14px 16px;
+  background:linear-gradient(180deg, rgba(255,255,255,.028), rgba(255,255,255,0));
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.06), inset 0 3px 10px rgba(0,0,0,.4)
+}
+.bank-legend{
+  display:flex;align-items:baseline;gap:9px;flex-wrap:wrap;
+  padding-bottom:12px;margin-bottom:12px;border-bottom:1px solid rgba(255,255,255,.07)
+}
+/* engraved legend — inset text feel via twin shadows */
+.bank-name{font-family:var(--font-mono);font-weight:700;font-size:.72rem;letter-spacing:.2em;color:#aeb6bf;text-shadow:0 1px 0 rgba(0,0,0,.85), 0 -1px 0 rgba(255,255,255,.05)}
+.bank-sub{font-family:var(--font-mono);font-size:.56rem;letter-spacing:.06em;color:rgba(255,255,255,.32)}
+.bank-switches{display:flex;flex-direction:column;gap:8px}
+
+.sw-unit{
+  display:grid;grid-template-columns:auto 1fr;grid-template-rows:auto auto;
+  column-gap:12px;align-items:center;
+  padding:9px 10px;border-radius:8px;
+  background:rgba(0,0,0,.28);box-shadow:inset 0 0 0 1px rgba(255,255,255,.05)
+}
+/* the physical toggle: a metal well + a bat that travels + a glass LED */
+.sw-toggle{
+  grid-row:1 / span 2;
+  appearance:none;border:none;cursor:pointer;padding:0;background:transparent;
+  display:inline-flex;align-items:center;gap:9px
+}
+.sw-well{
+  position:relative;width:30px;height:46px;border-radius:8px;flex-shrink:0;
+  background:linear-gradient(180deg,#05070a,#0e1216);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.09), inset 0 3px 7px rgba(0,0,0,.75), inset 0 -3px 7px rgba(0,0,0,.6)
+}
+.sw-bat{
+  position:absolute;left:50%;transform:translateX(-50%);
+  bottom:3px;width:22px;height:22px;border-radius:6px;
+  background:linear-gradient(180deg,#5b636d,#20252b 62%,#0e1013);
+  box-shadow:0 -2px 4px rgba(0,0,0,.5), inset 0 2px 2px rgba(255,255,255,.28), inset 0 -3px 4px rgba(0,0,0,.7);
+  transition:bottom .16s cubic-bezier(.2,.9,.3,1.4), background .16s var(--ease)
+}
+.sw-toggle[aria-checked="true"] .sw-bat{
+  bottom:21px;
+  background:linear-gradient(180deg,#ffe873,#ffcf1a 60%,#c99a05)
+}
+.sw-led{
+  width:9px;height:9px;border-radius:50%;flex-shrink:0;
+  background:#2a2f36;box-shadow:inset 0 0 2px rgba(0,0,0,.9), 0 0 0 1px rgba(0,0,0,.5);
+  transition:background .18s var(--ease), box-shadow .18s var(--ease)
+}
+.sw-toggle[aria-checked="true"] .sw-led{
+  background:var(--accent);box-shadow:0 0 9px 2px rgba(255,218,25,.75), inset 0 0 2px rgba(255,255,255,.6)
+}
+.sw-toggle:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:6px}
+.sw-meta{grid-column:2;grid-row:1;display:flex;flex-direction:column;gap:1px;min-width:0}
+.sw-name{font-family:var(--font-mono);font-weight:700;font-size:.78rem;color:#e6edf3;letter-spacing:.01em}
+.sw-toggle[aria-checked="true"] ~ .sw-meta .sw-name{color:var(--accent)}
+.sw-fix{font-family:var(--font-mono);font-size:.58rem;color:#8a98a6;line-height:1.35;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sw-link{
+  grid-column:2;grid-row:2;justify-self:start;margin-top:3px;
+  font-family:var(--font-mono);font-size:.55rem;letter-spacing:.04em;
+  color:rgba(121,192,255,.72);text-decoration:none;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%
+}
+.sw-link:hover{color:#79c0ff;text-decoration:underline}
+.sw-link:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:2px}
+
+/* ── MASTER CONTROLS ───────────────────────────────────────────── */
+.controls{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.master-sw{
+  appearance:none;cursor:pointer;border:none;
+  display:inline-flex;align-items:center;gap:13px;
+  padding:11px 18px 11px 13px;border-radius:11px;
+  background:linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.01));
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.1), inset 0 2px 6px rgba(0,0,0,.45), 0 2px 6px rgba(0,0,0,.4);
+  transition:box-shadow .2s var(--ease)
+}
+.master-sw:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.master-well{
+  position:relative;width:52px;height:26px;border-radius:999px;flex-shrink:0;
+  background:linear-gradient(180deg,#05070a,#0e1216);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.1), inset 0 2px 5px rgba(0,0,0,.75)
+}
+.master-bat{
+  position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;
+  background:linear-gradient(180deg,#5b636d,#20252b);
+  box-shadow:inset 0 2px 2px rgba(255,255,255,.28), inset 0 -2px 3px rgba(0,0,0,.7), 0 1px 2px rgba(0,0,0,.5);
+  transition:left .18s cubic-bezier(.2,.9,.3,1.4), background .18s var(--ease)
+}
+.master-sw[aria-checked="true"] .master-bat{left:29px;background:linear-gradient(180deg,#7ee787,#3fb950)}
+.master-sw[aria-checked="true"] .master-well{box-shadow:inset 0 0 0 1px rgba(63,185,80,.5), inset 0 2px 5px rgba(0,0,0,.6), 0 0 12px rgba(63,185,80,.3)}
+.master-label{display:flex;flex-direction:column;gap:1px;text-align:left}
+.master-label b{font-family:var(--font-mono);font-weight:700;font-size:.72rem;letter-spacing:.16em;color:#e6edf3}
+.master-label span{font-family:var(--font-mono);font-size:.56rem;letter-spacing:.06em;color:rgba(255,255,255,.4)}
+.reset-sw{
+  appearance:none;cursor:pointer;
+  font-family:var(--font-mono);font-weight:700;font-size:.62rem;letter-spacing:.14em;
+  color:rgba(255,255,255,.6);
+  padding:11px 16px;border-radius:9px;
+  background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.1);
+  transition:color .18s var(--ease), border-color .18s var(--ease)
+}
+.reset-sw:hover{color:#f0908e;border-color:rgba(240,65,63,.4)}
+.reset-sw:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+
+.board-foot{
+  font-family:var(--font-mono);font-size:.66rem;color:var(--muted);
+  margin:clamp(16px,2.4vh,26px) 0 0;line-height:1.6;max-width:64ch
+}
+.board-foot b{color:var(--ink)}
+
+/* ── RESPONSIVE ────────────────────────────────────────────────── */
+@media(max-width:900px){
+  .vitals{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .banks{grid-template-columns:1fr}
+}
+@media(max-width:600px){
+  .board-section{min-height:auto}
+  .board-wrap{padding-left:20px;padding-right:20px}
+  .panel{padding:22px 16px}
+  .readout-head{flex-direction:column;gap:4px;align-items:flex-start}
+  .readout-note{text-align:left}
+  .vitals{grid-template-columns:1fr}
+  .cov{flex-wrap:wrap}
+  .sw-fix{white-space:normal}
+}
+
+/* ── REDUCED MOTION — levers SNAP instead of travelling ────────── */
+@media(prefers-reduced-motion:reduce){
+  .sw-bat,.master-bat,.sw-led,.cov-seg,.vital-lamp,.op-lamp,.op-word{transition:none!important}
+  .vital-lamp{animation:none!important}
+}
+</style>
+
+<script>
+import '../scripts/board.js';
+</script>

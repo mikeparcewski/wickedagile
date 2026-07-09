@@ -2,7 +2,7 @@
 /**
  * index.astro — the wickedagile.com landing page.
  * Composes the canonical chrome (Topbar, Footer), the hero terminal, the
- * articles dispatch feed, the shipped split-editor, and the about chapters.
+ * articles dispatch feed, the Operability Board, and the about chapters.
  * Articles are fetched at BUILD TIME and baked in (no client-side RSS).
  */
 import Base from 'wicked-web/layouts/Base.astro';
@@ -10,7 +10,7 @@ import '../styles/global.css';
 import Topbar from 'wicked-web/components/Topbar.astro';
 import Hero from '../components/Hero.astro';
 import Articles from '../components/Articles.astro';
-import Shipped from '../components/Shipped.astro';
+import Board from '../components/Board.astro';
 import About from '../components/About.astro';
 import SameGarden from 'wicked-web/components/SameGarden.astro';
 import Footer from 'wicked-web/components/Footer.astro';
@@ -22,12 +22,12 @@ const articles = await getArticles();
 const articlesJson = JSON.stringify(articles).replace(/</g, '\\u003c');
 ---
 
-<Base description="One architect's body of work — ten local-first, AI-native developer tools.">
+<Base description="One architect's body of work — seven local-first, AI-native tools that make your coding agent operable.">
   <script is:inline set:html={`window.__ARTICLES__=${articlesJson};`}></script>
   <Topbar repo="https://github.com/mikeparcewski" />
   <Hero />
   <Articles articles={articles} />
-  <Shipped />
+  <Board />
   <About />
   <SameGarden current="wickedagile" />
   <Footer repo="https://github.com/mikeparcewski" />
