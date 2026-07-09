@@ -1,80 +1,131 @@
 ---
 /**
- * Board.astro — THE OPERABILITY BOARD.
+ * Board.astro — THE OPERABILITY BOARD (living panel edition).
  *
- * Replaces the old scroll-driven "shipped." split-editor (deleted) AND the
- * scroll-gimmick "one toolbox" idea with ONE hands-on analog control panel the
- * visitor drives entirely by CLICK / KEYBOARD — no scroll involved, no pinned
- * sticky track, no split-editor reuse.
+ * A self-running mission-control panel. It AUTO-CYCLES on its own — an ambient
+ * animation that keeps toggling product switches, curing/relapsing the four
+ * Agent Vitals red↔green and filling a segmented COVERAGE meter. No visitor
+ * input drives the animation (the old UMBRELLA master + RESET are gone).
  *
- * The thesis made tactile: a blind, amnesiac, self-grading, isolated agent
- * becomes OPERABLE one physical switch at a time. Center = a live AGENT VITALS
- * readout (4 failure lamps + a segmented COVERAGE meter). Around it, three
- * engraved switch-banks holding the real marketed set as physical toggles:
- *   BUILD  — garden, interactive
- *   OPERATE— crew, testing        (testing moved to Operate per wave-3)
- *   FOUNDATION — estate, bus, brain
- * plus a master UMBRELLA switch (throws all) and a RESET (throws all off).
+ * The visitor's ONE job: each of the seven product tiles is a CLICKABLE button
+ * that opens a modal with a distinct, on-brand, product-specific design and a
+ * link to that product's site (garden/interactive/crew/testing/estate) or its
+ * GitHub repo (bus/brain). Canonical one-liners/blurbs from CANONICAL-MESSAGING.
  *
- * Throwing a switch lights its LED signal-yellow, flips the matching vital from
- * red-failure to green-capability, and fills the coverage meter. Flip all seven
- * and the master lamp lights + the readout stamps OPERABLE. Each switch also
- * deep-links to that product's site/repo. Fully keyboard-operable; under
- * prefers-reduced-motion the levers snap instead of travelling.
- *
- * Surface decision (matches the hero terminal + old editor): the panel is
- * hardcoded near-black brushed metal (#0d0f12) in BOTH themes — it's a physical
- * machine, not themed web chrome. The section GROUND still uses theme tokens.
- *
- * Behaviour lives in ../scripts/board.js (vanilla, no deps). CSS is is:global so
- * class names stay queryable by the script.
+ * Surface: the panel is hardcoded near-black brushed metal (#0d0f12) in BOTH
+ * themes — a physical machine, not themed web chrome (matches the hero
+ * terminal). The section GROUND uses theme tokens. Signal-yellow = live,
+ * red = failing vital, green = cured. Sizes to content; fits a 1440px viewport
+ * with no horizontal overflow. Under prefers-reduced-motion the panel settles
+ * OPERABLE and stops cycling. Behaviour: ../scripts/board.js. CSS is is:global.
  */
 
-const BANKS = [
+// Each product tile carries everything the tile AND its modal need.
+const PRODUCTS = [
   {
-    id: 'build', legend: 'BUILD', sub: 'the build layer',
-    products: [
-      { key: 'garden', name: 'garden', href: 'https://wg.wickedagile.com', link: 'wg.wickedagile.com', vital: null, fix: 're-derives “done” from evidence' },
-      { key: 'interactive', name: 'interactive', href: 'https://wi.wickedagile.com', link: 'wi.wickedagile.com', vital: null, fix: 'say it, watch it build' },
-    ],
+    key: 'garden', name: 'garden', full: 'wicked-garden',
+    group: 'BUILD', meta: 'v12 · npm', vital: null,
+    fix: 're-derives “done” from evidence',
+    one: 'Curated toolkit for what coding agents can’t do alone.',
+    blurb: 'Fills only the gaps a planner-executor can’t fill alone — and refuses to wrestle your harness for everything else.',
+    feats: ['Evidence-gated prove — done is re-derived, never asserted', 'Injected-edge graph grep can’t see', 'A real multi-model council, not self-review'],
+    diff: 'A false “tests pass” is REJECTED — the gate re-runs the recorded evidence instead of trusting the claim.',
+    href: 'https://wg.wickedagile.com', link: 'wg.wickedagile.com',
+    scene: '<div class="sc sc-garden"><i></i><i></i><i class="sp"></i><i></i><i class="sp"></i><i></i><i></i><i class="sp"></i></div>',
   },
   {
-    id: 'operate', legend: 'OPERATE', sub: 'run the work',
-    products: [
-      { key: 'crew', name: 'crew', href: 'https://wc.wickedagile.com', link: 'wc.wickedagile.com', vital: null, fix: 'governed phase lifecycle' },
-      { key: 'testing', name: 'testing', href: 'https://wt.wickedagile.com', link: 'wt.wickedagile.com', vital: 'judges', fix: 'can’t grade its own homework' },
-    ],
+    key: 'interactive', name: 'interactive', full: 'wicked-interactive',
+    group: 'BUILD', meta: 'v0.5 · plugin', vital: null,
+    fix: 'say it, watch it build',
+    one: 'Describe it, watch it build in your browser, ship it.',
+    blurb: 'Describe a deck, doc, or landing page in plain language and a live themed draft renders instantly. Highlight a block, say the change — only that block reworks.',
+    feats: ['Point-and-say block-level editing', 'Live in-browser first draft — no blank page', 'Export to HTML · PDF · PPTX · video'],
+    diff: 'Proof by layout, not by claim — everything you didn’t touch stays exactly as it was.',
+    href: 'https://wi.wickedagile.com', link: 'wi.wickedagile.com',
+    scene: '<div class="sc sc-int"><span class="bar"></span><span class="bar sel">this block<b class="caret"></b></span><span class="bar"></span></div>',
   },
   {
-    id: 'foundation', legend: 'FOUNDATION', sub: 'what it stands on',
-    products: [
-      { key: 'estate', name: 'estate', href: 'https://we.wickedagile.com', link: 'we.wickedagile.com', vital: 'sees', fix: 'queries a typed graph' },
-      { key: 'bus', name: 'bus', href: 'https://github.com/mikeparcewski/wicked-bus', link: 'wicked-bus · repo', vital: 'coordinates', fix: 'at-least-once event bus' },
-      { key: 'brain', name: 'brain', href: 'https://github.com/mikeparcewski/wicked-brain', link: 'wicked-brain · repo', vital: 'remembers', fix: 'markdown + SQLite memory' },
-    ],
+    key: 'crew', name: 'crew', full: 'wicked-crew',
+    group: 'OPERATE', meta: 'v0.2 · npm', vital: null,
+    fix: 'governed phase lifecycle',
+    one: 'External daemon that governs multi-phase AI development workflows.',
+    blurb: 'A standalone daemon that runs above your agents — owning the phase lifecycle clarify → design → test → build → ship — and never writing code itself.',
+    feats: ['Deterministic deny-dominates gates (no LLM on the gate path)', 'SQLite checkpointing — crash the daemon and resume', 'Council: fan one prompt to N CLIs, synthesize'],
+    diff: 'It owns the workflow structure without owning the work — stateless AI CLIs are the workers.',
+    href: 'https://wc.wickedagile.com', link: 'wc.wickedagile.com',
+    scene: '<div class="sc sc-crew"><span class="ph">clarify</span><span class="ph">design</span><span class="ph gate">gate ◆</span><span class="ph">build</span><span class="ph on">ship</span></div>',
+  },
+  {
+    key: 'testing', name: 'testing', full: 'wicked-testing',
+    group: 'OPERATE', meta: 'v0.7 · npm', vital: 'judges',
+    fix: 'can’t grade its own homework',
+    one: 'A complete QE team for AI coding CLIs that can’t self-grade.',
+    blurb: 'A full QE team from planning through judgment, with enforced separation between the agent that runs tests and the agent that grades them.',
+    feats: ['3-agent pipeline: Writer → Executor → Reviewer', '40 agents across 5 orchestrator skills', 'Cold-evidence reviewer isolation'],
+    diff: 'The reviewer reads cold evidence files only — never the executor’s context. That kills the self-grading that inflates AI PASS rates.',
+    href: 'https://wt.wickedagile.com', link: 'wt.wickedagile.com',
+    scene: '<div class="sc sc-test"><span class="lane">W</span><span class="lane">E</span><span class="wall"></span><span class="lane rev">R ✓</span></div>',
+  },
+  {
+    key: 'estate', name: 'estate', full: 'wicked-estate',
+    group: 'FOUNDATION', meta: 'v0.13 · crates.io', vital: 'sees',
+    fix: 'queries a typed graph',
+    one: 'The code graph agents actually trust.',
+    blurb: 'Turns any repo into one queryable, typed, ranked graph an agent can use — definitions, who-calls-X, blast-radius, scoped context — instead of grepping and re-reading files.',
+    feats: ['100+ wired languages', 'Precise blast-radius, not text matches', 'SQLite by default · PostgreSQL for a team graph'],
+    diff: 'Every edge carries confidence + provenance — an agent is never handed a heuristic as a fact.',
+    href: 'https://we.wickedagile.com', link: 'we.wickedagile.com',
+    scene: '<div class="sc sc-estate"><svg viewBox="0 0 220 96" preserveAspectRatio="xMidYMid meet" aria-hidden="true"><line x1="40" y1="30" x2="105" y2="20"/><line x1="105" y1="20" x2="170" y2="34"/><line x1="40" y1="30" x2="72" y2="72"/><line x1="72" y1="72" x2="150" y2="70"/><line x1="105" y1="20" x2="72" y2="72"/><circle cx="40" cy="30" r="8"/><circle cx="105" cy="20" r="10" class="hub"/><circle cx="170" cy="34" r="8"/><circle cx="72" cy="72" r="8"/><circle cx="150" cy="70" r="8"/><text x="118" y="16">0.94</text></svg></div>',
+  },
+  {
+    key: 'bus', name: 'bus', full: 'wicked-bus',
+    group: 'FOUNDATION', meta: 'v2.2 · npm', vital: 'coordinates',
+    fix: 'at-least-once event bus',
+    one: 'Local-first SQLite event bus for AI agents and dev tools.',
+    blurb: 'A zero-infrastructure event bus: SQLite-backed, poll-based, at-least-once — no servers, no network, events never leave your machine.',
+    feats: ['At-least-once, cursor-poll delivery', 'wicked.<noun>.<verb> event naming', 'Two-timer TTL for dedup + expiry'],
+    diff: 'An event substrate entirely on local SQLite — no network transport and no running server.',
+    href: 'https://github.com/mikeparcewski/wicked-bus', link: 'github · wicked-bus',
+    scene: '<div class="sc sc-bus"><span class="track"></span><i class="ev"></i><i class="ev"></i><i class="ev"></i><i class="ev"></i></div>',
+  },
+  {
+    key: 'brain', name: 'brain', full: 'wicked-brain',
+    group: 'FOUNDATION', meta: 'v0.17 · npm', vital: 'remembers',
+    fix: 'markdown + SQLite memory',
+    one: 'Your AI agent’s memory — markdown and SQLite, no vector DB.',
+    blurb: 'Persistent, searchable agent memory on plain markdown and SQLite — no embeddings, no vector database, no infrastructure.',
+    feats: ['SQLite FTS5 + markdown files on disk', 'Wiki articles with confidence-scored [[backlinks]]', 'Every answer cites a file you can open'],
+    diff: 'A RAG alternative where knowledge is human-readable and every claim traces to a source — the agent, not a vector index, reasons.',
+    href: 'https://github.com/mikeparcewski/wicked-brain', link: 'github · wicked-brain',
+    scene: '<div class="sc sc-brain"><span class="doc"></span><span class="lk">[[ ]]</span><span class="doc"></span><span class="lk">[[ ]]</span><span class="doc"></span></div>',
   },
 ];
+
+const BANKS = [
+  { id: 'build', legend: 'BUILD', sub: 'make the thing' },
+  { id: 'operate', legend: 'OPERATE', sub: 'run the work' },
+  { id: 'foundation', legend: 'FOUNDATION', sub: 'what it stands on' },
+];
+const byGroup = (g) => PRODUCTS.filter((p) => p.group === g);
 
 // Left-to-right readout of the four things a raw agent gets wrong.
 const VITALS = [
-  { id: 'sees', name: 'SEES', fail: 'greps files', cure: 'queries a typed graph', by: 'estate' },
-  { id: 'remembers', name: 'REMEMBERS', fail: 'amnesiac', cure: 'markdown + SQLite memory', by: 'brain' },
-  { id: 'judges', name: 'JUDGES', fail: 'self-grades', cure: 'can’t grade its own homework', by: 'testing' },
-  { id: 'coordinates', name: 'COORDINATES', fail: 'isolated', cure: 'at-least-once event bus', by: 'bus' },
+  { id: 'sees', name: 'SEES', fail: 'greps files', cure: 'queries a typed graph' },
+  { id: 'remembers', name: 'REMEMBERS', fail: 'amnesiac', cure: 'markdown + SQLite memory' },
+  { id: 'judges', name: 'JUDGES', fail: 'self-grades', cure: 'reviewer runs blind' },
+  { id: 'coordinates', name: 'COORDINATES', fail: 'isolated', cure: 'at-least-once bus' },
 ];
-
-const ALL = BANKS.flatMap((b) => b.products); // 7 products drive the coverage meter
 ---
 
 <!-- ════════════════════════════════════════════════════════════════
-     THE BOARD — the Operability Board (click / keyboard driven)
+     THE BOARD — a living, self-cycling operability panel
      ════════════════════════════════════════════════════════════════ -->
 <section class="board-section snap-section" id="projects" aria-labelledby="boardHeading">
   <div class="board-wrap">
     <div class="board-head">
       <span class="board-kicker">THE BOARD · ONE MACHINE, MANY TOOLS</span>
       <h2 class="board-title" id="boardHeading">the board.</h2>
-      <p class="board-lede">Make your agent <span>operable</span>. Throw a switch — watch a red failure turn green.</p>
+      <p class="board-lede">A raw agent runs blind, amnesiac, self-grading and alone. Watch the panel cure it in real time — then <span>tap any product</span> to see how.</p>
     </div>
 
     <!-- THE PANEL: brushed near-black metal, four corner rivets -->
@@ -87,23 +138,23 @@ const ALL = BANKS.flatMap((b) => b.products); // 7 products drive the coverage m
       <!-- brand plate + master status lamp -->
       <div class="panel-brand">
         <span class="plate-name">OPERABILITY&nbsp;BOARD</span>
-        <span class="plate-model">wicked&#8209;* · rev. 2026</span>
-        <div class="op-status" id="opStatus" aria-live="polite">
+        <span class="plate-model">wicked&#8209;* · rev. 2026 · self-test running</span>
+        <div class="op-status" id="opStatus">
           <span class="op-lamp" aria-hidden="true"></span>
           <span class="op-word" id="opWord">STANDBY</span>
         </div>
       </div>
 
-      <!-- ── AGENT VITALS readout (the payoff cluster) ───────────── -->
-      <div class="readout" aria-label="Agent vitals">
+      <!-- ── AGENT VITALS readout (auto-cycling payoff cluster) ───── -->
+      <div class="readout" aria-hidden="true">
         <div class="readout-head">
           <span class="readout-tag">AGENT VITALS</span>
-          <span class="readout-note" id="opLog" aria-live="polite">raw agent — all systems failing</span>
+          <span class="readout-note" id="opLog">raw agent — all systems failing</span>
         </div>
         <div class="vitals">
           {VITALS.map((v) => (
             <div class="vital" data-vital={v.id} data-state="fail">
-              <span class="vital-lamp" aria-hidden="true"></span>
+              <span class="vital-lamp"></span>
               <span class="vital-body">
                 <span class="vital-name">{v.name}</span>
                 <span class="vital-state">
@@ -114,17 +165,16 @@ const ALL = BANKS.flatMap((b) => b.products); // 7 products drive the coverage m
             </div>
           ))}
         </div>
-        <!-- segmented VU-style COVERAGE meter — one segment per product -->
         <div class="cov">
           <span class="cov-tag">COVERAGE</span>
-          <div class="cov-bar" role="meter" aria-valuemin="0" aria-valuemax="7" aria-valuenow="0" aria-label="Operability coverage">
-            {ALL.map((p) => (<i class="cov-seg" data-key={p.key}></i>))}
+          <div class="cov-bar">
+            {PRODUCTS.map((p) => (<i class="cov-seg" data-key={p.key}></i>))}
           </div>
           <span class="cov-pct" id="covPct">0%</span>
         </div>
       </div>
 
-      <!-- ── THREE ENGRAVED SWITCH-BANKS ─────────────────────────── -->
+      <!-- ── THREE BANKS OF CLICKABLE PRODUCT TILES ──────────────── -->
       <div class="banks">
         {BANKS.map((bank) => (
           <div class="bank" data-bank={bank.id}>
@@ -132,64 +182,69 @@ const ALL = BANKS.flatMap((b) => b.products); // 7 products drive the coverage m
               <span class="bank-name">{bank.legend}</span>
               <span class="bank-sub">{bank.sub}</span>
             </div>
-            <div class="bank-switches">
-              {bank.products.map((p) => (
-                <div class="sw-unit" data-key={p.key}>
-                  <button
-                    class="sw-toggle"
-                    type="button"
-                    role="switch"
-                    aria-checked="false"
-                    data-key={p.key}
-                    data-vital={p.vital || ''}
-                    data-name={p.name}
-                    data-fix={p.fix}
-                    aria-label={`${p.name} — ${p.fix}. Off.`}
-                  >
-                    <span class="sw-well" aria-hidden="true"><span class="sw-bat"></span></span>
-                    <span class="sw-led" aria-hidden="true"></span>
-                  </button>
-                  <div class="sw-meta">
-                    <span class="sw-name">{p.name}</span>
-                    <span class="sw-fix">{p.fix}</span>
-                  </div>
-                  <a class="sw-link" href={p.href} target="_blank" rel="noopener" aria-label={`Open ${p.name}`}>{p.link}<span aria-hidden="true"> ↗</span></a>
-                </div>
+            <div class="bank-tiles">
+              {byGroup(bank.legend).map((p) => (
+                <button
+                  class={`tile m-${p.key}`}
+                  type="button"
+                  data-key={p.key}
+                  aria-haspopup="dialog"
+                  aria-label={`${p.name} — ${p.fix}. Open details.`}
+                >
+                  <span class="tile-led" aria-hidden="true"></span>
+                  <span class="tile-txt">
+                    <span class="tile-name">{p.name}</span>
+                    <span class="tile-fix">{p.fix}</span>
+                  </span>
+                  <span class="tile-more" aria-hidden="true">details&nbsp;↗</span>
+                </button>
               ))}
             </div>
           </div>
         ))}
       </div>
-
-      <!-- ── MASTER CONTROLS ─────────────────────────────────────── -->
-      <div class="controls">
-        <button class="master-sw" type="button" role="switch" aria-checked="false" id="masterSw" data-role="master">
-          <span class="master-well" aria-hidden="true"><span class="master-bat"></span></span>
-          <span class="master-label"><b>UMBRELLA</b><span>throw all seven</span></span>
-        </button>
-        <button class="reset-sw" type="button" id="resetSw" data-role="reset">RESET · all off</button>
-      </div>
     </div>
 
-    <p class="board-foot">Seven real products. Flip them all and the board reads <b>OPERABLE</b>. Every switch links to its site or repo.</p>
+    <p class="board-foot">Seven real products, cycling live. Tap one to read what it does and open its site.</p>
+  </div>
+
+  <!-- ── MODAL OVERLAY (one card per product, distinct per product) ── -->
+  <div class="modal-overlay" id="modalOverlay" hidden>
+    <div class="modal-scrim" data-close></div>
+    {PRODUCTS.map((p) => (
+      <div class={`modal-card m-${p.key}`} data-key={p.key} role="dialog" aria-modal="true" aria-labelledby={`mt-${p.key}`} hidden>
+        <button class="modal-x" type="button" aria-label="Close" data-close>✕</button>
+        <div class="modal-scene" set:html={p.scene}></div>
+        <div class="modal-body">
+          <span class="modal-kicker">{p.group} · {p.meta}</span>
+          <h3 class="modal-name" id={`mt-${p.key}`}>{p.full}</h3>
+          <p class="modal-one">{p.one}</p>
+          <p class="modal-blurb">{p.blurb}</p>
+          <ul class="modal-feats">
+            {p.feats.map((f) => (<li>{f}</li>))}
+          </ul>
+          <p class="modal-diff"><span>why it matters</span>{p.diff}</p>
+          <a class="modal-cta" href={p.href} target="_blank" rel="noopener">{p.link}<b aria-hidden="true"> ↗</b></a>
+        </div>
+      </div>
+    ))}
   </div>
 </section>
 
 <style is:global>
 /* ══════════════════════════════════════════════════════════════════
-   THE OPERABILITY BOARD — analog mission-control hardware.
+   THE OPERABILITY BOARD — a living, self-cycling mission-control panel.
    Family tokens only (palette/type); a distinct tactile LAYOUT. The panel
    surface is hardcoded near-black brushed metal in BOTH themes (a physical
-   machine), exactly like the hero terminal. Signal-yellow = live, red =
-   failing vital, green = cured.
+   machine), like the hero terminal. Signal-yellow = live, red = failing
+   vital, green = cured. Sizes to content; fits a 1440px viewport.
    ══════════════════════════════════════════════════════════════════ */
 .board-section{
   border-top:1px solid var(--hairline);
-  display:flex;flex-direction:column;justify-content:center;
-  padding:clamp(40px,7vh,88px) 0;
+  padding:clamp(36px,6vh,72px) 0;
 }
-.board-wrap{max-width:1240px;margin:0 auto;padding:0 28px;width:100%}
-.board-head{margin-bottom:clamp(20px,3.4vh,34px)}
+.board-wrap{max-width:1180px;margin:0 auto;padding:0 28px;width:100%}
+.board-head{margin-bottom:clamp(18px,3vh,30px)}
 .board-kicker{
   font-family:var(--font-mono);font-size:.66rem;letter-spacing:.3em;text-transform:uppercase;
   color:var(--muted);font-weight:500;display:inline-flex;align-items:center;gap:11px
@@ -197,21 +252,19 @@ const ALL = BANKS.flatMap((b) => b.products); // 7 products drive the coverage m
 .board-kicker::before{content:'';width:26px;height:1px;background:var(--accent)}
 .board-title{
   font-family:var(--font-display);font-weight:900;font-stretch:125%;
-  font-size:clamp(2.2rem,4.4vw,3.6rem);color:var(--ink);
+  font-size:clamp(2.2rem,4.4vw,3.4rem);color:var(--ink);
   line-height:.92;letter-spacing:-.03em;margin:12px 0 0
 }
 .board-lede{
-  font-family:var(--font-mono);font-size:.82rem;color:var(--muted);
-  margin:14px 0 0;line-height:1.6;max-width:56ch
+  font-family:var(--font-mono);font-size:.82rem;color:var(--ink);
+  margin:14px 0 0;line-height:1.6;max-width:64ch
 }
 .board-lede span{color:var(--accent);font-weight:700}
 
 /* ── THE PANEL ─────────────────────────────────────────────────── */
 .panel{
-  position:relative;
-  border-radius:16px;
-  padding:clamp(20px,2.6vw,34px);
-  /* brushed near-black metal — subtle vertical grain + top sheen */
+  position:relative;border-radius:16px;
+  padding:clamp(18px,2.4vw,30px);
   background:
     linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,0) 90px),
     repeating-linear-gradient(90deg, rgba(255,255,255,.014) 0 2px, rgba(0,0,0,0) 2px 4px),
@@ -221,10 +274,8 @@ const ALL = BANKS.flatMap((b) => b.products); // 7 products drive the coverage m
     0 0 0 1px rgba(255,255,255,.07),
     inset 0 1px 0 rgba(255,255,255,.06),
     inset 0 -2px 6px rgba(0,0,0,.55);
-  display:grid;gap:clamp(16px,2vw,26px);
-  grid-template-columns:1fr;
+  display:grid;gap:clamp(14px,1.8vw,22px);grid-template-columns:1fr;
 }
-/* corner rivets / screw-heads */
 .rivet{
   position:absolute;width:13px;height:13px;border-radius:50%;
   background:radial-gradient(circle at 38% 32%, #3a3f46, #14171b 68%, #0a0c0f);
@@ -237,13 +288,13 @@ const ALL = BANKS.flatMap((b) => b.products); // 7 products drive the coverage m
 /* brand plate row */
 .panel-brand{
   display:flex;align-items:center;gap:14px;flex-wrap:wrap;
-  padding:2px 6px 14px;border-bottom:1px solid rgba(255,255,255,.08)
+  padding:2px 4px 12px;border-bottom:1px solid rgba(255,255,255,.08)
 }
 .plate-name{
-  font-family:var(--font-mono);font-weight:700;font-size:.82rem;letter-spacing:.24em;
-  color:#c9d1d9;text-shadow:0 1px 0 rgba(0,0,0,.8), 0 -1px 0 rgba(255,255,255,.05)
+  font-family:var(--font-mono);font-weight:700;font-size:.8rem;letter-spacing:.24em;
+  color:#e6edf3;text-shadow:0 1px 0 rgba(0,0,0,.8), 0 -1px 0 rgba(255,255,255,.05)
 }
-.plate-model{font-family:var(--font-mono);font-size:.6rem;letter-spacing:.16em;color:rgba(255,255,255,.32)}
+.plate-model{font-family:var(--font-mono);font-size:.6rem;letter-spacing:.14em;color:rgba(230,237,243,.5)}
 .op-status{
   margin-left:auto;display:inline-flex;align-items:center;gap:9px;
   padding:6px 13px;border-radius:8px;
@@ -254,30 +305,28 @@ const ALL = BANKS.flatMap((b) => b.products); // 7 products drive the coverage m
   background:#3a1114;box-shadow:inset 0 0 3px rgba(0,0,0,.9), 0 0 0 1px rgba(0,0,0,.5);
   transition:background .3s var(--ease), box-shadow .3s var(--ease)
 }
-.op-word{font-family:var(--font-mono);font-weight:700;font-size:.66rem;letter-spacing:.2em;color:rgba(255,255,255,.5);transition:color .3s var(--ease)}
+.op-word{font-family:var(--font-mono);font-weight:700;font-size:.66rem;letter-spacing:.2em;color:#e6edf3;transition:color .3s var(--ease)}
 .panel[data-operable="true"] .op-lamp{background:#3fb950;box-shadow:0 0 10px 2px rgba(63,185,80,.7), inset 0 0 3px rgba(255,255,255,.5)}
 .panel[data-operable="true"] .op-word{color:#7ee787}
 
 /* ── AGENT VITALS readout ──────────────────────────────────────── */
 .readout{
-  border-radius:12px;padding:clamp(14px,1.8vw,20px);
+  border-radius:12px;padding:clamp(12px,1.6vw,18px);
   background:linear-gradient(180deg,#070a0d,#0b0f13);
   box-shadow:inset 0 0 0 1px rgba(255,255,255,.06), inset 0 6px 20px rgba(0,0,0,.6)
 }
-.readout-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:14px}
-.readout-tag{font-family:var(--font-mono);font-weight:700;font-size:.62rem;letter-spacing:.26em;color:rgba(255,255,255,.44)}
-.readout-note{font-family:var(--font-mono);font-size:.62rem;letter-spacing:.04em;color:var(--accent);text-align:right;min-width:0}
+.readout-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:12px}
+.readout-tag{font-family:var(--font-mono);font-weight:700;font-size:.62rem;letter-spacing:.26em;color:rgba(230,237,243,.62)}
+.readout-note{font-family:var(--font-mono);font-size:.64rem;letter-spacing:.03em;color:var(--accent);text-align:right;min-width:0}
 .vitals{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
 .vital{
-  display:flex;align-items:flex-start;gap:10px;
-  padding:12px 12px;border-radius:9px;
+  display:flex;align-items:flex-start;gap:9px;padding:11px 11px;border-radius:9px;
   background:rgba(255,255,255,.015);box-shadow:inset 0 0 0 1px rgba(255,255,255,.05);
   transition:box-shadow .3s var(--ease), background .3s var(--ease)
 }
 .vital-lamp{
   width:11px;height:11px;border-radius:50%;flex-shrink:0;margin-top:3px;
-  background:#f0413f;
-  box-shadow:0 0 8px 1px rgba(240,65,63,.6), inset 0 0 2px rgba(255,255,255,.5);
+  background:#f0413f;box-shadow:0 0 8px 1px rgba(240,65,63,.6), inset 0 0 2px rgba(255,255,255,.5);
   animation:vitalPulse 1.5s ease-in-out infinite;
   transition:background .3s var(--ease), box-shadow .3s var(--ease)
 }
@@ -291,137 +340,184 @@ const ALL = BANKS.flatMap((b) => b.products); // 7 products drive the coverage m
 .vital[data-state="ok"] .vs-cure{display:inline}
 .vital[data-state="ok"]{background:rgba(63,185,80,.05);box-shadow:inset 0 0 0 1px rgba(63,185,80,.22)}
 .vital[data-state="ok"] .vital-lamp{
-  background:#3fb950;box-shadow:0 0 9px 1px rgba(63,185,80,.65), inset 0 0 2px rgba(255,255,255,.5);
-  animation:none
+  background:#3fb950;box-shadow:0 0 9px 1px rgba(63,185,80,.65), inset 0 0 2px rgba(255,255,255,.5);animation:none
 }
 
 /* segmented coverage meter */
-.cov{display:flex;align-items:center;gap:12px;margin-top:16px}
-.cov-tag{font-family:var(--font-mono);font-weight:700;font-size:.58rem;letter-spacing:.22em;color:rgba(255,255,255,.4);flex-shrink:0}
+.cov{display:flex;align-items:center;gap:12px;margin-top:14px}
+.cov-tag{font-family:var(--font-mono);font-weight:700;font-size:.58rem;letter-spacing:.22em;color:rgba(230,237,243,.55);flex-shrink:0}
 .cov-bar{flex:1;display:flex;gap:5px;min-width:0}
 .cov-seg{
-  flex:1;height:16px;border-radius:3px;
+  flex:1;height:14px;border-radius:3px;
   background:rgba(255,255,255,.05);box-shadow:inset 0 0 0 1px rgba(255,255,255,.06), inset 0 1px 2px rgba(0,0,0,.5);
   transition:background .25s var(--ease), box-shadow .25s var(--ease)
 }
-.cov-seg.is-lit{
-  background:var(--accent);
-  box-shadow:0 0 8px 1px rgba(255,218,25,.55), inset 0 0 2px rgba(255,255,255,.4)
-}
-.panel[data-operable="true"] .cov-seg.is-lit{
-  background:#3fb950;box-shadow:0 0 9px 1px rgba(63,185,80,.6), inset 0 0 2px rgba(255,255,255,.4)
-}
+.cov-seg.is-lit{background:var(--accent);box-shadow:0 0 8px 1px rgba(255,218,25,.55), inset 0 0 2px rgba(255,255,255,.4)}
+.panel[data-operable="true"] .cov-seg.is-lit{background:#3fb950;box-shadow:0 0 9px 1px rgba(63,185,80,.6), inset 0 0 2px rgba(255,255,255,.4)}
 .cov-pct{font-family:var(--font-mono);font-weight:700;font-size:.74rem;color:#e6edf3;flex-shrink:0;font-variant-numeric:tabular-nums;min-width:3.2ch;text-align:right}
 
-/* ── SWITCH BANKS ──────────────────────────────────────────────── */
-.banks{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(12px,1.4vw,18px)}
+/* ── PRODUCT TILE BANKS ────────────────────────────────────────── */
+.banks{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(12px,1.4vw,16px)}
 .bank{
-  border-radius:11px;padding:14px 14px 16px;
+  border-radius:11px;padding:13px 13px 14px;
   background:linear-gradient(180deg, rgba(255,255,255,.028), rgba(255,255,255,0));
   box-shadow:inset 0 0 0 1px rgba(255,255,255,.06), inset 0 3px 10px rgba(0,0,0,.4)
 }
 .bank-legend{
   display:flex;align-items:baseline;gap:9px;flex-wrap:wrap;
-  padding-bottom:12px;margin-bottom:12px;border-bottom:1px solid rgba(255,255,255,.07)
+  padding-bottom:10px;margin-bottom:10px;border-bottom:1px solid rgba(255,255,255,.07)
 }
-/* engraved legend — inset text feel via twin shadows */
-.bank-name{font-family:var(--font-mono);font-weight:700;font-size:.72rem;letter-spacing:.2em;color:#aeb6bf;text-shadow:0 1px 0 rgba(0,0,0,.85), 0 -1px 0 rgba(255,255,255,.05)}
-.bank-sub{font-family:var(--font-mono);font-size:.56rem;letter-spacing:.06em;color:rgba(255,255,255,.32)}
-.bank-switches{display:flex;flex-direction:column;gap:8px}
+.bank-name{font-family:var(--font-mono);font-weight:700;font-size:.72rem;letter-spacing:.2em;color:#c9d1d9;text-shadow:0 1px 0 rgba(0,0,0,.85), 0 -1px 0 rgba(255,255,255,.05)}
+.bank-sub{font-family:var(--font-mono);font-size:.56rem;letter-spacing:.05em;color:rgba(230,237,243,.42)}
+.bank-tiles{display:flex;flex-direction:column;gap:8px}
 
-.sw-unit{
-  display:grid;grid-template-columns:auto 1fr;grid-template-rows:auto auto;
-  column-gap:12px;align-items:center;
-  padding:9px 10px;border-radius:8px;
-  background:rgba(0,0,0,.28);box-shadow:inset 0 0 0 1px rgba(255,255,255,.05)
+.tile{
+  position:relative;display:grid;grid-template-columns:auto 1fr auto;align-items:center;
+  column-gap:11px;text-align:left;cursor:pointer;
+  padding:10px 12px;border-radius:9px;border:none;
+  background:rgba(0,0,0,.3);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.06), inset 0 1px 3px rgba(0,0,0,.5);
+  transition:box-shadow .18s var(--ease), background .18s var(--ease), transform .12s var(--ease)
 }
-/* the physical toggle: a metal well + a bat that travels + a glass LED */
-.sw-toggle{
-  grid-row:1 / span 2;
-  appearance:none;border:none;cursor:pointer;padding:0;background:transparent;
-  display:inline-flex;align-items:center;gap:9px
-}
-.sw-well{
-  position:relative;width:30px;height:46px;border-radius:8px;flex-shrink:0;
-  background:linear-gradient(180deg,#05070a,#0e1216);
-  box-shadow:inset 0 0 0 1px rgba(255,255,255,.09), inset 0 3px 7px rgba(0,0,0,.75), inset 0 -3px 7px rgba(0,0,0,.6)
-}
-.sw-bat{
-  position:absolute;left:50%;transform:translateX(-50%);
-  bottom:3px;width:22px;height:22px;border-radius:6px;
-  background:linear-gradient(180deg,#5b636d,#20252b 62%,#0e1013);
-  box-shadow:0 -2px 4px rgba(0,0,0,.5), inset 0 2px 2px rgba(255,255,255,.28), inset 0 -3px 4px rgba(0,0,0,.7);
-  transition:bottom .16s cubic-bezier(.2,.9,.3,1.4), background .16s var(--ease)
-}
-.sw-toggle[aria-checked="true"] .sw-bat{
-  bottom:21px;
-  background:linear-gradient(180deg,#ffe873,#ffcf1a 60%,#c99a05)
-}
-.sw-led{
-  width:9px;height:9px;border-radius:50%;flex-shrink:0;
+.tile:hover{background:rgba(255,255,255,.045);box-shadow:inset 0 0 0 1px rgba(255,255,255,.16), 0 3px 12px rgba(0,0,0,.4)}
+.tile:hover .tile-more{opacity:1;color:#79c0ff}
+.tile:active{transform:translateY(1px)}
+.tile:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.tile-led{
+  width:11px;height:11px;border-radius:50%;flex-shrink:0;
   background:#2a2f36;box-shadow:inset 0 0 2px rgba(0,0,0,.9), 0 0 0 1px rgba(0,0,0,.5);
-  transition:background .18s var(--ease), box-shadow .18s var(--ease)
+  transition:background .3s var(--ease), box-shadow .3s var(--ease)
 }
-.sw-toggle[aria-checked="true"] .sw-led{
-  background:var(--accent);box-shadow:0 0 9px 2px rgba(255,218,25,.75), inset 0 0 2px rgba(255,255,255,.6)
-}
-.sw-toggle:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:6px}
-.sw-meta{grid-column:2;grid-row:1;display:flex;flex-direction:column;gap:1px;min-width:0}
-.sw-name{font-family:var(--font-mono);font-weight:700;font-size:.78rem;color:#e6edf3;letter-spacing:.01em}
-.sw-toggle[aria-checked="true"] ~ .sw-meta .sw-name{color:var(--accent)}
-.sw-fix{font-family:var(--font-mono);font-size:.58rem;color:#8a98a6;line-height:1.35;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.sw-link{
-  grid-column:2;grid-row:2;justify-self:start;margin-top:3px;
-  font-family:var(--font-mono);font-size:.55rem;letter-spacing:.04em;
-  color:rgba(121,192,255,.72);text-decoration:none;
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%
-}
-.sw-link:hover{color:#79c0ff;text-decoration:underline}
-.sw-link:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:2px}
-
-/* ── MASTER CONTROLS ───────────────────────────────────────────── */
-.controls{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
-.master-sw{
-  appearance:none;cursor:pointer;border:none;
-  display:inline-flex;align-items:center;gap:13px;
-  padding:11px 18px 11px 13px;border-radius:11px;
-  background:linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.01));
-  box-shadow:inset 0 0 0 1px rgba(255,255,255,.1), inset 0 2px 6px rgba(0,0,0,.45), 0 2px 6px rgba(0,0,0,.4);
-  transition:box-shadow .2s var(--ease)
-}
-.master-sw:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
-.master-well{
-  position:relative;width:52px;height:26px;border-radius:999px;flex-shrink:0;
-  background:linear-gradient(180deg,#05070a,#0e1216);
-  box-shadow:inset 0 0 0 1px rgba(255,255,255,.1), inset 0 2px 5px rgba(0,0,0,.75)
-}
-.master-bat{
-  position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;
-  background:linear-gradient(180deg,#5b636d,#20252b);
-  box-shadow:inset 0 2px 2px rgba(255,255,255,.28), inset 0 -2px 3px rgba(0,0,0,.7), 0 1px 2px rgba(0,0,0,.5);
-  transition:left .18s cubic-bezier(.2,.9,.3,1.4), background .18s var(--ease)
-}
-.master-sw[aria-checked="true"] .master-bat{left:29px;background:linear-gradient(180deg,#7ee787,#3fb950)}
-.master-sw[aria-checked="true"] .master-well{box-shadow:inset 0 0 0 1px rgba(63,185,80,.5), inset 0 2px 5px rgba(0,0,0,.6), 0 0 12px rgba(63,185,80,.3)}
-.master-label{display:flex;flex-direction:column;gap:1px;text-align:left}
-.master-label b{font-family:var(--font-mono);font-weight:700;font-size:.72rem;letter-spacing:.16em;color:#e6edf3}
-.master-label span{font-family:var(--font-mono);font-size:.56rem;letter-spacing:.06em;color:rgba(255,255,255,.4)}
-.reset-sw{
-  appearance:none;cursor:pointer;
-  font-family:var(--font-mono);font-weight:700;font-size:.62rem;letter-spacing:.14em;
-  color:rgba(255,255,255,.6);
-  padding:11px 16px;border-radius:9px;
-  background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.1);
-  transition:color .18s var(--ease), border-color .18s var(--ease)
-}
-.reset-sw:hover{color:#f0908e;border-color:rgba(240,65,63,.4)}
-.reset-sw:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.tile.is-on .tile-led{background:var(--accent);box-shadow:0 0 9px 2px rgba(255,218,25,.7), inset 0 0 2px rgba(255,255,255,.6)}
+.panel[data-operable="true"] .tile.is-on .tile-led{background:#3fb950;box-shadow:0 0 9px 2px rgba(63,185,80,.65), inset 0 0 2px rgba(255,255,255,.6)}
+.tile-txt{display:flex;flex-direction:column;gap:2px;min-width:0}
+.tile-name{font-family:var(--font-mono);font-weight:700;font-size:.86rem;color:#e6edf3;letter-spacing:.01em}
+.tile-fix{font-family:var(--font-mono);font-size:.58rem;color:#aeb6bf;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tile-more{font-family:var(--font-mono);font-size:.55rem;letter-spacing:.04em;color:rgba(230,237,243,.4);opacity:.7;transition:opacity .18s var(--ease), color .18s var(--ease);white-space:nowrap}
 
 .board-foot{
   font-family:var(--font-mono);font-size:.66rem;color:var(--muted);
-  margin:clamp(16px,2.4vh,26px) 0 0;line-height:1.6;max-width:64ch
+  margin:clamp(14px,2vh,22px) 0 0;line-height:1.6;max-width:64ch
 }
 .board-foot b{color:var(--ink)}
+
+/* ══════════════════════════════════════════════════════════════════
+   THE MODALS — one per product, each a distinct on-brand mini-scene.
+   ══════════════════════════════════════════════════════════════════ */
+.modal-overlay{position:fixed;inset:0;z-index:120;display:flex;align-items:center;justify-content:center;padding:24px}
+.modal-overlay[hidden]{display:none}
+.modal-scrim{position:absolute;inset:0;background:rgba(4,6,9,.72);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
+.modal-card{
+  position:relative;z-index:1;width:min(520px,100%);max-height:calc(100vh - 48px);overflow:auto;
+  border-radius:16px;background:#0d0f12;
+  box-shadow:0 40px 100px rgba(0,0,0,.7), 0 0 0 1px rgba(255,255,255,.09), inset 0 1px 0 rgba(255,255,255,.06);
+  animation:modalIn .22s var(--ease)
+}
+@keyframes modalIn{from{opacity:0;transform:translateY(14px) scale(.98)}to{opacity:1;transform:none}}
+.modal-x{
+  position:absolute;top:12px;right:12px;z-index:3;width:30px;height:30px;border-radius:8px;border:none;cursor:pointer;
+  font-family:var(--font-mono);font-size:.8rem;color:#e6edf3;
+  background:rgba(0,0,0,.42);box-shadow:inset 0 0 0 1px rgba(255,255,255,.14);
+  transition:background .15s var(--ease)
+}
+.modal-x:hover{background:rgba(255,255,255,.12)}
+.modal-x:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* the animated mini-scene band */
+.modal-scene{position:relative;height:116px;border-radius:16px 16px 0 0;overflow:hidden;border-bottom:1px solid rgba(255,255,255,.09)}
+.sc{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;gap:10px}
+
+.modal-body{padding:20px 22px 22px}
+.modal-kicker{font-family:var(--font-mono);font-weight:700;font-size:.58rem;letter-spacing:.24em;color:rgba(230,237,243,.62)}
+.modal-name{font-family:var(--font-mono);font-weight:700;font-size:1.28rem;color:#e6edf3;letter-spacing:.005em;margin:6px 0 0}
+.modal-one{font-family:var(--font-display);font-weight:800;font-size:1.02rem;color:var(--accent);line-height:1.28;margin:9px 0 0}
+.modal-blurb{font-family:var(--font-mono);font-size:.72rem;color:#c9d1d9;line-height:1.62;margin:11px 0 0}
+.modal-feats{list-style:none;margin:14px 0 0;padding:0;display:flex;flex-direction:column;gap:7px}
+.modal-feats li{
+  font-family:var(--font-mono);font-size:.66rem;color:#e6edf3;line-height:1.45;
+  padding:7px 11px 7px 26px;position:relative;border-radius:7px;
+  background:rgba(255,255,255,.03);box-shadow:inset 0 0 0 1px rgba(255,255,255,.05)
+}
+.modal-feats li::before{content:'▸';position:absolute;left:11px;color:var(--accent);font-size:.7rem}
+.modal-diff{
+  font-family:var(--font-mono);font-size:.68rem;color:#e6edf3;line-height:1.55;margin:14px 0 0;
+  padding:11px 13px;border-radius:8px;border-left:2px solid var(--accent);
+  background:rgba(255,218,25,.06)
+}
+.modal-diff span{display:block;font-weight:700;font-size:.54rem;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);margin-bottom:5px}
+.modal-cta{
+  display:inline-flex;align-items:center;margin-top:16px;
+  font-family:var(--font-mono);font-weight:700;font-size:.72rem;letter-spacing:.03em;
+  color:#0d1117;background:var(--accent);padding:10px 16px;border-radius:9px;
+  box-shadow:0 4px 14px rgba(255,218,25,.28);transition:transform .12s var(--ease), box-shadow .18s var(--ease)
+}
+.modal-cta:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(255,218,25,.42)}
+.modal-cta b{font-weight:700}
+
+/* ── per-product SCENE motifs (distinct visual per product) ──────── */
+/* garden — a toolbox grid sprouting green */
+.sc-garden{background:radial-gradient(120% 120% at 50% 140%, rgba(63,185,80,.22), transparent 60%),#0a0d10;gap:8px}
+.sc-garden i{width:16px;height:22px;border-radius:4px;background:rgba(255,255,255,.08);box-shadow:inset 0 0 0 1px rgba(255,255,255,.08)}
+.sc-garden i.sp{height:44px;background:linear-gradient(180deg,#7ee787,#3fb950);box-shadow:0 0 12px rgba(63,185,80,.5);transform-origin:bottom;animation:sprout 2.4s var(--ease) infinite}
+@keyframes sprout{0%,100%{transform:scaleY(.55)}50%{transform:scaleY(1)}}
+
+/* interactive — a highlighted block being reworked (blue) */
+.sc-int{background:radial-gradient(120% 130% at 50% 120%, rgba(121,192,255,.2), transparent 60%),#0a0d10;flex-direction:column;gap:8px}
+.sc-int .bar{width:190px;height:16px;border-radius:5px;background:rgba(255,255,255,.08)}
+.sc-int .bar.sel{
+  position:relative;display:flex;align-items:center;padding-left:9px;height:22px;
+  font-family:var(--font-mono);font-size:.56rem;color:#0d1117;font-weight:700;
+  background:var(--link);box-shadow:0 0 16px rgba(121,192,255,.55);animation:selpulse 2s var(--ease) infinite
+}
+@keyframes selpulse{0%,100%{box-shadow:0 0 8px rgba(121,192,255,.3)}50%{box-shadow:0 0 20px rgba(121,192,255,.7)}}
+.sc-int .caret{position:absolute;right:10px;width:2px;height:13px;background:#0d1117;animation:blink 1s steps(1) infinite}
+@keyframes blink{0%,50%{opacity:1}51%,100%{opacity:0}}
+
+/* crew — a phase pipeline with a glowing gate (yellow) */
+.sc-crew{background:radial-gradient(120% 130% at 50% 120%, rgba(255,218,25,.16), transparent 62%),#0a0d10;gap:0}
+.sc-crew .ph{
+  position:relative;font-family:var(--font-mono);font-size:.55rem;color:#aeb6bf;
+  padding:6px 9px;border-radius:6px;background:rgba(255,255,255,.05);box-shadow:inset 0 0 0 1px rgba(255,255,255,.07);margin:0 5px
+}
+.sc-crew .ph::after{content:'';position:absolute;right:-10px;top:50%;width:10px;height:1px;background:rgba(255,255,255,.2)}
+.sc-crew .ph.on::after{display:none}
+.sc-crew .ph.gate{color:#0d1117;font-weight:700;background:var(--accent);box-shadow:0 0 14px rgba(255,218,25,.6);animation:selpulse 2.2s var(--ease) infinite}
+.sc-crew .ph.on{color:#7ee787;box-shadow:inset 0 0 0 1px rgba(63,185,80,.5)}
+
+/* testing — three lanes with a wall before the reviewer (green) */
+.sc-test{background:radial-gradient(120% 130% at 50% 120%, rgba(63,185,80,.16), transparent 62%),#0a0d10;gap:12px}
+.sc-test .lane{
+  width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-mono);font-weight:700;font-size:.8rem;color:#e6edf3;
+  background:rgba(255,255,255,.06);box-shadow:inset 0 0 0 1px rgba(255,255,255,.1)
+}
+.sc-test .lane.rev{color:#0d1117;background:#3fb950;box-shadow:0 0 14px rgba(63,185,80,.55)}
+.sc-test .wall{width:3px;height:52px;border-radius:2px;background:repeating-linear-gradient(180deg,var(--accent) 0 6px,transparent 6px 12px)}
+
+/* estate — a small typed node graph (yellow hub) */
+.sc-estate{background:radial-gradient(120% 130% at 50% 120%, rgba(255,218,25,.14), transparent 62%),#0a0d10}
+.sc-estate svg{width:220px;height:96px}
+.sc-estate line{stroke:rgba(121,192,255,.45);stroke-width:1.4}
+.sc-estate circle{fill:#161c26;stroke:rgba(255,255,255,.35);stroke-width:1.5}
+.sc-estate circle.hub{fill:var(--accent);stroke:none;filter:drop-shadow(0 0 8px rgba(255,218,25,.6));animation:hubpulse 2.4s var(--ease) infinite}
+@keyframes hubpulse{0%,100%{r:9}50%{r:11}}
+.sc-estate text{fill:#79c0ff;font-family:var(--font-mono);font-size:8px;font-weight:700}
+
+/* bus — events flowing along a track (blue) */
+.sc-bus{background:radial-gradient(120% 130% at 50% 120%, rgba(121,192,255,.16), transparent 62%),#0a0d10}
+.sc-bus .track{position:absolute;left:14%;right:14%;top:50%;height:2px;background:rgba(255,255,255,.14);border-radius:2px}
+.sc-bus .ev{position:absolute;top:calc(50% - 5px);width:10px;height:10px;border-radius:50%;background:var(--link);box-shadow:0 0 10px rgba(121,192,255,.6);animation:flow 3s linear infinite}
+.sc-bus .ev:nth-child(2){animation-delay:0s}
+.sc-bus .ev:nth-child(3){animation-delay:.75s;background:var(--accent);box-shadow:0 0 10px rgba(255,218,25,.6)}
+.sc-bus .ev:nth-child(4){animation-delay:1.5s}
+.sc-bus .ev:nth-child(5){animation-delay:2.25s;background:var(--accent);box-shadow:0 0 10px rgba(255,218,25,.6)}
+@keyframes flow{from{left:12%;opacity:0}10%{opacity:1}90%{opacity:1}to{left:86%;opacity:0}}
+
+/* brain — linked wiki docs with [[backlinks]] (green) */
+.sc-brain{background:radial-gradient(120% 130% at 50% 120%, rgba(63,185,80,.15), transparent 62%),#0a0d10;gap:6px}
+.sc-brain .doc{width:30px;height:40px;border-radius:5px;background:linear-gradient(180deg,rgba(255,255,255,.12),rgba(255,255,255,.04));box-shadow:inset 0 0 0 1px rgba(255,255,255,.12)}
+.sc-brain .doc::after{content:'';display:block;margin:7px auto 0;width:18px;height:2px;background:rgba(255,255,255,.3);box-shadow:0 5px 0 rgba(255,255,255,.22),0 10px 0 rgba(255,255,255,.16)}
+.sc-brain .lk{font-family:var(--font-mono);font-size:.6rem;font-weight:700;color:#7ee787;animation:blink 1.6s steps(1) infinite}
 
 /* ── RESPONSIVE ────────────────────────────────────────────────── */
 @media(max-width:900px){
@@ -429,20 +525,28 @@ const ALL = BANKS.flatMap((b) => b.products); // 7 products drive the coverage m
   .banks{grid-template-columns:1fr}
 }
 @media(max-width:600px){
-  .board-section{min-height:auto}
   .board-wrap{padding-left:20px;padding-right:20px}
-  .panel{padding:22px 16px}
+  .panel{padding:20px 15px}
   .readout-head{flex-direction:column;gap:4px;align-items:flex-start}
   .readout-note{text-align:left}
   .vitals{grid-template-columns:1fr}
   .cov{flex-wrap:wrap}
-  .sw-fix{white-space:normal}
+  .tile{grid-template-columns:auto 1fr}
+  .tile-more{display:none}
+  .tile-fix{white-space:normal}
+  .modal-overlay{padding:14px}
 }
 
-/* ── REDUCED MOTION — levers SNAP instead of travelling ────────── */
+/* ── REDUCED MOTION — panel settles, scenes hold still ─────────── */
 @media(prefers-reduced-motion:reduce){
-  .sw-bat,.master-bat,.sw-led,.cov-seg,.vital-lamp,.op-lamp,.op-word{transition:none!important}
+  .tile-led,.cov-seg,.vital-lamp,.op-lamp,.op-word{transition:none!important}
   .vital-lamp{animation:none!important}
+  .modal-card{animation:none!important}
+  .sc-garden i.sp,.sc-int .bar.sel,.sc-int .caret,.sc-crew .ph.gate,
+  .sc-estate circle.hub,.sc-bus .ev,.sc-brain .lk{animation:none!important}
+  .sc-bus .ev{left:auto;position:relative;opacity:1}
+  .sc-bus .ev:nth-child(2){left:20%}.sc-bus .ev:nth-child(3){left:40%}
+  .sc-bus .ev:nth-child(4){left:60%}.sc-bus .ev:nth-child(5){left:80%}
 }
 </style>
 

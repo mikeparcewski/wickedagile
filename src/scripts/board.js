@@ -1,10 +1,14 @@
 /* ──────────────────────────────────────────────────────────────
-   wickedagile — THE OPERABILITY BOARD driver.
-   Genuine visitor-driven state: throwing a product switch (click OR
-   keyboard, since every switch is a <button>) flips its LED, cures the
-   matching Agent Vital red→green, and fills the segmented coverage meter.
-   The UMBRELLA master switch throws all seven; RESET throws all off. Flip
-   all seven and the panel stamps OPERABLE. No scroll involved, no mockup.
+   wickedagile — THE OPERABILITY BOARD driver (living-panel edition).
+
+   Two responsibilities:
+   1. AUTO-CYCLE the panel on its own — an ambient self-test that keeps
+      flipping product switches, curing/relapsing the four Agent Vitals
+      red↔green and filling the segmented COVERAGE meter. No visitor input
+      drives it; it just runs (paused while a modal is open or the tab is
+      hidden). Under prefers-reduced-motion it settles OPERABLE and stops.
+   2. Open a per-product MODAL when a product tile is clicked. Esc, the
+      scrim, and the ✕ all close it; focus returns to the tile.
    ────────────────────────────────────────────────────────────── */
 'use strict';
 
@@ -12,104 +16,150 @@ function boot() {
   var panel = document.getElementById('opBoard');
   if (!panel) return; /* board markup absent — nothing to drive */
 
-  var toggles = Array.prototype.slice.call(
-    panel.querySelectorAll('.sw-toggle[data-key]')
-  );
-  var TOTAL = toggles.length; /* 7 real products */
-  var on = Object.create(null); /* key -> true */
-
-  var covSegs = Array.prototype.slice.call(panel.querySelectorAll('.cov-seg'));
-  var covPct = document.getElementById('covPct');
-  var covBar = panel.querySelector('.cov-bar');
-  var opLog = document.getElementById('opLog');
+  var tiles = Array.prototype.slice.call(panel.querySelectorAll('.tile[data-key]'));
+  var TOTAL = tiles.length; /* 7 real products */
   var opWord = document.getElementById('opWord');
-  var masterSw = document.getElementById('masterSw');
+  var opLog = document.getElementById('opLog');
+  var covPct = document.getElementById('covPct');
 
-  function setToggle(btn, isOn) {
-    var key = btn.getAttribute('data-key');
+  // which product cures which agent vital
+  var VITAL = { estate: 'sees', brain: 'remembers', testing: 'judges', bus: 'coordinates' };
+  var FIX = {
+    estate: 'SEES — queries a typed graph',
+    brain: 'REMEMBERS — persistent memory',
+    testing: 'JUDGES — reviewer runs blind',
+    bus: 'COORDINATES — events flow',
+    garden: 'BUILD — done is re-derived',
+    interactive: 'BUILD — say it, watch it build',
+    crew: 'OPERATE — phases governed',
+  };
+
+  var on = Object.create(null); /* key -> bool */
+
+  function tileFor(key) { return panel.querySelector('.tile[data-key="' + key + '"]'); }
+
+  function setState(key, isOn) {
     on[key] = !!isOn;
-    btn.setAttribute('aria-checked', isOn ? 'true' : 'false');
-    var name = btn.getAttribute('data-name') || key;
-    var fix = btn.getAttribute('data-fix') || '';
-    btn.setAttribute('aria-label', name + ' — ' + fix + '. ' + (isOn ? 'On.' : 'Off.'));
-
-    // cure/relapse the matching vital
-    var vital = btn.getAttribute('data-vital');
-    if (vital) {
-      var v = panel.querySelector('.vital[data-vital="' + vital + '"]');
-      if (v) v.setAttribute('data-state', isOn ? 'ok' : 'fail');
-    }
-    // its coverage segment
+    var t = tileFor(key);
+    if (t) t.classList.toggle('is-on', isOn);
     var seg = panel.querySelector('.cov-seg[data-key="' + key + '"]');
     if (seg) seg.classList.toggle('is-lit', isOn);
+    var vit = VITAL[key];
+    if (vit) {
+      var v = panel.querySelector('.vital[data-vital="' + vit + '"]');
+      if (v) v.setAttribute('data-state', isOn ? 'ok' : 'fail');
+    }
   }
 
   function count() {
     var n = 0;
-    for (var i = 0; i < toggles.length; i++) {
-      if (on[toggles[i].getAttribute('data-key')]) n++;
+    for (var i = 0; i < tiles.length; i++) {
+      if (on[tiles[i].getAttribute('data-key')]) n++;
     }
     return n;
   }
 
-  function refresh(lastName, lastOn, lastFix) {
+  function refresh(lastKey, lastOn) {
     var n = count();
-    var pct = Math.round((n / TOTAL) * 100);
-    if (covPct) covPct.textContent = pct + '%';
-    if (covBar) covBar.setAttribute('aria-valuenow', String(n));
-
+    if (covPct) covPct.textContent = Math.round((n / TOTAL) * 100) + '%';
     var operable = n === TOTAL;
     panel.setAttribute('data-operable', operable ? 'true' : 'false');
     if (opWord) opWord.textContent = operable ? 'OPERABLE' : (n === 0 ? 'STANDBY' : 'PARTIAL');
-    if (masterSw) masterSw.setAttribute('aria-checked', operable ? 'true' : 'false');
-
     if (opLog) {
-      if (operable) {
-        opLog.textContent = 'OPERABLE — every vital green';
-      } else if (n === 0) {
-        opLog.textContent = 'raw agent — all systems failing';
-      } else if (lastName) {
-        opLog.textContent =
-          lastName + (lastOn ? ' ON · ' + lastFix : ' OFF · vital relapsed');
-      } else {
-        opLog.textContent = n + ' of ' + TOTAL + ' online';
-      }
+      if (operable) opLog.textContent = 'OPERABLE — every vital green';
+      else if (n === 0) opLog.textContent = 'raw agent — all systems failing';
+      else if (lastKey) opLog.textContent = (lastOn ? '+ ' : '– ') + (FIX[lastKey] || lastKey);
+      else opLog.textContent = n + ' of ' + TOTAL + ' online';
     }
   }
 
-  function flip(btn, force) {
-    var key = btn.getAttribute('data-key');
-    var next = typeof force === 'boolean' ? force : !on[key];
-    setToggle(btn, next);
-    refresh(btn.getAttribute('data-name'), next, btn.getAttribute('data-fix'));
+  /* ── AUTO-CYCLE ──────────────────────────────────────────────── */
+  var reduced = window.matchMedia &&
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  var timer = null;
+  var paused = false;
+
+  function tick() {
+    // Evolve the combination: flip one or two random switches per beat, so
+    // the panel reads as a living machine rather than a fixed pattern.
+    var flips = 1 + (Math.random() < 0.4 ? 1 : 0);
+    var lastKey = null, lastOn = false;
+    for (var f = 0; f < flips; f++) {
+      var key = tiles[(Math.random() * tiles.length) | 0].getAttribute('data-key');
+      setState(key, !on[key]);
+      lastKey = key; lastOn = on[key];
+    }
+    refresh(lastKey, lastOn);
   }
 
-  toggles.forEach(function (btn) {
-    btn.addEventListener('click', function () { flip(btn); });
+  function start() {
+    if (reduced || timer || paused) return;
+    timer = window.setInterval(tick, 1500);
+  }
+  function stop() {
+    if (timer) { window.clearInterval(timer); timer = null; }
+  }
+
+  // initial paint
+  if (reduced) {
+    tiles.forEach(function (t) { setState(t.getAttribute('data-key'), true); });
+    refresh();
+  } else {
+    // seed a couple on for immediate life, then run
+    setState('estate', true);
+    setState('bus', true);
+    refresh();
+    start();
+  }
+
+  // pause when the tab is hidden — polite + saves cycles
+  document.addEventListener('visibilitychange', function () {
+    if (document.hidden) stop(); else start();
   });
 
-  // MASTER umbrella — throw all seven on, or all off if already full
-  if (masterSw) {
-    masterSw.addEventListener('click', function () {
-      var target = count() < TOTAL; // fill up unless already operable
-      toggles.forEach(function (btn) { setToggle(btn, target); });
-      refresh(); // target=true → stamps OPERABLE; target=false → STANDBY
-      if (!target && opLog) opLog.textContent = 'UMBRELLA — powered down';
-    });
+  /* ── MODALS ──────────────────────────────────────────────────── */
+  var overlay = document.getElementById('modalOverlay');
+  var cards = overlay ? Array.prototype.slice.call(overlay.querySelectorAll('.modal-card')) : [];
+  var lastTrigger = null;
+
+  function openModal(key, trigger) {
+    if (!overlay) return;
+    lastTrigger = trigger || null;
+    paused = true; stop(); /* freeze the panel while reading */
+    overlay.hidden = false;
+    cards.forEach(function (c) { c.hidden = c.getAttribute('data-key') !== key; });
+    document.documentElement.style.overflow = 'hidden';
+    var active = overlay.querySelector('.modal-card[data-key="' + key + '"]');
+    var closeBtn = active && active.querySelector('.modal-x');
+    if (closeBtn) closeBtn.focus();
   }
 
-  // RESET — everything off
-  var resetSw = document.getElementById('resetSw');
-  if (resetSw) {
-    resetSw.addEventListener('click', function () {
-      toggles.forEach(function (btn) { setToggle(btn, false); });
-      refresh();
-      if (opLog) opLog.textContent = 'reset — raw agent, all systems failing';
-    });
+  function closeModal() {
+    if (!overlay || overlay.hidden) return;
+    overlay.hidden = true;
+    cards.forEach(function (c) { c.hidden = true; });
+    document.documentElement.style.overflow = '';
+    paused = false; start(); /* resume the panel */
+    if (lastTrigger && typeof lastTrigger.focus === 'function') lastTrigger.focus();
+    lastTrigger = null;
   }
 
-  // initial paint (all off)
-  refresh();
+  tiles.forEach(function (t) {
+    t.addEventListener('click', function () {
+      openModal(t.getAttribute('data-key'), t);
+    });
+  });
+
+  if (overlay) {
+    overlay.addEventListener('click', function (e) {
+      var el = e.target;
+      if (el && el.hasAttribute && el.hasAttribute('data-close')) closeModal();
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && !overlay.hidden) closeModal();
+    });
+  }
 }
 
 if (document.readyState === 'loading') {
