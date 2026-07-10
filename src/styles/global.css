@@ -8,6 +8,16 @@
    (tokens.css body::before), leaves the shared burst-of-light (body::after).
    UNLAYERED so it beats the shared @layer base rule.
    ────────────────────────────────────────────────────────────────────────── */
+/* ── FAMILY SCROLL-LOCK ───────────────────────────────────────────────────
+   Hard, one-section-per-notch snap between the full-screen chapters (hero,
+   articles, shipped IDE, about, footer). Unlayered so it beats the shared
+   tokens.css @layer base default (scroll-snap-type:y proximity). Mobile
+   fallback = none: mandatory snap fights touch momentum on small screens.
+   Sections opt in via .snap-section (min-height:100vh + scroll-snap-align:start)
+   or, for the pinned-track sections, their .ide-step / .art-step snap points. */
+html { scroll-snap-type: y mandatory; scroll-padding-top: var(--topbar-h); }
+@media (max-width: 768px) { html { scroll-snap-type: none; } }
+
 body::before {
   content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none;
   background-image: none;              /* drop the shared line-grid gradients */
