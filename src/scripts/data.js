@@ -29,20 +29,15 @@ export var reposPromise=fetch('https://api.github.com/users/mikeparcewski/repos?
   .catch(function(){return null});
 
 /* ── FEATURED ─────────────────────────────────────────────────── */
-/* The 3 featured sites for the shipped mosaic. Screenshots resolve
-   from the public/ root → '/screenshots/<name>.png'. */
-/* Order = the "accelerators" folder order (the 3 deployed sites). */
+/* The 3 DEPLOYED sites for the shipped split-editor preview. Screenshots
+   resolve from the public/ root → '/screenshots/<name>.png'. Consumed by
+   shipped.js as preview indices 0,1,2 (the tree's data-preview mapping).
+   Order = the deployed-site tab order (interactive · garden · estate). */
 export var FEATURED=[
   {name:'wicked-interactive',url:'https://wi.wickedagile.com',screenshot:'/screenshots/wicked-interactive.png',
-   desc:'Say the thing. Watch it build. Point at what\'s wrong. Ship.'},
+   desc:'Describe it, watch it build in your browser, ship it.'},
   {name:'wicked-garden',url:'https://wg.wickedagile.com',screenshot:'/screenshots/wicked-garden.png',
-   desc:'Orchestration without the org chart.'},
+   desc:'Curated toolkit for what coding agents can\'t do alone.'},
   {name:'wicked-estate',url:'https://we.wickedagile.com',screenshot:'/screenshots/wicked-estate.png',
    desc:'The code graph agents actually trust.'},
-  {name:'wicked-signals',url:'https://github.com/mikeparcewski/wicked-signals',screenshot:null,
-   desc:'Text in. Intent out.'},
-  {name:'wicked-crew',url:'https://github.com/mikeparcewski/wicked-crew',screenshot:null,
-   desc:'The session layer your agent teams need.'},
-  {name:'wicked-studio',url:'https://github.com/mikeparcewski/wicked-studio',screenshot:null,
-   desc:'The UI your agent should have.'},
 ];

@@ -1,5 +1,9 @@
-name: Deploy to GitHub Pages
+name: Deploy site (manual)
 
+# DORMANT / human-gated: this workflow runs ONLY when triggered by hand from the
+# Actions tab. It never runs on push or merge, so publishing wickedagile.com is
+# always a deliberate action. The custom domain (public/CNAME) means the Astro
+# `site` is https://wickedagile.com with no base path.
 on:
   workflow_dispatch:
 
@@ -8,10 +12,10 @@ permissions:
   pages: write
   id-token: write
 
-# Allow one concurrent deployment, cancelling in-progress runs.
+# Allow one concurrent deployment; do not cancel an in-progress production deploy.
 concurrency:
   group: pages
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   build:

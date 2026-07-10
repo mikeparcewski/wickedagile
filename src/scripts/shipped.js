@@ -1,20 +1,19 @@
 /* ──────────────────────────────────────────────────────────────
    wickedagile — SHIPPED : the living IDE split-editor (tree-only)
-   Decomposed from index.next.html. DUAL-MODE preview pane:
+   Recovered from the pre-Operability-Board design and reconciled to the
+   current seven-product family. DUAL-MODE preview pane:
 
-     (a) SITE  — the 3 DEPLOYED accelerators (FEATURED[0..2]) drive the
-         browser-frame: /screenshots/<name>.png via a clip-path wipe,
-         3 editor-tabs + auto-rotation (all gated by prefers-reduced-motion).
-     (b) LIB   — the other 6 packages have no screenshot; selecting one
-         hides the browser-frame and renders a faux code-editor card in the
-         SAME pane (header "<name>.ts", line-number gutter, short
-         syntax-highlighted TS snippet) with an "npm i <name> ↗" CTA.
+     (a) SITE  — the 3 DEPLOYED sites (FEATURED[0..2] = interactive · garden ·
+         estate) drive the browser-frame: /screenshots/<name>.png via a
+         clip-path wipe, 3 editor-tabs (all gated by prefers-reduced-motion).
+     (b) LIB   — the other 4 products (brain · bus · testing · crew) have no
+         screenshot; selecting one hides the browser-frame and renders a faux
+         code-editor card in the SAME pane (header "<name>.js", line-number
+         gutter, short syntax-highlighted snippet) with a repo CTA.
 
-   EVERY one of the nine tree leaves is clickable (data-idx 0..8). Exactly
-   one active state is kept across the tab strip + the tree (aria-selected /
-   aria-current). Auto-rotation cycles ONLY the 3 accelerators and pauses on
-   hover/focus, when document.hidden, when a library is selected, and is
-   fully disabled under prefers-reduced-motion.
+   EVERY one of the seven tree leaves is clickable (data-idx 0..6). Exactly one
+   active state is kept across the tab strip + the tree (aria-selected /
+   aria-current). The visitor's scroll drives the package walk — no timer.
 
    FEATURED + shared helpers come from the data module — no helper is
    redefined here.
@@ -23,106 +22,53 @@ import { FEATURED, esc, safeUrl } from './data.js';
 
 var PREFERS_REDUCED = window.matchMedia && window.matchMedia('(prefers-reduced-motion:reduce)').matches;
 
-/* ── LIBRARY snippets (VERBATIM) ──────────────────────────────────
-   Each entry: tagline (readout desc), repo (github), and the snippet as
-   an array of lines. A line is either a plain string (rendered as a
-   comment when it starts with //) or pre-tokenized — here we keep the
-   verbatim text and tokenize at render time with a tiny TS highlighter so
-   the source stays exactly as authored. */
+/* ── LIBRARY snippets ─────────────────────────────────────────────
+   One entry per LIB leaf (the 4 products without a deployed screenshot).
+   Each: tagline (readout desc), repo (github), the file glyph/ext, and the
+   snippet as verbatim lines tokenized at render time by a tiny highlighter.
+   Copy is honest wave-4 positioning (crew = harness, bus = durable fabric). */
 var LIB_SNIPPETS = {
-  'wicked-signals': {
-    tagline: 'Text in. Intent out.',
-    repo: 'https://github.com/mikeparcewski/wicked-signals',
-    ext: 'ts', glyph: 'TS', install: 'npm i',
-    lines: [
-      "// classify any signal. route it. store it.",
-      "import { ingestText } from 'wicked-signals'",
-      "const result = await ingestText('Build a dark mode toggle')",
-      "// → { signal_id, route_target: 'crew_idd', confidence: 0.87 }"
-    ]
-  },
-  'wicked-crew': {
-    tagline: 'The session layer your agent teams need.',
-    repo: 'https://github.com/mikeparcewski/wicked-crew',
-    ext: 'js', glyph: 'JS', install: 'npm i',
-    lines: [
-      "// phase-gated sessions. hitl. council. audit trail.",
-      "$ wicked-crew crew launch --type feature \\",
-      "    --problem 'Add OAuth to the API'",
-      "// → { session_id, current_phase: 'clarify', status: 'Open' }"
-    ]
-  },
-  'wicked-studio': {
-    tagline: 'The UI your agent should have.',
-    repo: 'https://github.com/mikeparcewski/wicked-studio',
-    ext: 'rs', glyph: 'RS', install: 'cargo add',
-    lines: [
-      "// desktop hitl shell. tauri. stateful. offline.",
-      "use wicked_studio::HitlStore;",
-      "let mut store = HitlStore::new();",
-      "store.open_session(session_id, prompt)?;"
-    ]
-  },
   'wicked-brain': {
-    tagline: 'Agents forget everything. This one doesn\'t.',
+    tagline: "Your AI agent's memory — markdown and SQLite, no vector DB.",
     repo: 'https://github.com/mikeparcewski/wicked-brain',
     ext: 'js', glyph: 'JS', install: 'npm i',
     lines: [
-      "// agents forget everything. this one doesn't.",
+      "// no embeddings. no vector db. markdown + SQLite FTS5.",
       "import { brain } from 'wicked-brain'",
       "await brain.remember(decision)",
-      "const ctx = await brain.recall('why sqlite?')  // cited · ranked · local"
+      "const ctx = await brain.recall('why sqlite?')  // cited · [[backlinked]] · local"
     ]
   },
-  'wicked-understanding': {
-    tagline: 'Not what the code does — why it does it.',
-    repo: 'https://github.com/mikeparcewski/wicked-understanding',
-    ext: 'py', glyph: 'PY', install: 'pip install',
-    lines: [
-      "# not what the code does — why it does it.",
-      "from wicked_understanding import why",
-      "rationale = await why('PaymentService')"
-    ]
-  },
-  'wicked-vault': {
-    tagline: 'The diff said it worked. The vault says what actually happened.',
-    repo: 'https://github.com/mikeparcewski/wicked-vault',
+  'wicked-bus': {
+    tagline: 'A durable, tiered event fabric for AI agents and dev tools.',
+    repo: 'https://github.com/mikeparcewski/wicked-bus',
     ext: 'js', glyph: 'JS', install: 'npm i',
     lines: [
-      "// the diff said it worked. the vault says what happened.",
-      "import { vault } from 'wicked-vault'",
-      "await vault.record(evidence).attest()  // re-derived, never asserted"
+      "// durable, tiered, at-least-once. dead-letter + replay. single host = the honest boundary.",
+      "import { bus } from 'wicked-bus'",
+      "bus.emit('order.placed', payload)   // cursor-poll, causality-tracked",
+      "bus.subscribe('order.*', handle)"
     ]
   },
   'wicked-testing': {
-    tagline: 'AI tests that actually require proof.',
+    tagline: "A complete QE team for AI coding CLIs that can't self-grade.",
     repo: 'https://github.com/mikeparcewski/wicked-testing',
     ext: 'js', glyph: 'JS', install: 'npm i',
     lines: [
-      "// AI tests that actually require proof.",
+      "// writer runs the tests. the reviewer never sees the executor's context.",
       "import { acceptance } from 'wicked-testing'",
       "const verdict = await acceptance(scenario)  // PASS | FAIL, evidence-gated"
     ]
   },
-  'wicked-bus': {
-    tagline: 'Fire-and-forget. Minus the forgetting.',
-    repo: 'https://github.com/mikeparcewski/wicked-bus',
+  'wicked-crew': {
+    tagline: 'The harness for your agent harnesses.',
+    repo: 'https://github.com/mikeparcewski/wicked-crew',
     ext: 'js', glyph: 'JS', install: 'npm i',
     lines: [
-      "// fire-and-forget. minus the forgetting.",
-      "import { bus } from 'wicked-bus'",
-      "bus.emit('order.placed', payload)   // at-least-once",
-      "bus.subscribe('order.*', handle)"
-    ]
-  },
-  'wicked-loom': {
-    tagline: 'Teaches the agent what you built before you got here.',
-    repo: 'https://github.com/mikeparcewski/wicked-loom',
-    ext: 'py', glyph: 'PY', install: 'pip install',
-    lines: [
-      "# teaches the agent what you built before you got here.",
-      "from wicked_loom import loom",
-      "playbook = await loom.weave(repo)"
+      "// harnesses the coding agents you already pay for. owns the workflow, not the work.",
+      "$ wicked-crew launch --type feature \\",
+      "    --problem 'Add OAuth to the API'",
+      "// → { session_id, current_phase: 'clarify', deny_dominates: true }"
     ]
   }
 };
@@ -130,12 +76,11 @@ var LIB_SNIPPETS = {
 /* keyword set spans JS/TS + Python (a few extra keywords highlight harmlessly) */
 var TS_KEYWORDS = { 'import': 1, 'from': 1, 'await': 1, 'const': 1, 'let': 1, 'var': 1, 'return': 1, 'new': 1, 'def': 1, 'async': 1, 'class': 1, 'for': 1, 'in': 1, 'with': 1, 'None': 1, 'True': 1, 'False': 1, 'not': 1, 'and': 1, 'or': 1 };
 
-/* highlightLine — tokenizes ONE escaped-safe TS line into syntax spans.
-   Comments (everything from // onward) → .cm. Strings ('...') → .st.
-   Keywords → .kw. The text is escaped first (esc) so the snippet is safe;
-   tokens are wrapped in spans whose contents are themselves escaped. */
+/* highlightLine — tokenizes ONE escaped-safe line into syntax spans.
+   Comments (// … or # …) → .cm. Strings ('…') → .st. Keywords → .kw. The
+   text is escaped first (esc) so the snippet is safe. */
 function highlightLine(raw){
-  /* split off a trailing/inline comment (// ...) — but not inside a string */
+  /* split off a trailing/inline comment — but not inside a string */
   var code = raw, comment = '';
   var inStr = false, q = '';
   for(var i=0;i<raw.length;i++){
@@ -186,11 +131,11 @@ function boot(){
   var readoutCta=document.getElementById('readoutCta');
   var editorTabs=Array.prototype.slice.call(document.querySelectorAll('.editor-tab'));
   var allLeaves=Array.prototype.slice.call(document.querySelectorAll('.tree-leaf[data-idx]'));
-  /* the 3 accelerator (site) leaves map their data-preview → FEATURED idx */
+  /* the 3 site leaves map their data-preview → FEATURED idx */
   var siteLeaves=allLeaves.filter(function(l){return l.dataset.mode==='site';});
 
   var activeSite=0;        /* current FEATURED preview index (0..2) */
-  var activeLeafIdx=0;     /* current tree leaf data-idx (0..8) */
+  var activeLeafIdx=0;     /* current tree leaf data-idx (0..6) */
   var mode='site';         /* 'site' | 'lib' */
 
   /* ── wipeSlot — two-layer clip-path inset wipe (reduced-motion gated) ── */
@@ -238,7 +183,7 @@ function boot(){
     });
   }
 
-  /* ── MODE (a): show a site (accelerator) ── */
+  /* ── MODE (a): show a site ── */
   function showSite(featIdx, leafIdx){
     mode='site';
     activeSite=featIdx;
@@ -266,11 +211,11 @@ function boot(){
     if(browserFrame)browserFrame.hidden=true;
     if(codeCard){codeCard.hidden=false;codeCard.setAttribute('aria-hidden','false');}
 
-    if(codeFile)codeFile.textContent=libKey+'.'+(snip.ext||'ts');
-    if(ccGlyph)ccGlyph.textContent=snip.glyph||'TS';
+    if(codeFile)codeFile.textContent=libKey+'.'+(snip.ext||'js');
+    if(ccGlyph)ccGlyph.textContent=snip.glyph||'JS';
     if(crumbName)crumbName.textContent=libKey;
     if(readoutDesc)readoutDesc.textContent=snip.tagline;
-    if(readoutCta){readoutCta.href=safeUrl(snip.repo);readoutCta.textContent=(snip.install||'npm i')+' '+libKey+' ↗';}
+    if(readoutCta){readoutCta.href=safeUrl(snip.repo);readoutCta.textContent=snip.cta||((snip.install||'npm i')+' '+libKey+' ↗');}
 
     /* render the snippet with a real line-number gutter + syntax spans */
     if(codeBlock){
@@ -295,17 +240,17 @@ function boot(){
     }
   }
   function selectSiteByPreview(featIdx){
-    /* used by tabs + auto-rotation — find the matching site leaf for state */
+    /* used by tabs — find the matching site leaf for state */
     var leaf=siteLeaves.filter(function(l){return parseInt(l.dataset.preview,10)===featIdx;})[0];
     showSite(featIdx, leaf?parseInt(leaf.dataset.idx,10):activeLeafIdx);
   }
 
   /* ── SCROLL-DRIVEN WALK ───────────────────────────────────────────
-     The Shipped section is a tall "track" with a pinned IDE stage and 9
-     invisible snap steps (.ide-step, data-step 0..8). Scrolling snaps
+     The Shipped section is a tall "track" with a pinned IDE stage and 7
+     invisible snap steps (.ide-step, data-step 0..6). Scrolling snaps
      step-by-step; an IntersectionObserver maps the most-visible step → the
-     matching package (data-idx), opening that folder, closing the rest, and
-     driving the preview. No timer — the visitor's scroll IS the walk. */
+     matching package, opening that folder, closing the rest, and driving the
+     preview. No timer — the visitor's scroll IS the walk. */
   function setFolderOpen(folder,open){
     folder.classList.toggle('is-collapsed',!open);
     var b=folder.querySelector('.folder-row');
@@ -341,14 +286,22 @@ function boot(){
   }
 
   function initPreview(){
-    /* paint the first accelerator without the wipe transition */
-    var p=FEATURED[0];
+    /* paint the FIRST site leaf (DOM order) without the wipe transition —
+       robust to folder ordering: use the leaf's own data-preview, not a
+       hardcoded FEATURED[0]. */
+    var firstLeaf=siteLeaves[0];
+    var featIdx=firstLeaf?parseInt(firstLeaf.dataset.preview,10):0;
+    activeSite=featIdx;
+    var p=FEATURED[featIdx];
     var front=browserShot.querySelector('.shot-bg-front');
     front.style.clipPath='inset(0 0 0 0)';
     front.style.backgroundImage="url('"+p.screenshot+"')";
-    var firstLeaf=siteLeaves[0];
     activeLeafIdx=firstLeaf?parseInt(firstLeaf.dataset.idx,10):0;
-    syncActive(activeLeafIdx, 0);
+    if(previewUrl)previewUrl.textContent=p.url.replace('https://','');
+    if(crumbName)crumbName.textContent=p.name;
+    if(readoutDesc)readoutDesc.textContent=p.desc;
+    if(readoutCta)readoutCta.href=safeUrl(p.url);
+    syncActive(activeLeafIdx, featIdx);
   }
 
   function buildPreview(){
@@ -357,12 +310,13 @@ function boot(){
     /* the visitor's scroll position drives the package walk (no timer) */
     wireScrollSteps();
 
-    /* editor-tab click → jump to that accelerator's step (scroll-synced) */
+    /* editor-tab click → jump to that site's step (scroll-synced) */
     editorTabs.forEach(function(tab){
       tab.addEventListener('click',function(){
         var fi=parseInt(tab.dataset.idx,10);
         selectSiteByPreview(fi);
-        scrollToStep(fi);
+        var leaf=siteLeaves.filter(function(l){return parseInt(l.dataset.preview,10)===fi;})[0];
+        if(leaf)scrollToStep(parseInt(leaf.dataset.idx,10));
       });
     });
 
@@ -377,14 +331,17 @@ function boot(){
         else if(e.key==='ArrowLeft'||e.key==='ArrowUp')next=(idx-1+editorTabs.length)%editorTabs.length;
         else if(e.key==='Home')next=0;
         else if(e.key==='End')next=editorTabs.length-1;
-        if(next>=0){e.preventDefault();editorTabs[next].focus();selectSiteByPreview(next);scrollToStep(next);}
+        if(next>=0){
+          e.preventDefault();editorTabs[next].focus();selectSiteByPreview(next);
+          var leaf=siteLeaves.filter(function(l){return parseInt(l.dataset.preview,10)===next;})[0];
+          if(leaf)scrollToStep(parseInt(leaf.dataset.idx,10));
+        }
       });
     }
 
-    /* EVERY tree leaf (all nine) drives the preview pane — site OR lib.
-       Left-click without modifiers updates the in-page preview; the leaf
-       keeps its href so cmd/ctrl-click and the keyboard still open the
-       real destination in a new tab. */
+    /* EVERY tree leaf drives the preview pane — site OR lib. Left-click
+       without modifiers updates the in-page preview; the leaf keeps its href
+       so cmd/ctrl-click and the keyboard still open the real destination. */
     allLeaves.forEach(function(leaf){
       leaf.addEventListener('click',function(e){
         if(e.metaKey||e.ctrlKey||e.shiftKey||e.button===1)return; /* let new-tab through */

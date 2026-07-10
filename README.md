@@ -35,21 +35,29 @@ npm run preview  # preview the production build locally
 
 ## Deploy
 
-Deployed to **GitHub Pages** via `.github/workflows/deploy.yml` — it builds on
-every push to `main` (and on manual `workflow_dispatch`) and publishes `dist/`.
-The workflow stays dormant until a remote is added. The custom domain is set via
-`public/CNAME` (`wickedagile.com`).
+Published to **GitHub Pages**. A dormant, human-gated workflow lives at
+`.github/workflows/pages.yml` — it runs **only** on manual `workflow_dispatch`
+(never on push/merge), so go-live is always a deliberate human action. It builds
+the static site and publishes `dist/` via `upload-pages-artifact` →
+`deploy-pages`. The custom domain is set via `public/CNAME` (`wickedagile.com`),
+so the Astro `site` is `https://wickedagile.com` with no `base` path.
 
-## Status — middle sections stubbed
+## Sections
 
-The three middle sections are **stubs** pending their finalized designs and are
-clearly marked `TODO`:
+Every section is implemented and content-complete:
 
-- `src/components/Articles.astro` — the news-console / writing section
-  (to be decomposed from `index.next.html`).
-- `src/components/Shipped.astro` — the shipped / packages + featured-mosaic
-  section (will import `FEATURED` from `src/scripts/data.js`).
-- `src/components/About.astro` — the book-chapters about section.
+- `src/components/Hero.astro` — the live auto-typing terminal (`/articles`,
+  `/projects`, `/about`; disabled on mobile).
+- `src/components/Articles.astro` — the "yes, and…" dispatch feed, baked from
+  the Medium RSS at build time (`src/lib/articles.mjs`).
+- `src/components/Shipped.astro` — the "shipped." split-editor IDE. A file-tree
+  of the **ten marketed packages** (the 5 products + the 5-repo foundation)
+  drives a dual-mode preview: browser-frame screenshots for the 3 deployed sites,
+  faux code-editor cards for the libraries. Absorbed packages and wicked-vault
+  (a wicked-garden peer, not a headline product) are intentionally excluded.
+- `src/components/About.astro` — the multi-chapter career rail (~30 years, five
+  chapters).
 
-Everything else — tokens, fonts, theme system, topbar/nav, footer, and the hero
-terminal — is the faithfully-ported final design.
+The shared chrome — tokens, fonts, theme system, topbar/nav, footer, and the
+`SameGarden` cross-promo grid — comes from the `wicked-web` package, and this
+site is the canonical source those tokens are defined against.
