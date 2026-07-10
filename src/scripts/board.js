@@ -70,7 +70,9 @@ function boot() {
 
   function stratumEl(id) { return panel.querySelector('.stratum[data-stratum="' + id + '"]'); }
   function tileEl(key) { return panel.querySelector('.tile[data-key="' + key + '"]'); }
-  function vitalEl(id) { return panel.querySelector('.vital[data-vital="' + id + '"]'); }
+  /* Vitals live in the LEFT rail (.stack-intro), NOT inside #opBoard — query
+     the document so the climb actually cures them red→green. */
+  function vitalEl(id) { return document.querySelector('.vital[data-vital="' + id + '"]'); }
 
   function energize(id, live) {
     var s = stratumEl(id);
