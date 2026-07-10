@@ -1,96 +1,130 @@
 /* ──────────────────────────────────────────────────────────────
-   wickedagile — THE OPERABILITY BOARD driver (living-panel edition).
+   wickedagile — THE STACK driver (three-strata operability machine).
 
-   Two responsibilities:
-   1. AUTO-CYCLE the panel on its own — an ambient self-test that keeps
-      flipping product switches, curing/relapsing the four Agent Vitals
-      red↔green and filling the segmented COVERAGE meter. No visitor input
-      drives it; it just runs (paused while a modal is open or the tab is
-      hidden). Under prefers-reduced-motion it settles OPERABLE and stops.
-   2. Open a per-product MODAL when a product tile is clicked. Esc, the
-      scrim, and the ✕ all close it; focus returns to the tile.
+   Three responsibilities:
+   1. CLIMB the current up the stack — an ambient self-test that energizes
+      each stratum bottom→top (Building Blocks → Utilities → Solutions),
+      lighting its product tiles and curing the four Agent Vitals red→green,
+      finishing OPERABLE. Holds, then relapses and loops. No visitor input
+      drives it (paused while a modal is open or the tab is hidden). Under
+      prefers-reduced-motion it settles OPERABLE and never cycles.
+   2. Open a per-product MODAL when a product tile is clicked. Esc, the scrim,
+      and the ✕ all close it; focus returns to the tile.
+   3. Wire the INSTALL copy button (clipboard, with a graceful fallback).
    ────────────────────────────────────────────────────────────── */
 'use strict';
 
 function boot() {
   var panel = document.getElementById('opBoard');
-  if (!panel) return; /* board markup absent — nothing to drive */
 
-  var tiles = Array.prototype.slice.call(panel.querySelectorAll('.tile[data-key]'));
-  var TOTAL = tiles.length; /* 7 real products */
+  /* ── INSTALL COPY (works even if the stack panel is absent) ─────── */
+  (function () {
+    var btn = document.querySelector('.install-copy');
+    if (!btn) return;
+    btn.addEventListener('click', function () {
+      var text = btn.getAttribute('data-copy') || '';
+      function ok() {
+        var prev = btn.textContent;
+        btn.textContent = 'copied';
+        btn.classList.add('is-copied');
+        window.setTimeout(function () {
+          btn.textContent = prev;
+          btn.classList.remove('is-copied');
+        }, 1400);
+      }
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(ok, fallback);
+      } else {
+        fallback();
+      }
+      function fallback() {
+        try {
+          var ta = document.createElement('textarea');
+          ta.value = text; ta.setAttribute('readonly', '');
+          ta.style.position = 'absolute'; ta.style.left = '-9999px';
+          document.body.appendChild(ta); ta.select();
+          document.execCommand('copy');
+          document.body.removeChild(ta);
+          ok();
+        } catch (e) { /* copy unavailable — no-op */ }
+      }
+    });
+  })();
+
+  if (!panel) return; /* stack markup absent — nothing else to drive */
+
   var opWord = document.getElementById('opWord');
   var opLog = document.getElementById('opLog');
-  var covPct = document.getElementById('covPct');
 
-  // which product cures which agent vital
-  var VITAL = { estate: 'sees', brain: 'remembers', testing: 'judges', bus: 'coordinates' };
-  var FIX = {
-    estate: 'SEES — queries a typed graph',
-    brain: 'REMEMBERS — persistent memory',
-    testing: 'JUDGES — reviewer runs blind',
-    bus: 'COORDINATES — events flow',
-    garden: 'BUILD — done is re-derived',
-    interactive: 'BUILD — say it, watch it build',
-    crew: 'OPERATE — phases governed',
+  /* which stratum energizes which tiles + cures which vitals, bottom→top */
+  var SEQUENCE = ['blocks', 'utilities', 'solutions'];
+  var TILES = { blocks: ['estate', 'brain', 'bus'], utilities: ['garden', 'testing'], solutions: ['crew', 'interactive'] };
+  var VITALS = { blocks: ['sees', 'remembers', 'coordinates'], utilities: ['judges'], solutions: [] };
+  var LOG = {
+    reset: 'raw agent — blind, amnesiac, self-grading, alone',
+    blocks: '+ BUILDING BLOCKS — sees · remembers · coordinates',
+    utilities: '+ UTILITIES — judges (the reviewer runs blind)',
+    solutions: '+ SOLUTIONS — build it and drive it',
+    op: 'OPERABLE — every vital green',
   };
 
-  var on = Object.create(null); /* key -> bool */
+  function stratumEl(id) { return panel.querySelector('.stratum[data-stratum="' + id + '"]'); }
+  function tileEl(key) { return panel.querySelector('.tile[data-key="' + key + '"]'); }
+  function vitalEl(id) { return panel.querySelector('.vital[data-vital="' + id + '"]'); }
 
-  function tileFor(key) { return panel.querySelector('.tile[data-key="' + key + '"]'); }
-
-  function setState(key, isOn) {
-    on[key] = !!isOn;
-    var t = tileFor(key);
-    if (t) t.classList.toggle('is-on', isOn);
-    var seg = panel.querySelector('.cov-seg[data-key="' + key + '"]');
-    if (seg) seg.classList.toggle('is-lit', isOn);
-    var vit = VITAL[key];
-    if (vit) {
-      var v = panel.querySelector('.vital[data-vital="' + vit + '"]');
-      if (v) v.setAttribute('data-state', isOn ? 'ok' : 'fail');
-    }
+  function energize(id, live) {
+    var s = stratumEl(id);
+    if (s) s.classList.toggle('is-live', live);
+    (TILES[id] || []).forEach(function (k) {
+      var t = tileEl(k); if (t) t.classList.toggle('is-on', live);
+    });
+    (VITALS[id] || []).forEach(function (vid) {
+      var v = vitalEl(vid); if (v) v.setAttribute('data-state', live ? 'ok' : 'fail');
+    });
   }
 
-  function count() {
-    var n = 0;
-    for (var i = 0; i < tiles.length; i++) {
-      if (on[tiles[i].getAttribute('data-key')]) n++;
-    }
-    return n;
+  function reset() {
+    SEQUENCE.forEach(function (id) { energize(id, false); });
+    panel.setAttribute('data-operable', 'false');
+    if (opWord) opWord.textContent = 'STANDBY';
+    if (opLog) opLog.textContent = LOG.reset;
   }
 
-  function refresh(lastKey, lastOn) {
-    var n = count();
-    if (covPct) covPct.textContent = Math.round((n / TOTAL) * 100) + '%';
-    var operable = n === TOTAL;
-    panel.setAttribute('data-operable', operable ? 'true' : 'false');
-    if (opWord) opWord.textContent = operable ? 'OPERABLE' : (n === 0 ? 'STANDBY' : 'PARTIAL');
-    if (opLog) {
-      if (operable) opLog.textContent = 'OPERABLE — every vital green';
-      else if (n === 0) opLog.textContent = 'raw agent — all systems failing';
-      else if (lastKey) opLog.textContent = (lastOn ? '+ ' : '– ') + (FIX[lastKey] || lastKey);
-      else opLog.textContent = n + ' of ' + TOTAL + ' online';
-    }
+  function settleOperable() {
+    SEQUENCE.forEach(function (id) { energize(id, true); });
+    panel.setAttribute('data-operable', 'true');
+    if (opWord) opWord.textContent = 'OPERABLE';
+    if (opLog) opLog.textContent = LOG.op;
   }
 
-  /* ── AUTO-CYCLE ──────────────────────────────────────────────── */
   var reduced = window.matchMedia &&
     window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+  /* ── CLIMB LOOP ──────────────────────────────────────────────── */
+  /* step 0: reset · 1: blocks · 2: utilities · 3: solutions+operable ·
+     4–5: hold · then loop. */
+  var step = 0;
   var timer = null;
   var paused = false;
 
   function tick() {
-    // Evolve the combination: flip one or two random switches per beat, so
-    // the panel reads as a living machine rather than a fixed pattern.
-    var flips = 1 + (Math.random() < 0.4 ? 1 : 0);
-    var lastKey = null, lastOn = false;
-    for (var f = 0; f < flips; f++) {
-      var key = tiles[(Math.random() * tiles.length) | 0].getAttribute('data-key');
-      setState(key, !on[key]);
-      lastKey = key; lastOn = on[key];
+    switch (step) {
+      case 0: reset(); break;
+      case 1:
+        energize('blocks', true);
+        if (opWord) opWord.textContent = 'PARTIAL';
+        if (opLog) opLog.textContent = LOG.blocks;
+        break;
+      case 2:
+        energize('utilities', true);
+        if (opLog) opLog.textContent = LOG.utilities;
+        break;
+      case 3:
+        settleOperable();
+        break;
+      /* 4,5 hold operable */
     }
-    refresh(lastKey, lastOn);
+    step = (step + 1) % 6;
   }
 
   function start() {
@@ -101,19 +135,14 @@ function boot() {
     if (timer) { window.clearInterval(timer); timer = null; }
   }
 
-  // initial paint
   if (reduced) {
-    tiles.forEach(function (t) { setState(t.getAttribute('data-key'), true); });
-    refresh();
+    settleOperable();
   } else {
-    // seed a couple on for immediate life, then run
-    setState('estate', true);
-    setState('bus', true);
-    refresh();
+    reset();
+    step = 1;
     start();
   }
 
-  // pause when the tab is hidden — polite + saves cycles
   document.addEventListener('visibilitychange', function () {
     if (document.hidden) stop(); else start();
   });
@@ -121,12 +150,13 @@ function boot() {
   /* ── MODALS ──────────────────────────────────────────────────── */
   var overlay = document.getElementById('modalOverlay');
   var cards = overlay ? Array.prototype.slice.call(overlay.querySelectorAll('.modal-card')) : [];
+  var tiles = Array.prototype.slice.call(panel.querySelectorAll('.tile[data-key]'));
   var lastTrigger = null;
 
   function openModal(key, trigger) {
     if (!overlay) return;
     lastTrigger = trigger || null;
-    paused = true; stop(); /* freeze the panel while reading */
+    paused = true; stop(); /* freeze the climb while reading */
     overlay.hidden = false;
     cards.forEach(function (c) { c.hidden = c.getAttribute('data-key') !== key; });
     document.documentElement.style.overflow = 'hidden';
@@ -140,7 +170,7 @@ function boot() {
     overlay.hidden = true;
     cards.forEach(function (c) { c.hidden = true; });
     document.documentElement.style.overflow = '';
-    paused = false; start(); /* resume the panel */
+    paused = false; start(); /* resume the climb */
     if (lastTrigger && typeof lastTrigger.focus === 'function') lastTrigger.focus();
     lastTrigger = null;
   }

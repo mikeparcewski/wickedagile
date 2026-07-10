@@ -1,222 +1,253 @@
 ---
 /**
- * Board.astro — THE OPERABILITY BOARD (living panel edition).
+ * Board.astro — THE STACK (wave-4 reimagination).
  *
- * A self-running mission-control panel. It AUTO-CYCLES on its own — an ambient
- * animation that keeps toggling product switches, curing/relapsing the four
- * Agent Vitals red↔green and filling a segmented COVERAGE meter. No visitor
- * input drives the animation (the old UMBRELLA master + RESET are gone).
+ * The family front-door centerpiece, rebuilt around the canonical wave-4
+ * taxonomy as a LITERAL three-strata operability stack:
  *
- * The visitor's ONE job: each of the seven product tiles is a CLICKABLE button
- * that opens a modal with a distinct, on-brand, product-specific design and a
- * link to that product's site (garden/interactive/crew/testing/estate) or its
- * GitHub repo (bus/brain). Canonical one-liners/blurbs from CANONICAL-MESSAGING.
+ *     SOLUTIONS      crew · interactive        (top — drive the work)
+ *     UTILITIES      garden · testing          (middle — sharpen the loop)
+ *     BUILDING BLOCKS  estate · brain · bus     (base — the bedrock)
  *
- * Surface: the panel is hardcoded near-black brushed metal (#0d0f12) in BOTH
- * themes — a physical machine, not themed web chrome (matches the hero
- * terminal). The section GROUND uses theme tokens. Signal-yellow = live,
- * red = failing vital, green = cured. Sizes to content; fits a 1440px viewport
- * with no horizontal overflow. Under prefers-reduced-motion the panel settles
- * OPERABLE and stops cycling. Behaviour: ../scripts/board.js. CSS is is:global.
+ * Stacked bottom→top (Building Blocks at the base, Solutions on top), per
+ * canonical. A single signal-yellow "current" spine runs up the right-hand
+ * stack and QUIVERS (subtle motion). The left rail carries the thesis, the
+ * AGENT VITALS payoff (a raw agent cured in real time as the current climbs),
+ * and the PRIMARY cross-family install — `npx wicked-installer`.
+ *
+ * Each product tile is a CLICKABLE button opening a distinct on-brand modal.
+ * Every modal ALWAYS shows the product's GitHub repo link, plus its live site
+ * when it has one. Copy is honest per CANONICAL-MESSAGING wave-4:
+ * crew = the harness for your agent harnesses (agentic execution platform,
+ * NOT a daemon); bus = a durable, tiered event fabric (single-host is the
+ * honest boundary — never distributed); estate = the substrate everything
+ * queries (graph + memory + knowledge).
+ *
+ * Surface: the stack panel is hardcoded near-black brushed metal (#0d0f12) in
+ * BOTH themes — a physical machine, matching the hero terminal. The section
+ * GROUND uses theme tokens. Fits a 1440px viewport with no horizontal
+ * overflow; collapses cleanly at 390px. Under prefers-reduced-motion the
+ * current stops quivering and the stack settles OPERABLE. Driver:
+ * ../scripts/board.js. CSS is is:global.
  */
 
+// SCENE motifs reused per product in the modal header band.
+const SCENES = {
+  estate: '<div class="sc sc-estate"><svg viewBox="0 0 220 96" preserveAspectRatio="xMidYMid meet" aria-hidden="true"><line x1="40" y1="30" x2="105" y2="20"/><line x1="105" y1="20" x2="170" y2="34"/><line x1="40" y1="30" x2="72" y2="72"/><line x1="72" y1="72" x2="150" y2="70"/><line x1="105" y1="20" x2="72" y2="72"/><circle cx="40" cy="30" r="8"/><circle cx="105" cy="20" r="10" class="hub"/><circle cx="170" cy="34" r="8"/><circle cx="72" cy="72" r="8"/><circle cx="150" cy="70" r="8"/><text x="118" y="16">0.94</text></svg></div>',
+  brain: '<div class="sc sc-brain"><span class="doc"></span><span class="lk">[[ ]]</span><span class="doc"></span><span class="lk">[[ ]]</span><span class="doc"></span></div>',
+  bus: '<div class="sc sc-bus"><span class="track"></span><i class="ev"></i><i class="ev"></i><i class="ev"></i><i class="ev"></i></div>',
+  garden: '<div class="sc sc-garden"><i></i><i></i><i class="sp"></i><i></i><i class="sp"></i><i></i><i></i><i class="sp"></i></div>',
+  testing: '<div class="sc sc-test"><span class="lane">W</span><span class="lane">E</span><span class="wall"></span><span class="lane rev">R ✓</span></div>',
+  crew: '<div class="sc sc-crew"><span class="ph">clarify</span><span class="ph">design</span><span class="ph gate">gate ◆</span><span class="ph">build</span><span class="ph on">ship</span></div>',
+  interactive: '<div class="sc sc-int"><span class="bar"></span><span class="bar sel">this block<b class="caret"></b></span><span class="bar"></span></div>',
+};
+
 // Each product tile carries everything the tile AND its modal need.
+// `stratum` = building-block | utility | solution. `vital` = which of the four
+// agent vitals this product cures (null = doesn't map to a vital).
 const PRODUCTS = [
+  // ── BUILDING BLOCKS — the bedrock everything queries ──────────────
   {
-    key: 'garden', name: 'garden', full: 'wicked-garden',
-    group: 'BUILD', meta: 'v12 · npm', vital: null,
-    fix: 're-derives “done” from evidence',
-    one: 'Curated toolkit for what coding agents can’t do alone.',
-    blurb: 'Fills only the gaps a planner-executor can’t fill alone — and refuses to wrestle your harness for everything else.',
-    feats: ['Evidence-gated prove — done is re-derived, never asserted', 'Injected-edge graph grep can’t see', 'A real multi-model council, not self-review'],
-    diff: 'A false “tests pass” is REJECTED — the gate re-runs the recorded evidence instead of trusting the claim.',
-    href: 'https://wg.wickedagile.com', link: 'wg.wickedagile.com',
-    scene: '<div class="sc sc-garden"><i></i><i></i><i class="sp"></i><i></i><i class="sp"></i><i></i><i></i><i class="sp"></i></div>',
-  },
-  {
-    key: 'interactive', name: 'interactive', full: 'wicked-interactive',
-    group: 'BUILD', meta: 'v0.5 · plugin', vital: null,
-    fix: 'say it, watch it build',
-    one: 'Describe it, watch it build in your browser, ship it.',
-    blurb: 'Describe a deck, doc, or landing page in plain language and a live themed draft renders instantly. Highlight a block, say the change — only that block reworks.',
-    feats: ['Point-and-say block-level editing', 'Live in-browser first draft — no blank page', 'Export to HTML · PDF · PPTX · video'],
-    diff: 'Proof by layout, not by claim — everything you didn’t touch stays exactly as it was.',
-    href: 'https://wi.wickedagile.com', link: 'wi.wickedagile.com',
-    scene: '<div class="sc sc-int"><span class="bar"></span><span class="bar sel">this block<b class="caret"></b></span><span class="bar"></span></div>',
-  },
-  {
-    key: 'crew', name: 'crew', full: 'wicked-crew',
-    group: 'OPERATE', meta: 'v0.2 · npm', vital: null,
-    fix: 'governed phase lifecycle',
-    one: 'External daemon that governs multi-phase AI development workflows.',
-    blurb: 'A standalone daemon that runs above your agents — owning the phase lifecycle clarify → design → test → build → ship — and never writing code itself.',
-    feats: ['Deterministic deny-dominates gates (no LLM on the gate path)', 'SQLite checkpointing — crash the daemon and resume', 'Council: fan one prompt to N CLIs, synthesize'],
-    diff: 'It owns the workflow structure without owning the work — stateless AI CLIs are the workers.',
-    href: 'https://wc.wickedagile.com', link: 'wc.wickedagile.com',
-    scene: '<div class="sc sc-crew"><span class="ph">clarify</span><span class="ph">design</span><span class="ph gate">gate ◆</span><span class="ph">build</span><span class="ph on">ship</span></div>',
-  },
-  {
-    key: 'testing', name: 'testing', full: 'wicked-testing',
-    group: 'OPERATE', meta: 'v0.7 · npm', vital: 'judges',
-    fix: 'can’t grade its own homework',
-    one: 'A complete QE team for AI coding CLIs that can’t self-grade.',
-    blurb: 'A full QE team from planning through judgment, with enforced separation between the agent that runs tests and the agent that grades them.',
-    feats: ['3-agent pipeline: Writer → Executor → Reviewer', '40 agents across 5 orchestrator skills', 'Cold-evidence reviewer isolation'],
-    diff: 'The reviewer reads cold evidence files only — never the executor’s context. That kills the self-grading that inflates AI PASS rates.',
-    href: 'https://wt.wickedagile.com', link: 'wt.wickedagile.com',
-    scene: '<div class="sc sc-test"><span class="lane">W</span><span class="lane">E</span><span class="wall"></span><span class="lane rev">R ✓</span></div>',
-  },
-  {
-    key: 'estate', name: 'estate', full: 'wicked-estate',
-    group: 'FOUNDATION', meta: 'v0.13 · crates.io', vital: 'sees',
-    fix: 'queries a typed graph',
+    key: 'estate', name: 'estate', full: 'wicked-estate', stratum: 'blocks',
+    meta: 'v0.13 · crates.io', vital: 'sees', fix: 'queries a typed graph',
     one: 'The code graph agents actually trust.',
-    blurb: 'Turns any repo into one queryable, typed, ranked graph an agent can use — definitions, who-calls-X, blast-radius, scoped context — instead of grepping and re-reading files.',
-    feats: ['100+ wired languages', 'Precise blast-radius, not text matches', 'SQLite by default · PostgreSQL for a team graph'],
+    blurb: 'The substrate everything else queries — every repo turned into one typed, ranked graph of definitions, callers and blast-radius, with memory and knowledge in the same store.',
+    feats: ['Graph + memory + knowledge in one store', '100+ wired languages · precise blast-radius', 'SQLite by default · PostgreSQL for a team graph'],
     diff: 'Every edge carries confidence + provenance — an agent is never handed a heuristic as a fact.',
-    href: 'https://we.wickedagile.com', link: 'we.wickedagile.com',
-    scene: '<div class="sc sc-estate"><svg viewBox="0 0 220 96" preserveAspectRatio="xMidYMid meet" aria-hidden="true"><line x1="40" y1="30" x2="105" y2="20"/><line x1="105" y1="20" x2="170" y2="34"/><line x1="40" y1="30" x2="72" y2="72"/><line x1="72" y1="72" x2="150" y2="70"/><line x1="105" y1="20" x2="72" y2="72"/><circle cx="40" cy="30" r="8"/><circle cx="105" cy="20" r="10" class="hub"/><circle cx="170" cy="34" r="8"/><circle cx="72" cy="72" r="8"/><circle cx="150" cy="70" r="8"/><text x="118" y="16">0.94</text></svg></div>',
+    site: 'https://we.wickedagile.com', siteLabel: 'we.wickedagile.com',
+    repo: 'https://github.com/mikeparcewski/wicked-estate',
   },
   {
-    key: 'bus', name: 'bus', full: 'wicked-bus',
-    group: 'FOUNDATION', meta: 'v2.2 · npm', vital: 'coordinates',
-    fix: 'at-least-once event bus',
-    one: 'Local-first SQLite event bus for AI agents and dev tools.',
-    blurb: 'A zero-infrastructure event bus: SQLite-backed, poll-based, at-least-once — no servers, no network, events never leave your machine.',
-    feats: ['At-least-once, cursor-poll delivery', 'wicked.<noun>.<verb> event naming', 'Two-timer TTL for dedup + expiry'],
-    diff: 'An event substrate entirely on local SQLite — no network transport and no running server.',
-    href: 'https://github.com/mikeparcewski/wicked-bus', link: 'github · wicked-bus',
-    scene: '<div class="sc sc-bus"><span class="track"></span><i class="ev"></i><i class="ev"></i><i class="ev"></i><i class="ev"></i></div>',
-  },
-  {
-    key: 'brain', name: 'brain', full: 'wicked-brain',
-    group: 'FOUNDATION', meta: 'v0.17 · npm', vital: 'remembers',
-    fix: 'markdown + SQLite memory',
+    key: 'brain', name: 'brain', full: 'wicked-brain', stratum: 'blocks',
+    meta: 'v0.17 · npm', vital: 'remembers', fix: 'markdown + SQLite memory',
     one: 'Your AI agent’s memory — markdown and SQLite, no vector DB.',
     blurb: 'Persistent, searchable agent memory on plain markdown and SQLite — no embeddings, no vector database, no infrastructure.',
     feats: ['SQLite FTS5 + markdown files on disk', 'Wiki articles with confidence-scored [[backlinks]]', 'Every answer cites a file you can open'],
     diff: 'A RAG alternative where knowledge is human-readable and every claim traces to a source — the agent, not a vector index, reasons.',
-    href: 'https://github.com/mikeparcewski/wicked-brain', link: 'github · wicked-brain',
-    scene: '<div class="sc sc-brain"><span class="doc"></span><span class="lk">[[ ]]</span><span class="doc"></span><span class="lk">[[ ]]</span><span class="doc"></span></div>',
+    repo: 'https://github.com/mikeparcewski/wicked-brain',
+  },
+  {
+    key: 'bus', name: 'bus', full: 'wicked-bus', stratum: 'blocks',
+    meta: 'v2.2 · npm', vital: 'coordinates', fix: 'a durable event fabric',
+    one: 'A durable, tiered event fabric for AI agents and dev tools.',
+    blurb: 'A durable event fabric that decouples agents and tools — at-least-once delivery with dead-letter + replay, causality tracking and tiered storage. Built for volume; single-host is the honest boundary.',
+    feats: ['At-least-once delivery with dead-letter + replay', 'Causality tracking · content-addressable storage', 'Tiered storage · push over durable poll'],
+    diff: 'A durable event fabric that handles real volume with no external broker and no running server — on a single host.',
+    repo: 'https://github.com/mikeparcewski/wicked-bus',
+  },
+  // ── UTILITIES — sharpen the loop ──────────────────────────────────
+  {
+    key: 'garden', name: 'garden', full: 'wicked-garden', stratum: 'utilities',
+    meta: 'v12 · npm', vital: null, fix: 're-derives “done”',
+    one: 'Curated toolkit for what coding agents can’t do alone.',
+    blurb: 'Fills only the gaps a planner-executor can’t fill alone — and refuses to wrestle your harness for everything else.',
+    feats: ['Evidence-gated prove — done is re-derived, never asserted', 'Injected-edge graph grep can’t see', 'A real multi-model council, not self-review'],
+    diff: 'A false “tests pass” is REJECTED — the gate re-runs the recorded evidence instead of trusting the claim.',
+    site: 'https://wg.wickedagile.com', siteLabel: 'wg.wickedagile.com',
+    repo: 'https://github.com/mikeparcewski/wicked-garden',
+  },
+  {
+    key: 'testing', name: 'testing', full: 'wicked-testing', stratum: 'utilities',
+    meta: 'v0.7 · npm', vital: 'judges', fix: 'can’t self-grade',
+    one: 'A complete QE team for AI coding CLIs that can’t self-grade.',
+    blurb: 'A full QE team from planning through judgment, with enforced separation between the agent that runs tests and the agent that grades them.',
+    feats: ['3-agent pipeline: Writer → Executor → Reviewer', '40 agents across 5 orchestrator skills', 'Cold-evidence reviewer isolation'],
+    diff: 'The reviewer reads cold evidence files only — never the executor’s context. That kills the self-grading that inflates AI PASS rates.',
+    site: 'https://wt.wickedagile.com', siteLabel: 'wt.wickedagile.com',
+    repo: 'https://github.com/mikeparcewski/wicked-testing',
+  },
+  // ── SOLUTIONS — drive the work ────────────────────────────────────
+  {
+    key: 'crew', name: 'crew', full: 'wicked-crew', stratum: 'solutions',
+    meta: 'v0.2 · npm', vital: null, fix: 'harnesses your agents',
+    one: 'The harness for your agent harnesses.',
+    blurb: 'An agentic execution platform that harnesses the coding agents and subscriptions you already have — paid and free — to run durable, multi-agent workflows behind one interface to configure and drive all of it.',
+    feats: ['Harnesses the coding agents + subscriptions you already pay for', 'Durable multi-agent workflows — with prebuilt ones ready to run', 'Intent-driven — spec-driven dev’s outcome without the spec theater'],
+    diff: 'It owns the workflow structure without owning the work — your existing agents are the workers, driven from one interface. Deterministic deny-dominates gates underneath.',
+    site: 'https://wc.wickedagile.com', siteLabel: 'wc.wickedagile.com',
+    repo: 'https://github.com/mikeparcewski/wicked-crew',
+  },
+  {
+    key: 'interactive', name: 'interactive', full: 'wicked-interactive', stratum: 'solutions',
+    meta: 'v0.5 · plugin', vital: null, fix: 'say it, watch it build',
+    one: 'Describe it, watch it build in your browser, ship it.',
+    blurb: 'Describe a deck, doc or landing page in plain language and a live themed draft renders instantly. Highlight a block, say the change — only that block reworks.',
+    feats: ['Point-and-say block-level editing', 'Live in-browser first draft — no blank page', 'Export to HTML · PDF · PPTX · video'],
+    diff: 'Proof by layout, not by claim — everything you didn’t touch stays exactly as it was.',
+    site: 'https://wi.wickedagile.com', siteLabel: 'wi.wickedagile.com',
+    repo: 'https://github.com/mikeparcewski/wicked-interactive',
   },
 ];
 
-const BANKS = [
-  { id: 'build', legend: 'BUILD', sub: 'make the thing' },
-  { id: 'operate', legend: 'OPERATE', sub: 'run the work' },
-  { id: 'foundation', legend: 'FOUNDATION', sub: 'what it stands on' },
+// Strata rendered TOP→BOTTOM in the DOM = Solutions, Utilities, Building
+// Blocks, so the stack reads bottom→top with Building Blocks at the base.
+const STRATA = [
+  { id: 'solutions', name: 'Solutions', sub: 'drive the work' },
+  { id: 'utilities', name: 'Utilities', sub: 'sharpen the loop' },
+  { id: 'blocks', name: 'Building Blocks', sub: 'the bedrock' },
 ];
-const byGroup = (g) => PRODUCTS.filter((p) => p.group === g);
+const byStratum = (id) => PRODUCTS.filter((p) => p.stratum === id);
 
-// Left-to-right readout of the four things a raw agent gets wrong.
+// Left-to-right readout of the four things a raw agent gets wrong, and the
+// product that cures each.
 const VITALS = [
   { id: 'sees', name: 'SEES', fail: 'greps files', cure: 'queries a typed graph' },
   { id: 'remembers', name: 'REMEMBERS', fail: 'amnesiac', cure: 'markdown + SQLite memory' },
   { id: 'judges', name: 'JUDGES', fail: 'self-grades', cure: 'reviewer runs blind' },
-  { id: 'coordinates', name: 'COORDINATES', fail: 'isolated', cure: 'at-least-once bus' },
+  { id: 'coordinates', name: 'COORDINATES', fail: 'isolated', cure: 'a durable event fabric' },
 ];
+
+const withScene = (p) => ({ ...p, scene: SCENES[p.key] || SCENES.estate });
 ---
 
 <!-- ════════════════════════════════════════════════════════════════
-     THE BOARD — a living, self-cycling operability panel
+     THE STACK — a living three-strata operability machine
      ════════════════════════════════════════════════════════════════ -->
-<section class="board-section snap-section" id="projects" aria-labelledby="boardHeading">
-  <div class="board-wrap">
-    <div class="board-head">
-      <span class="board-kicker">THE BOARD · ONE MACHINE, MANY TOOLS</span>
-      <h2 class="board-title" id="boardHeading">the board.</h2>
-      <p class="board-lede">A raw agent runs blind, amnesiac, self-grading and alone. Watch the panel cure it in real time — then <span>tap any product</span> to see how.</p>
-    </div>
+<section class="stack-section snap-section" id="projects" aria-labelledby="stackHeading">
+  <div class="stack-wrap">
+    <div class="stack-layout">
 
-    <!-- THE PANEL: brushed near-black metal, four corner rivets -->
-    <div class="panel" id="opBoard" data-operable="false">
-      <span class="rivet rivet-tl" aria-hidden="true"></span>
-      <span class="rivet rivet-tr" aria-hidden="true"></span>
-      <span class="rivet rivet-bl" aria-hidden="true"></span>
-      <span class="rivet rivet-br" aria-hidden="true"></span>
+      <!-- ── LEFT RAIL: thesis · vitals · install ──────────────────── -->
+      <div class="stack-intro">
+        <span class="stack-kicker">THE FAMILY · ONE MACHINE, THREE STRATA</span>
+        <h2 class="stack-title" id="stackHeading">the stack.</h2>
+        <p class="stack-lede">A raw agent runs blind, amnesiac, self-grading and alone. Seven tools in three strata make it operable — watch the current climb, then <span>tap any tile</span>.</p>
 
-      <!-- brand plate + master status lamp -->
-      <div class="panel-brand">
-        <span class="plate-name">OPERABILITY&nbsp;BOARD</span>
-        <span class="plate-model">wicked&#8209;* · rev. 2026 · self-test running</span>
-        <div class="op-status" id="opStatus">
-          <span class="op-lamp" aria-hidden="true"></span>
-          <span class="op-word" id="opWord">STANDBY</span>
+        <!-- AGENT VITALS — the payoff, cured in real time -->
+        <div class="vitals-card" aria-hidden="true">
+          <div class="vitals-head">
+            <span class="vitals-tag">AGENT VITALS</span>
+            <span class="vitals-note" id="opLog">raw agent — every system failing</span>
+          </div>
+          <div class="vitals">
+            {VITALS.map((v) => (
+              <div class="vital" data-vital={v.id} data-state="fail">
+                <span class="vital-lamp"></span>
+                <span class="vital-body">
+                  <span class="vital-name">{v.name}</span>
+                  <span class="vital-state">
+                    <span class="vs-fail">{v.fail}</span>
+                    <span class="vs-cure">{v.cure}</span>
+                  </span>
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <!-- INSTALL — primary cross-family path -->
+        <div class="install">
+          <span class="install-tag">INSTALL THE FAMILY</span>
+          <div class="install-cmd">
+            <span class="install-prompt" aria-hidden="true">$</span>
+            <code>npx wicked-installer</code>
+            <button class="install-copy" type="button" data-copy="npx wicked-installer" aria-label="Copy install command">copy</button>
+          </div>
+          <p class="install-note">One command installs the <b>wicked</b> CLI across the whole family. Want just one tool? Every product page carries its own npm / cargo / plugin install.</p>
         </div>
       </div>
 
-      <!-- ── AGENT VITALS readout (auto-cycling payoff cluster) ───── -->
-      <div class="readout" aria-hidden="true">
-        <div class="readout-head">
-          <span class="readout-tag">AGENT VITALS</span>
-          <span class="readout-note" id="opLog">raw agent — all systems failing</span>
+      <!-- ── RIGHT: THE STACK PANEL ────────────────────────────────── -->
+      <div class="stack-panel" id="opBoard" data-operable="false">
+        <span class="rivet rivet-tl" aria-hidden="true"></span>
+        <span class="rivet rivet-tr" aria-hidden="true"></span>
+        <span class="rivet rivet-bl" aria-hidden="true"></span>
+        <span class="rivet rivet-br" aria-hidden="true"></span>
+
+        <div class="stack-brand">
+          <span class="stack-plate">OPERABILITY&nbsp;STACK</span>
+          <span class="stack-model">wicked&#8209;* · rev. 2026</span>
+          <span class="op-status">
+            <span class="op-lamp" aria-hidden="true"></span>
+            <span class="op-word" id="opWord">STANDBY</span>
+          </span>
         </div>
-        <div class="vitals">
-          {VITALS.map((v) => (
-            <div class="vital" data-vital={v.id} data-state="fail">
-              <span class="vital-lamp"></span>
-              <span class="vital-body">
-                <span class="vital-name">{v.name}</span>
-                <span class="vital-state">
-                  <span class="vs-fail">{v.fail}</span>
-                  <span class="vs-cure">{v.cure}</span>
-                </span>
-              </span>
+
+        <!-- the three strata + the quivering yellow current spine -->
+        <div class="strata">
+          <span class="current-line" aria-hidden="true"></span>
+          {STRATA.map((s) => (
+            <div class="stratum" data-stratum={s.id}>
+              <span class="stratum-node" aria-hidden="true"></span>
+              <div class="stratum-label">
+                <span class="stratum-name">{s.name}</span>
+                <span class="stratum-sub">{s.sub}</span>
+              </div>
+              <div class="stratum-tiles">
+                {byStratum(s.id).map((p) => (
+                  <button
+                    class={`tile m-${p.key}`}
+                    type="button"
+                    data-key={p.key}
+                    aria-haspopup="dialog"
+                    aria-label={`${p.name} — ${p.fix}. Open details.`}
+                  >
+                    <span class="tile-led" aria-hidden="true"></span>
+                    <span class="tile-txt">
+                      <span class="tile-name">{p.name}</span>
+                      <span class="tile-fix">{p.fix}</span>
+                    </span>
+                    <span class="tile-more" aria-hidden="true">details&nbsp;↗</span>
+                  </button>
+                ))}
+              </div>
             </div>
           ))}
         </div>
-        <div class="cov">
-          <span class="cov-tag">COVERAGE</span>
-          <div class="cov-bar">
-            {PRODUCTS.map((p) => (<i class="cov-seg" data-key={p.key}></i>))}
-          </div>
-          <span class="cov-pct" id="covPct">0%</span>
-        </div>
       </div>
 
-      <!-- ── THREE BANKS OF CLICKABLE PRODUCT TILES ──────────────── -->
-      <div class="banks">
-        {BANKS.map((bank) => (
-          <div class="bank" data-bank={bank.id}>
-            <div class="bank-legend">
-              <span class="bank-name">{bank.legend}</span>
-              <span class="bank-sub">{bank.sub}</span>
-            </div>
-            <div class="bank-tiles">
-              {byGroup(bank.legend).map((p) => (
-                <button
-                  class={`tile m-${p.key}`}
-                  type="button"
-                  data-key={p.key}
-                  aria-haspopup="dialog"
-                  aria-label={`${p.name} — ${p.fix}. Open details.`}
-                >
-                  <span class="tile-led" aria-hidden="true"></span>
-                  <span class="tile-txt">
-                    <span class="tile-name">{p.name}</span>
-                    <span class="tile-fix">{p.fix}</span>
-                  </span>
-                  <span class="tile-more" aria-hidden="true">details&nbsp;↗</span>
-                </button>
-              ))}
-            </div>
-          </div>
-        ))}
-      </div>
     </div>
-
-    <p class="board-foot">Seven real products, cycling live. Tap one to read what it does and open its site.</p>
   </div>
 
-  <!-- ── MODAL OVERLAY (one card per product, distinct per product) ── -->
+  <!-- ── MODAL OVERLAY (one card per product; always shows the repo) ── -->
   <div class="modal-overlay" id="modalOverlay" hidden>
     <div class="modal-scrim" data-close></div>
-    {PRODUCTS.map((p) => (
+    {PRODUCTS.map(withScene).map((p) => (
       <div class={`modal-card m-${p.key}`} data-key={p.key} role="dialog" aria-modal="true" aria-labelledby={`mt-${p.key}`} hidden>
         <button class="modal-x" type="button" aria-label="Close" data-close>✕</button>
         <div class="modal-scene" set:html={p.scene}></div>
         <div class="modal-body">
-          <span class="modal-kicker">{p.group} · {p.meta}</span>
+          <span class="modal-kicker">{p.full === 'wicked-crew' || p.full === 'wicked-interactive' ? 'SOLUTION' : (p.stratum === 'blocks' ? 'BUILDING BLOCK' : 'UTILITY')} · {p.meta}</span>
           <h3 class="modal-name" id={`mt-${p.key}`}>{p.full}</h3>
           <p class="modal-one">{p.one}</p>
           <p class="modal-blurb">{p.blurb}</p>
@@ -224,7 +255,12 @@ const VITALS = [
             {p.feats.map((f) => (<li>{f}</li>))}
           </ul>
           <p class="modal-diff"><span>why it matters</span>{p.diff}</p>
-          <a class="modal-cta" href={p.href} target="_blank" rel="noopener">{p.link}<b aria-hidden="true"> ↗</b></a>
+          <div class="modal-links">
+            {p.site && (
+              <a class="modal-cta" href={p.site} target="_blank" rel="noopener">{p.siteLabel}<b aria-hidden="true"> ↗</b></a>
+            )}
+            <a class="modal-repo" href={p.repo} target="_blank" rel="noopener"><svg viewBox="0 0 16 16" width="13" height="13" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.02-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 012-.27c.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>GitHub repo ↗</a>
+          </div>
         </div>
       </div>
     ))}
@@ -233,38 +269,109 @@ const VITALS = [
 
 <style is:global>
 /* ══════════════════════════════════════════════════════════════════
-   THE OPERABILITY BOARD — a living, self-cycling mission-control panel.
-   Family tokens only (palette/type); a distinct tactile LAYOUT. The panel
-   surface is hardcoded near-black brushed metal in BOTH themes (a physical
-   machine), like the hero terminal. Signal-yellow = live, red = failing
-   vital, green = cured. Sizes to content; fits a 1440px viewport.
+   THE STACK — a living three-strata operability machine.
+   Family tokens only (palette/type); the panel surface is hardcoded
+   near-black brushed metal in BOTH themes (a physical machine), like the
+   hero terminal. Signal-yellow = live current, red = failing vital,
+   green = cured. Fits a 1440px viewport; collapses at 390px.
    ══════════════════════════════════════════════════════════════════ */
-.board-section{
+.stack-section{
   border-top:1px solid var(--hairline);
-  padding:clamp(36px,6vh,72px) 0;
+  padding:clamp(40px,7vh,84px) 0;
 }
-.board-wrap{max-width:1180px;margin:0 auto;padding:0 28px;width:100%}
-.board-head{margin-bottom:clamp(18px,3vh,30px)}
-.board-kicker{
+.stack-wrap{max-width:1240px;margin:0 auto;padding:0 28px;width:100%}
+.stack-layout{
+  display:grid;grid-template-columns:minmax(0,0.82fr) minmax(0,1fr);
+  gap:clamp(26px,3.4vw,52px);align-items:start
+}
+
+/* ── LEFT RAIL ─────────────────────────────────────────────────── */
+.stack-intro{display:flex;flex-direction:column;position:sticky;top:calc(var(--topbar-h) + 22px)}
+.stack-kicker{
   font-family:var(--font-mono);font-size:.66rem;letter-spacing:.3em;text-transform:uppercase;
   color:var(--muted);font-weight:500;display:inline-flex;align-items:center;gap:11px
 }
-.board-kicker::before{content:'';width:26px;height:1px;background:var(--accent)}
-.board-title{
+.stack-kicker::before{content:'';width:26px;height:1px;background:var(--accent);flex-shrink:0}
+.stack-title{
   font-family:var(--font-display);font-weight:900;font-stretch:125%;
-  font-size:clamp(2.2rem,4.4vw,3.4rem);color:var(--ink);
-  line-height:.92;letter-spacing:-.03em;margin:12px 0 0
+  font-size:clamp(2.4rem,4.6vw,3.6rem);color:var(--ink);
+  line-height:.9;letter-spacing:-.03em;margin:14px 0 0
 }
-.board-lede{
-  font-family:var(--font-mono);font-size:.82rem;color:var(--ink);
-  margin:14px 0 0;line-height:1.6;max-width:64ch
+.stack-lede{
+  font-family:var(--font-mono);font-size:.8rem;color:var(--ink);
+  margin:16px 0 0;line-height:1.62;max-width:44ch
 }
-.board-lede span{color:var(--accent);font-weight:700}
+.stack-lede span{color:var(--accent);font-weight:700}
 
-/* ── THE PANEL ─────────────────────────────────────────────────── */
-.panel{
+/* AGENT VITALS card */
+.vitals-card{
+  margin-top:clamp(20px,2.6vh,28px);border-radius:12px;padding:14px 15px;
+  background:linear-gradient(180deg,#070a0d,#0b0f13);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.06), inset 0 6px 20px rgba(0,0,0,.6)
+}
+.vitals-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:11px}
+.vitals-tag{font-family:var(--font-mono);font-weight:700;font-size:.6rem;letter-spacing:.24em;color:rgba(230,237,243,.62)}
+.vitals-note{font-family:var(--font-mono);font-size:.6rem;letter-spacing:.02em;color:var(--accent);text-align:right;min-width:0}
+.vitals{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.vital{
+  display:flex;align-items:flex-start;gap:8px;padding:9px 10px;border-radius:9px;
+  background:rgba(255,255,255,.015);box-shadow:inset 0 0 0 1px rgba(255,255,255,.05);
+  transition:box-shadow .3s var(--ease), background .3s var(--ease)
+}
+.vital-lamp{
+  width:10px;height:10px;border-radius:50%;flex-shrink:0;margin-top:3px;
+  background:#f0413f;box-shadow:0 0 8px 1px rgba(240,65,63,.6), inset 0 0 2px rgba(255,255,255,.5);
+  animation:vitalPulse 1.5s ease-in-out infinite;
+  transition:background .3s var(--ease), box-shadow .3s var(--ease)
+}
+@keyframes vitalPulse{0%,100%{opacity:1}50%{opacity:.55}}
+.vital-body{display:flex;flex-direction:column;gap:2px;min-width:0}
+.vital-name{font-family:var(--font-mono);font-weight:700;font-size:.62rem;letter-spacing:.12em;color:#e6edf3}
+.vital-state{position:relative;font-family:var(--font-mono);font-size:.56rem;line-height:1.3}
+.vs-fail{color:#f0908e}
+.vs-cure{color:#7ee787;display:none}
+.vital[data-state="ok"] .vs-fail{display:none}
+.vital[data-state="ok"] .vs-cure{display:inline}
+.vital[data-state="ok"]{background:rgba(63,185,80,.05);box-shadow:inset 0 0 0 1px rgba(63,185,80,.22)}
+.vital[data-state="ok"] .vital-lamp{
+  background:#3fb950;box-shadow:0 0 9px 1px rgba(63,185,80,.65), inset 0 0 2px rgba(255,255,255,.5);animation:none
+}
+
+/* INSTALL — primary cross-family path */
+.install{margin-top:clamp(18px,2.4vh,26px)}
+.install-tag{
+  font-family:var(--font-mono);font-weight:700;font-size:.58rem;letter-spacing:.24em;
+  text-transform:uppercase;color:var(--muted);display:block;margin-bottom:9px
+}
+.install-cmd{
+  display:flex;align-items:center;gap:10px;
+  padding:11px 12px 11px 14px;border-radius:10px;
+  background:#0a0d10;box-shadow:inset 0 0 0 1px rgba(255,255,255,.1), 0 8px 24px -14px rgba(0,0,0,.8)
+}
+.install-prompt{font-family:var(--font-mono);font-weight:700;color:#3fb950;font-size:.86rem;flex-shrink:0}
+.install-cmd code{
+  font-family:var(--font-mono);font-size:.86rem;font-weight:600;letter-spacing:.01em;
+  color:#e6edf3;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap
+}
+.install-copy{
+  flex-shrink:0;font-family:var(--font-mono);font-size:.58rem;font-weight:700;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--accent-ink);background:var(--accent);
+  border:none;border-radius:7px;padding:6px 12px;cursor:pointer;
+  transition:transform .12s var(--ease), box-shadow .16s var(--ease)
+}
+.install-copy:hover{transform:translateY(-1px);box-shadow:0 5px 16px rgba(255,218,25,.35)}
+.install-copy:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.install-copy.is-copied{background:#3fb950;color:#04150a}
+.install-note{
+  font-family:var(--font-mono);font-size:.62rem;color:var(--muted);
+  margin:10px 0 0;line-height:1.62;max-width:46ch
+}
+.install-note b{color:var(--ink);font-weight:700}
+
+/* ── THE STACK PANEL ───────────────────────────────────────────── */
+.stack-panel{
   position:relative;border-radius:16px;
-  padding:clamp(18px,2.4vw,30px);
+  padding:clamp(18px,2vw,26px);
   background:
     linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,0) 90px),
     repeating-linear-gradient(90deg, rgba(255,255,255,.014) 0 2px, rgba(0,0,0,0) 2px 4px),
@@ -274,27 +381,25 @@ const VITALS = [
     0 0 0 1px rgba(255,255,255,.07),
     inset 0 1px 0 rgba(255,255,255,.06),
     inset 0 -2px 6px rgba(0,0,0,.55);
-  display:grid;gap:clamp(14px,1.8vw,22px);grid-template-columns:1fr;
+  display:flex;flex-direction:column;gap:clamp(14px,1.8vw,20px)
 }
 .rivet{
   position:absolute;width:13px;height:13px;border-radius:50%;
   background:radial-gradient(circle at 38% 32%, #3a3f46, #14171b 68%, #0a0c0f);
-  box-shadow:inset 0 1px 1px rgba(255,255,255,.25), inset 0 -1px 2px rgba(0,0,0,.7), 0 1px 2px rgba(0,0,0,.6);
+  box-shadow:inset 0 1px 1px rgba(255,255,255,.25), inset 0 -1px 2px rgba(0,0,0,.7), 0 1px 2px rgba(0,0,0,.6)
 }
-.rivet::after{content:'';position:absolute;inset:4px;border-top:1px solid rgba(255,255,255,.14);transform:rotate(24deg)}
 .rivet-tl{top:12px;left:12px}.rivet-tr{top:12px;right:12px}
 .rivet-bl{bottom:12px;left:12px}.rivet-br{bottom:12px;right:12px}
 
-/* brand plate row */
-.panel-brand{
-  display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+.stack-brand{
+  display:flex;align-items:center;gap:12px;flex-wrap:wrap;
   padding:2px 4px 12px;border-bottom:1px solid rgba(255,255,255,.08)
 }
-.plate-name{
-  font-family:var(--font-mono);font-weight:700;font-size:.8rem;letter-spacing:.24em;
+.stack-plate{
+  font-family:var(--font-mono);font-weight:700;font-size:.76rem;letter-spacing:.22em;
   color:#e6edf3;text-shadow:0 1px 0 rgba(0,0,0,.8), 0 -1px 0 rgba(255,255,255,.05)
 }
-.plate-model{font-family:var(--font-mono);font-size:.6rem;letter-spacing:.14em;color:rgba(230,237,243,.5)}
+.stack-model{font-family:var(--font-mono);font-size:.58rem;letter-spacing:.12em;color:rgba(230,237,243,.5)}
 .op-status{
   margin-left:auto;display:inline-flex;align-items:center;gap:9px;
   padding:6px 13px;border-radius:8px;
@@ -305,75 +410,56 @@ const VITALS = [
   background:#3a1114;box-shadow:inset 0 0 3px rgba(0,0,0,.9), 0 0 0 1px rgba(0,0,0,.5);
   transition:background .3s var(--ease), box-shadow .3s var(--ease)
 }
-.op-word{font-family:var(--font-mono);font-weight:700;font-size:.66rem;letter-spacing:.2em;color:#e6edf3;transition:color .3s var(--ease)}
-.panel[data-operable="true"] .op-lamp{background:#3fb950;box-shadow:0 0 10px 2px rgba(63,185,80,.7), inset 0 0 3px rgba(255,255,255,.5)}
-.panel[data-operable="true"] .op-word{color:#7ee787}
+.op-word{font-family:var(--font-mono);font-weight:700;font-size:.64rem;letter-spacing:.2em;color:#e6edf3;transition:color .3s var(--ease)}
+.stack-panel[data-operable="true"] .op-lamp{background:#3fb950;box-shadow:0 0 10px 2px rgba(63,185,80,.7), inset 0 0 3px rgba(255,255,255,.5)}
+.stack-panel[data-operable="true"] .op-word{color:#7ee787}
 
-/* ── AGENT VITALS readout ──────────────────────────────────────── */
-.readout{
-  border-radius:12px;padding:clamp(12px,1.6vw,18px);
-  background:linear-gradient(180deg,#070a0d,#0b0f13);
-  box-shadow:inset 0 0 0 1px rgba(255,255,255,.06), inset 0 6px 20px rgba(0,0,0,.6)
+/* ── THE THREE STRATA + QUIVERING CURRENT SPINE ────────────────── */
+.strata{position:relative;display:flex;flex-direction:column;gap:clamp(12px,1.5vw,16px);padding-left:30px}
+/* the yellow current: a vertical spine running up the left of the stack that
+   quivers subtly. board.js does not touch it — it just lives. */
+.current-line{
+  position:absolute;left:11px;top:6px;bottom:6px;width:2px;border-radius:2px;
+  background:linear-gradient(180deg, transparent, var(--accent) 12%, var(--accent) 88%, transparent);
+  box-shadow:0 0 10px 1px rgba(255,218,25,.5);
+  transform-origin:center;animation:quiver 2.4s ease-in-out infinite;will-change:transform
 }
-.readout-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:12px}
-.readout-tag{font-family:var(--font-mono);font-weight:700;font-size:.62rem;letter-spacing:.26em;color:rgba(230,237,243,.62)}
-.readout-note{font-family:var(--font-mono);font-size:.64rem;letter-spacing:.03em;color:var(--accent);text-align:right;min-width:0}
-.vitals{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
-.vital{
-  display:flex;align-items:flex-start;gap:9px;padding:11px 11px;border-radius:9px;
-  background:rgba(255,255,255,.015);box-shadow:inset 0 0 0 1px rgba(255,255,255,.05);
-  transition:box-shadow .3s var(--ease), background .3s var(--ease)
-}
-.vital-lamp{
-  width:11px;height:11px;border-radius:50%;flex-shrink:0;margin-top:3px;
-  background:#f0413f;box-shadow:0 0 8px 1px rgba(240,65,63,.6), inset 0 0 2px rgba(255,255,255,.5);
-  animation:vitalPulse 1.5s ease-in-out infinite;
-  transition:background .3s var(--ease), box-shadow .3s var(--ease)
-}
-@keyframes vitalPulse{0%,100%{opacity:1}50%{opacity:.55}}
-.vital-body{display:flex;flex-direction:column;gap:3px;min-width:0}
-.vital-name{font-family:var(--font-mono);font-weight:700;font-size:.66rem;letter-spacing:.14em;color:#e6edf3}
-.vital-state{position:relative;font-family:var(--font-mono);font-size:.6rem;line-height:1.35}
-.vs-fail{color:#f0908e}
-.vs-cure{color:#7ee787;display:none}
-.vital[data-state="ok"] .vs-fail{display:none}
-.vital[data-state="ok"] .vs-cure{display:inline}
-.vital[data-state="ok"]{background:rgba(63,185,80,.05);box-shadow:inset 0 0 0 1px rgba(63,185,80,.22)}
-.vital[data-state="ok"] .vital-lamp{
-  background:#3fb950;box-shadow:0 0 9px 1px rgba(63,185,80,.65), inset 0 0 2px rgba(255,255,255,.5);animation:none
+@keyframes quiver{
+  0%,100%{transform:translateX(0) scaleY(1)}
+  20%{transform:translateX(.7px) scaleY(1.006)}
+  45%{transform:translateX(-.6px) scaleY(.996)}
+  70%{transform:translateX(.5px) scaleY(1.004)}
 }
 
-/* segmented coverage meter */
-.cov{display:flex;align-items:center;gap:12px;margin-top:14px}
-.cov-tag{font-family:var(--font-mono);font-weight:700;font-size:.58rem;letter-spacing:.22em;color:rgba(230,237,243,.55);flex-shrink:0}
-.cov-bar{flex:1;display:flex;gap:5px;min-width:0}
-.cov-seg{
-  flex:1;height:14px;border-radius:3px;
-  background:rgba(255,255,255,.05);box-shadow:inset 0 0 0 1px rgba(255,255,255,.06), inset 0 1px 2px rgba(0,0,0,.5);
-  transition:background .25s var(--ease), box-shadow .25s var(--ease)
-}
-.cov-seg.is-lit{background:var(--accent);box-shadow:0 0 8px 1px rgba(255,218,25,.55), inset 0 0 2px rgba(255,255,255,.4)}
-.panel[data-operable="true"] .cov-seg.is-lit{background:#3fb950;box-shadow:0 0 9px 1px rgba(63,185,80,.6), inset 0 0 2px rgba(255,255,255,.4)}
-.cov-pct{font-family:var(--font-mono);font-weight:700;font-size:.74rem;color:#e6edf3;flex-shrink:0;font-variant-numeric:tabular-nums;min-width:3.2ch;text-align:right}
-
-/* ── PRODUCT TILE BANKS ────────────────────────────────────────── */
-.banks{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(12px,1.4vw,16px)}
-.bank{
-  border-radius:11px;padding:13px 13px 14px;
+.stratum{
+  position:relative;display:grid;grid-template-columns:minmax(96px,138px) minmax(0,1fr);
+  gap:clamp(10px,1.4vw,18px);align-items:center;
+  border-radius:12px;padding:clamp(11px,1.3vw,15px);
   background:linear-gradient(180deg, rgba(255,255,255,.028), rgba(255,255,255,0));
-  box-shadow:inset 0 0 0 1px rgba(255,255,255,.06), inset 0 3px 10px rgba(0,0,0,.4)
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.06), inset 0 3px 10px rgba(0,0,0,.4);
+  transition:box-shadow .4s var(--ease), background .4s var(--ease)
 }
-.bank-legend{
-  display:flex;align-items:baseline;gap:9px;flex-wrap:wrap;
-  padding-bottom:10px;margin-bottom:10px;border-bottom:1px solid rgba(255,255,255,.07)
+/* the current lights a stratum as it climbs */
+.stratum.is-live{background:linear-gradient(180deg, rgba(255,218,25,.05), rgba(255,255,255,0));box-shadow:inset 0 0 0 1px rgba(255,218,25,.2), inset 0 3px 12px rgba(0,0,0,.4)}
+.stack-panel[data-operable="true"] .stratum.is-live{background:linear-gradient(180deg, rgba(63,185,80,.05), rgba(255,255,255,0));box-shadow:inset 0 0 0 1px rgba(63,185,80,.2), inset 0 3px 12px rgba(0,0,0,.4)}
+/* the node where the current meets each stratum */
+.stratum-node{
+  position:absolute;left:-24px;top:50%;transform:translateY(-50%);
+  width:9px;height:9px;border-radius:50%;
+  background:#2a2f36;box-shadow:inset 0 0 2px rgba(0,0,0,.9), 0 0 0 1px rgba(0,0,0,.5);
+  transition:background .35s var(--ease), box-shadow .35s var(--ease)
 }
-.bank-name{font-family:var(--font-mono);font-weight:700;font-size:.72rem;letter-spacing:.2em;color:#c9d1d9;text-shadow:0 1px 0 rgba(0,0,0,.85), 0 -1px 0 rgba(255,255,255,.05)}
-.bank-sub{font-family:var(--font-mono);font-size:.56rem;letter-spacing:.05em;color:rgba(230,237,243,.42)}
-.bank-tiles{display:flex;flex-direction:column;gap:8px}
+.stratum.is-live .stratum-node{background:var(--accent);box-shadow:0 0 10px 2px rgba(255,218,25,.7), inset 0 0 2px rgba(255,255,255,.6)}
+.stack-panel[data-operable="true"] .stratum.is-live .stratum-node{background:#3fb950;box-shadow:0 0 10px 2px rgba(63,185,80,.65), inset 0 0 2px rgba(255,255,255,.6)}
+
+.stratum-label{display:flex;flex-direction:column;gap:3px;min-width:0}
+.stratum-name{font-family:var(--font-mono);font-weight:700;font-size:.74rem;letter-spacing:.06em;color:#e6edf3;line-height:1.12}
+.stratum-sub{font-family:var(--font-mono);font-size:.55rem;letter-spacing:.04em;color:rgba(230,237,243,.44)}
+.stratum-tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(0,1fr));gap:8px}
 
 .tile{
   position:relative;display:grid;grid-template-columns:auto 1fr auto;align-items:center;
-  column-gap:11px;text-align:left;cursor:pointer;
+  column-gap:10px;text-align:left;cursor:pointer;
   padding:10px 12px;border-radius:9px;border:none;
   background:rgba(0,0,0,.3);
   box-shadow:inset 0 0 0 1px rgba(255,255,255,.06), inset 0 1px 3px rgba(0,0,0,.5);
@@ -384,22 +470,16 @@ const VITALS = [
 .tile:active{transform:translateY(1px)}
 .tile:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .tile-led{
-  width:11px;height:11px;border-radius:50%;flex-shrink:0;
+  width:10px;height:10px;border-radius:50%;flex-shrink:0;
   background:#2a2f36;box-shadow:inset 0 0 2px rgba(0,0,0,.9), 0 0 0 1px rgba(0,0,0,.5);
   transition:background .3s var(--ease), box-shadow .3s var(--ease)
 }
 .tile.is-on .tile-led{background:var(--accent);box-shadow:0 0 9px 2px rgba(255,218,25,.7), inset 0 0 2px rgba(255,255,255,.6)}
-.panel[data-operable="true"] .tile.is-on .tile-led{background:#3fb950;box-shadow:0 0 9px 2px rgba(63,185,80,.65), inset 0 0 2px rgba(255,255,255,.6)}
+.stack-panel[data-operable="true"] .tile.is-on .tile-led{background:#3fb950;box-shadow:0 0 9px 2px rgba(63,185,80,.65), inset 0 0 2px rgba(255,255,255,.6)}
 .tile-txt{display:flex;flex-direction:column;gap:2px;min-width:0}
-.tile-name{font-family:var(--font-mono);font-weight:700;font-size:.86rem;color:#e6edf3;letter-spacing:.01em}
-.tile-fix{font-family:var(--font-mono);font-size:.58rem;color:#aeb6bf;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.tile-more{font-family:var(--font-mono);font-size:.55rem;letter-spacing:.04em;color:rgba(230,237,243,.4);opacity:.7;transition:opacity .18s var(--ease), color .18s var(--ease);white-space:nowrap}
-
-.board-foot{
-  font-family:var(--font-mono);font-size:.66rem;color:var(--muted);
-  margin:clamp(14px,2vh,22px) 0 0;line-height:1.6;max-width:64ch
-}
-.board-foot b{color:var(--ink)}
+.tile-name{font-family:var(--font-mono);font-weight:700;font-size:.84rem;color:#e6edf3;letter-spacing:.01em}
+.tile-fix{font-family:var(--font-mono);font-size:.56rem;color:#aeb6bf;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tile-more{font-family:var(--font-mono);font-size:.54rem;letter-spacing:.04em;color:rgba(230,237,243,.4);opacity:.7;transition:opacity .18s var(--ease), color .18s var(--ease);white-space:nowrap}
 
 /* ══════════════════════════════════════════════════════════════════
    THE MODALS — one per product, each a distinct on-brand mini-scene.
@@ -423,12 +503,11 @@ const VITALS = [
 .modal-x:hover{background:rgba(255,255,255,.12)}
 .modal-x:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 
-/* the animated mini-scene band */
 .modal-scene{position:relative;height:116px;border-radius:16px 16px 0 0;overflow:hidden;border-bottom:1px solid rgba(255,255,255,.09)}
 .sc{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;gap:10px}
 
 .modal-body{padding:20px 22px 22px}
-.modal-kicker{font-family:var(--font-mono);font-weight:700;font-size:.58rem;letter-spacing:.24em;color:rgba(230,237,243,.62)}
+.modal-kicker{font-family:var(--font-mono);font-weight:700;font-size:.56rem;letter-spacing:.22em;color:rgba(230,237,243,.62)}
 .modal-name{font-family:var(--font-mono);font-weight:700;font-size:1.28rem;color:#e6edf3;letter-spacing:.005em;margin:6px 0 0}
 .modal-one{font-family:var(--font-display);font-weight:800;font-size:1.02rem;color:var(--accent);line-height:1.28;margin:9px 0 0}
 .modal-blurb{font-family:var(--font-mono);font-size:.72rem;color:#c9d1d9;line-height:1.62;margin:11px 0 0}
@@ -445,23 +524,33 @@ const VITALS = [
   background:rgba(255,218,25,.06)
 }
 .modal-diff span{display:block;font-weight:700;font-size:.54rem;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);margin-bottom:5px}
+/* footer link row — site (when present) + ALWAYS the GitHub repo */
+.modal-links{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:16px}
 .modal-cta{
-  display:inline-flex;align-items:center;margin-top:16px;
+  display:inline-flex;align-items:center;
   font-family:var(--font-mono);font-weight:700;font-size:.72rem;letter-spacing:.03em;
   color:#0d1117;background:var(--accent);padding:10px 16px;border-radius:9px;
   box-shadow:0 4px 14px rgba(255,218,25,.28);transition:transform .12s var(--ease), box-shadow .18s var(--ease)
 }
 .modal-cta:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(255,218,25,.42)}
 .modal-cta b{font-weight:700}
+.modal-repo{
+  display:inline-flex;align-items:center;gap:7px;
+  font-family:var(--font-mono);font-weight:600;font-size:.66rem;letter-spacing:.03em;
+  color:#c9d1d9;padding:9px 14px;border-radius:9px;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.16);
+  transition:box-shadow .18s var(--ease), color .18s var(--ease)
+}
+.modal-repo svg{opacity:.85}
+.modal-repo:hover{color:#e6edf3;box-shadow:inset 0 0 0 1px rgba(255,255,255,.3)}
+.modal-repo:focus-visible,.modal-cta:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 
 /* ── per-product SCENE motifs (distinct visual per product) ──────── */
-/* garden — a toolbox grid sprouting green */
 .sc-garden{background:radial-gradient(120% 120% at 50% 140%, rgba(63,185,80,.22), transparent 60%),#0a0d10;gap:8px}
 .sc-garden i{width:16px;height:22px;border-radius:4px;background:rgba(255,255,255,.08);box-shadow:inset 0 0 0 1px rgba(255,255,255,.08)}
 .sc-garden i.sp{height:44px;background:linear-gradient(180deg,#7ee787,#3fb950);box-shadow:0 0 12px rgba(63,185,80,.5);transform-origin:bottom;animation:sprout 2.4s var(--ease) infinite}
 @keyframes sprout{0%,100%{transform:scaleY(.55)}50%{transform:scaleY(1)}}
 
-/* interactive — a highlighted block being reworked (blue) */
 .sc-int{background:radial-gradient(120% 130% at 50% 120%, rgba(121,192,255,.2), transparent 60%),#0a0d10;flex-direction:column;gap:8px}
 .sc-int .bar{width:190px;height:16px;border-radius:5px;background:rgba(255,255,255,.08)}
 .sc-int .bar.sel{
@@ -473,7 +562,6 @@ const VITALS = [
 .sc-int .caret{position:absolute;right:10px;width:2px;height:13px;background:#0d1117;animation:blink 1s steps(1) infinite}
 @keyframes blink{0%,50%{opacity:1}51%,100%{opacity:0}}
 
-/* crew — a phase pipeline with a glowing gate (yellow) */
 .sc-crew{background:radial-gradient(120% 130% at 50% 120%, rgba(255,218,25,.16), transparent 62%),#0a0d10;gap:0}
 .sc-crew .ph{
   position:relative;font-family:var(--font-mono);font-size:.55rem;color:#aeb6bf;
@@ -484,7 +572,6 @@ const VITALS = [
 .sc-crew .ph.gate{color:#0d1117;font-weight:700;background:var(--accent);box-shadow:0 0 14px rgba(255,218,25,.6);animation:selpulse 2.2s var(--ease) infinite}
 .sc-crew .ph.on{color:#7ee787;box-shadow:inset 0 0 0 1px rgba(63,185,80,.5)}
 
-/* testing — three lanes with a wall before the reviewer (green) */
 .sc-test{background:radial-gradient(120% 130% at 50% 120%, rgba(63,185,80,.16), transparent 62%),#0a0d10;gap:12px}
 .sc-test .lane{
   width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;
@@ -494,7 +581,6 @@ const VITALS = [
 .sc-test .lane.rev{color:#0d1117;background:#3fb950;box-shadow:0 0 14px rgba(63,185,80,.55)}
 .sc-test .wall{width:3px;height:52px;border-radius:2px;background:repeating-linear-gradient(180deg,var(--accent) 0 6px,transparent 6px 12px)}
 
-/* estate — a small typed node graph (yellow hub) */
 .sc-estate{background:radial-gradient(120% 130% at 50% 120%, rgba(255,218,25,.14), transparent 62%),#0a0d10}
 .sc-estate svg{width:220px;height:96px}
 .sc-estate line{stroke:rgba(121,192,255,.45);stroke-width:1.4}
@@ -503,7 +589,6 @@ const VITALS = [
 @keyframes hubpulse{0%,100%{r:9}50%{r:11}}
 .sc-estate text{fill:#79c0ff;font-family:var(--font-mono);font-size:8px;font-weight:700}
 
-/* bus — events flowing along a track (blue) */
 .sc-bus{background:radial-gradient(120% 130% at 50% 120%, rgba(121,192,255,.16), transparent 62%),#0a0d10}
 .sc-bus .track{position:absolute;left:14%;right:14%;top:50%;height:2px;background:rgba(255,255,255,.14);border-radius:2px}
 .sc-bus .ev{position:absolute;top:calc(50% - 5px);width:10px;height:10px;border-radius:50%;background:var(--link);box-shadow:0 0 10px rgba(121,192,255,.6);animation:flow 3s linear infinite}
@@ -513,33 +598,37 @@ const VITALS = [
 .sc-bus .ev:nth-child(5){animation-delay:2.25s;background:var(--accent);box-shadow:0 0 10px rgba(255,218,25,.6)}
 @keyframes flow{from{left:12%;opacity:0}10%{opacity:1}90%{opacity:1}to{left:86%;opacity:0}}
 
-/* brain — linked wiki docs with [[backlinks]] (green) */
 .sc-brain{background:radial-gradient(120% 130% at 50% 120%, rgba(63,185,80,.15), transparent 62%),#0a0d10;gap:6px}
 .sc-brain .doc{width:30px;height:40px;border-radius:5px;background:linear-gradient(180deg,rgba(255,255,255,.12),rgba(255,255,255,.04));box-shadow:inset 0 0 0 1px rgba(255,255,255,.12)}
 .sc-brain .doc::after{content:'';display:block;margin:7px auto 0;width:18px;height:2px;background:rgba(255,255,255,.3);box-shadow:0 5px 0 rgba(255,255,255,.22),0 10px 0 rgba(255,255,255,.16)}
 .sc-brain .lk{font-family:var(--font-mono);font-size:.6rem;font-weight:700;color:#7ee787;animation:blink 1.6s steps(1) infinite}
 
 /* ── RESPONSIVE ────────────────────────────────────────────────── */
-@media(max-width:900px){
+@media(max-width:960px){
+  .stack-layout{grid-template-columns:1fr;gap:26px}
+  .stack-intro{position:static}
   .vitals{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .banks{grid-template-columns:1fr}
 }
 @media(max-width:600px){
-  .board-wrap{padding-left:20px;padding-right:20px}
-  .panel{padding:20px 15px}
-  .readout-head{flex-direction:column;gap:4px;align-items:flex-start}
-  .readout-note{text-align:left}
+  .stack-wrap{padding-left:20px;padding-right:20px}
+  .stack-panel{padding:18px 14px}
+  .strata{padding-left:22px}
+  .current-line{left:8px}
+  .stratum{grid-template-columns:1fr;gap:10px;padding:13px 13px}
+  .stratum-node{left:-16px;top:20px;transform:none}
+  .stratum-tiles{grid-template-columns:1fr}
   .vitals{grid-template-columns:1fr}
-  .cov{flex-wrap:wrap}
   .tile{grid-template-columns:auto 1fr}
   .tile-more{display:none}
   .tile-fix{white-space:normal}
+  .install-note{max-width:none}
   .modal-overlay{padding:14px}
 }
 
-/* ── REDUCED MOTION — panel settles, scenes hold still ─────────── */
+/* ── REDUCED MOTION — current stops, stack settles operable ─────── */
 @media(prefers-reduced-motion:reduce){
-  .tile-led,.cov-seg,.vital-lamp,.op-lamp,.op-word{transition:none!important}
+  .current-line{animation:none!important}
+  .tile-led,.stratum-node,.vital-lamp,.op-lamp,.op-word,.stratum{transition:none!important}
   .vital-lamp{animation:none!important}
   .modal-card{animation:none!important}
   .sc-garden i.sp,.sc-int .bar.sel,.sc-int .caret,.sc-crew .ph.gate,
