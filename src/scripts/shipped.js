@@ -1,18 +1,21 @@
 /* ──────────────────────────────────────────────────────────────
    wickedagile — SHIPPED : the living IDE split-editor (tree-only)
    Recovered from the pre-Operability-Board design and reconciled to the
-   current seven-product family. DUAL-MODE preview pane:
+   current nine-package catalog, grouped into the SAME three folders the nav
+   dropdown / footer use (Building Blocks / Utilities / Solutions).
+   DUAL-MODE preview pane:
 
      (a) SITE  — the 3 DEPLOYED sites (FEATURED[0..2] = interactive · garden ·
          estate) drive the browser-frame: /screenshots/<name>.png via a
          clip-path wipe, 3 editor-tabs (all gated by prefers-reduced-motion).
-     (b) LIB   — the other 4 products (brain · bus · testing · crew) have no
-         screenshot; selecting one hides the browser-frame and renders a faux
-         code-editor card in the SAME pane (header "<name>.js", line-number
-         gutter, short syntax-highlighted snippet) with a repo CTA.
+     (b) LIB   — the other 6 packages (brain · bus · vault · loom · testing ·
+         crew) have no screenshot;
+         selecting one hides the browser-frame and renders a faux code-editor
+         card in the SAME pane (header "<name>.<ext>", line-number gutter,
+         short syntax-highlighted snippet) with a repo CTA.
 
-   EVERY one of the seven tree leaves is clickable (data-idx 0..6). Exactly one
-   active state is kept across the tab strip + the tree (aria-selected /
+   EVERY one of the nine tree leaves is clickable (data-idx 0..8). Exactly
+   one active state is kept across the tab strip + the tree (aria-selected /
    aria-current). The visitor's scroll drives the package walk — no timer.
 
    FEATURED + shared helpers come from the data module — no helper is
@@ -23,10 +26,10 @@ import { FEATURED, esc, safeUrl } from './data.js';
 var PREFERS_REDUCED = window.matchMedia && window.matchMedia('(prefers-reduced-motion:reduce)').matches;
 
 /* ── LIBRARY snippets ─────────────────────────────────────────────
-   One entry per LIB leaf (the 4 products without a deployed screenshot).
+   One entry per LIB leaf (the 6 packages without a deployed screenshot).
    Each: tagline (readout desc), repo (github), the file glyph/ext, and the
    snippet as verbatim lines tokenized at render time by a tiny highlighter.
-   Copy is honest wave-4 positioning (crew = harness, bus = durable fabric). */
+   Copy is honest product positioning (crew = harness, bus = durable fabric). */
 var LIB_SNIPPETS = {
   'wicked-brain': {
     tagline: "Your AI agent's memory — markdown and SQLite, no vector DB.",
@@ -69,6 +72,26 @@ var LIB_SNIPPETS = {
       "$ wicked-crew launch --type feature \\",
       "    --problem 'Add OAuth to the API'",
       "// → { session_id, current_phase: 'clarify', deny_dominates: true }"
+    ]
+  },
+  'wicked-vault': {
+    tagline: 'The diff said it worked. The vault says what happened.',
+    repo: 'https://github.com/mikeparcewski/wicked-vault',
+    ext: 'js', glyph: 'JS', install: 'npm i',
+    lines: [
+      "// the diff said it worked. the vault says what happened.",
+      "import { vault } from 'wicked-vault'",
+      "vault.record(run)   // evidence, not assertions — content-addressed"
+    ]
+  },
+  'wicked-loom': {
+    tagline: 'Teaches the agent what you built before you got here.',
+    repo: 'https://github.com/mikeparcewski/wicked-loom',
+    ext: 'py', glyph: 'PY', install: 'pip install',
+    lines: [
+      "# teaches the agent what you built before it got here.",
+      "from wicked_loom import onboard",
+      "onboard(agent, repo)   # prior art in, cold-start out"
     ]
   }
 };
@@ -134,9 +157,9 @@ function boot(){
   /* the 3 site leaves map their data-preview → FEATURED idx */
   var siteLeaves=allLeaves.filter(function(l){return l.dataset.mode==='site';});
 
-  var activeSite=0;        /* current FEATURED preview index (0..2) */
-  var activeLeafIdx=0;     /* current tree leaf data-idx (0..6) */
-  var mode='site';         /* 'site' | 'lib' */
+  var activeSite=0;        /* current FEATURED preview index (0..2); 0=interactive — the first SITE leaf in the new solutions-first order. Only a fallback for tab state while a LIB is shown (leaf-0 = crew is a lib, so no site is painted at init). */
+  var activeLeafIdx=0;     /* current tree leaf data-idx (0..8); 0=wicked-crew leaf (solutions[0], the new first leaf in DOM order) */
+  var mode='lib';          /* 'site' | 'lib' — the new leaf-0 (crew) is a LIB, so we open in lib mode (matches idePreview data-mode="lib" in the static HTML) */
 
   /* ── wipeSlot — two-layer clip-path inset wipe (reduced-motion gated) ── */
   function wipeSlot(el,project){
@@ -246,8 +269,8 @@ function boot(){
   }
 
   /* ── SCROLL-DRIVEN WALK ───────────────────────────────────────────
-     The Shipped section is a tall "track" with a pinned IDE stage and 7
-     invisible snap steps (.ide-step, data-step 0..6). Scrolling snaps
+     The Shipped section is a tall "track" with a pinned IDE stage and 9
+     invisible snap steps (.ide-step, data-step 0..8). Scrolling snaps
      step-by-step; an IntersectionObserver maps the most-visible step → the
      matching package, opening that folder, closing the rest, and driving the
      preview. No timer — the visitor's scroll IS the walk. */
@@ -286,22 +309,32 @@ function boot(){
   }
 
   function initPreview(){
-    /* paint the FIRST site leaf (DOM order) without the wipe transition —
-       robust to folder ordering: use the leaf's own data-preview, not a
-       hardcoded FEATURED[0]. */
-    var firstLeaf=siteLeaves[0];
-    var featIdx=firstLeaf?parseInt(firstLeaf.dataset.preview,10):0;
-    activeSite=featIdx;
-    var p=FEATURED[featIdx];
-    var front=browserShot.querySelector('.shot-bg-front');
-    front.style.clipPath='inset(0 0 0 0)';
-    front.style.backgroundImage="url('"+p.screenshot+"')";
-    activeLeafIdx=firstLeaf?parseInt(firstLeaf.dataset.idx,10):0;
-    if(previewUrl)previewUrl.textContent=p.url.replace('https://','');
-    if(crumbName)crumbName.textContent=p.name;
-    if(readoutDesc)readoutDesc.textContent=p.desc;
-    if(readoutCta)readoutCta.href=safeUrl(p.url);
-    syncActive(activeLeafIdx, featIdx);
+    /* Paint the FIRST leaf in DOM order (= the scroll-walk's step-0 target) so
+       the static HTML, shipped.js, AND the scroll walk all agree on the opening
+       package — no pre-scroll flash. After the solutions-first reorder, leaf-0
+       is solutions[0] = wicked-crew, a LIB leaf, so we open on its faux
+       code-card (matching idePreview data-mode="lib" in the static HTML). The
+       site branch is kept (direct paint, no wipe transition) so this stays
+       correct if leaf-0 ever becomes a site again. */
+    var firstLeaf=allLeaves[0];
+    if(!firstLeaf)return;
+    if(firstLeaf.dataset.mode==='site'){
+      var featIdx=parseInt(firstLeaf.dataset.preview,10);
+      activeSite=featIdx;
+      var p=FEATURED[featIdx];
+      var front=browserShot.querySelector('.shot-bg-front');
+      front.style.clipPath='inset(0 0 0 0)';
+      front.style.backgroundImage="url('"+p.screenshot+"')";
+      activeLeafIdx=parseInt(firstLeaf.dataset.idx,10);
+      if(previewUrl)previewUrl.textContent=p.url.replace('https://','');
+      if(crumbName)crumbName.textContent=p.name;
+      if(readoutDesc)readoutDesc.textContent=p.desc;
+      if(readoutCta)readoutCta.href=safeUrl(p.url);
+      syncActive(activeLeafIdx, featIdx);
+    }else{
+      /* lib leaf-0: render its faux code-card (no wipe transition to gate) */
+      selectLeaf(firstLeaf);
+    }
   }
 
   function buildPreview(){

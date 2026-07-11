@@ -10,13 +10,43 @@
    ────────────────────────────────────────────────────────────────────────── */
 /* ── FAMILY SCROLL-LOCK ───────────────────────────────────────────────────
    Hard, one-section-per-notch snap between the full-screen chapters (hero,
-   articles, shipped IDE, about, footer). Unlayered so it beats the shared
-   tokens.css @layer base default (scroll-snap-type:y proximity). Mobile
-   fallback = none: mandatory snap fights touch momentum on small screens.
-   Sections opt in via .snap-section (min-height:100vh + scroll-snap-align:start)
-   or, for the pinned-track sections, their .ide-step / .art-step snap points. */
+   articles, shipped IDE, about, footer). The scroll CONTAINER is <html> (the
+   document scrolls); every top-level section is a <body> child and owns its
+   own snap point. Unlayered so it beats the shared tokens.css @layer base
+   default (scroll-snap-type:y proximity). Mobile fallback = none: mandatory
+   snap fights touch momentum on small screens.
+
+   scroll-padding-top clears the 64px fixed .topbar so anchor landings
+   (#content / #projects / #about) aren't hidden under the bar.
+
+   Reduced motion: snap *positioning* is intentionally kept (it is layout, not
+   animation, and turning it off would trap keyboard/anchor nav mid-section).
+   The smooth *animation* is what's gated — scroll-wheel.js early-returns and
+   each section's kinetics sit behind @media(prefers-reduced-motion:reduce).
+   Nothing here introduces smooth scrolling, so there is nothing to disable. */
 html { scroll-snap-type: y mandatory; scroll-padding-top: var(--topbar-h); }
 @media (max-width: 768px) { html { scroll-snap-type: none; } }
+
+/* ── ONE-VIEWPORT SECTION BASELINE (foundation contract) ───────────────────
+   The single source of truth for the "every section fits one screen" rule.
+   Units are svh (smallest viewport height) so growing mobile browser chrome
+   can never clip a section — swap these three tokens to flip the whole site
+   from svh→dvh in one place; sections must NOT hardcode 100vh/100svh.
+
+   Per-element contract every top-level snap element applies (there is no
+   shared section class — Hero owns .snap-section, Articles .art-step, Shipped
+   .ide-step, About .chapter.chapter-shell, Footer .footer):
+     1. a one-viewport size — min-height:var(--section-h) for full panels, or
+        min-height:var(--section-stage-h) for a sticky/pinned stage that sits
+        under the fixed topbar (the two scroll-driven track sections);
+     2. scroll-snap-align:start;
+     3. scroll-margin-top:var(--section-snap-margin) so the snap/anchor landing
+        clears the fixed bar (About adds its masthead height on top of this). */
+:root {
+  --section-h: 100svh;                                /* full-viewport section */
+  --section-stage-h: calc(100svh - var(--topbar-h));  /* pinned stage under bar */
+  --section-snap-margin: var(--topbar-h);             /* anchor/snap clearance  */
+}
 
 body::before {
   content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none;

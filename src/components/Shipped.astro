@@ -4,8 +4,11 @@
  * Decomposed from index.next.html (#projects). TREE-ONLY: the
  * instrument-panel service grid (.svc-grid / .sw-tool) is intentionally
  * DROPPED — there is no separate packages/service grid, the tree IS the
- * catalog. Kept: the twelve-package explorer file-tree (now TWO folders)
- * driving a DUAL-MODE preview pane + readout/status bar. Each of the twelve
+ * catalog. Kept: the nine-package explorer file-tree, grouped into the
+ * SAME THREE folders the nav dropdown / footer use (Building Blocks /
+ * Utilities / Solutions — see wicked-web Topbar.astro), so the tree and the
+ * nav stay consistent. It drives a DUAL-MODE preview pane + readout/status
+ * bar. Each of the nine
  * tree leaves carries an inline one-line description (always visible — the
  * tree reads as a real catalog, not hover-only) AND a data-idx so every
  * leaf is clickable.
@@ -15,7 +18,7 @@
  *       browser-frame via local /screenshots/<name>.png (clip-path wipe,
  *       reduced-motion gated). FEATURED in data.js is ordered
  *       [interactive, garden, estate] = preview indices 0,1,2.
- *   (b) LIBRARIES — the other 9 packages (data-mode="lib") have no
+ *   (b) LIBRARIES — the other 6 packages (data-mode="lib") have no
  *       screenshot, so they render a faux code-editor "source file" card
  *       in the SAME pane: header "<name>.ts", a line-number gutter, and a
  *       short syntax-highlighted TS snippet (reuses the global t-* tokens).
@@ -26,21 +29,19 @@
  * data module (FEATURED, esc, safeUrl, delay).
  */
 
-// Mobile view: the twelve packages in order. The three with a `shot` are the
+// Mobile view: the nine packages in order. The three with a `shot` are the
 // deployed sites (rendered with their screenshot); the rest are libraries.
 const packages = [
-  // ── products/ — 6 products ───────────────────────────────────────────────
-  { name: 'wicked-signals', lang: 'TS', href: 'https://github.com/mikeparcewski/wicked-signals', desc: 'Text in. Intent out. Routes any signal to the right crew.' },
+  // ── solutions/ — drive the work (nav: Solutions) ─────────────────────────────
   { name: 'wicked-crew', lang: 'JS', href: 'https://github.com/mikeparcewski/wicked-crew', desc: 'Phase-gated sessions. HITL. Council. Audit trail.' },
   { name: 'wicked-interactive', lang: 'JS', site: 'wi.wickedagile.com', href: 'https://wi.wickedagile.com', shot: '/screenshots/wicked-interactive.png', desc: 'Say the thing. Watch it build. Point at what\'s wrong. Ship.' },
-  { name: 'wicked-studio', lang: 'RS', href: 'https://github.com/mikeparcewski/wicked-studio', desc: 'Desktop HITL shell — Tauri, stateful, offline.' },
-  { name: 'wicked-testing', lang: 'JS', href: 'https://github.com/mikeparcewski/wicked-testing', desc: 'AI-generated tests that require proof. Novel concept.' },
+  // ── utilities/ — sharpen the loop (nav: Utilities) ───────────────────────────
   { name: 'wicked-garden', lang: 'PY', site: 'wg.wickedagile.com', href: 'https://wg.wickedagile.com', shot: '/screenshots/wicked-garden.png', desc: 'Orchestration without the org chart.' },
-  // ── platform/ — infrastructure ───────────────────────────────────────────
+  { name: 'wicked-testing', lang: 'JS', href: 'https://github.com/mikeparcewski/wicked-testing', desc: 'AI-generated tests that require proof. Novel concept.' },
+  // ── building-blocks/ — the bedrock everything queries (nav: Building Blocks) ─
   { name: 'wicked-estate', lang: 'RS', site: 'we.wickedagile.com', href: 'https://we.wickedagile.com', shot: '/screenshots/wicked-estate.png', desc: 'Every agentic env becomes a crime scene. Forensics kit.' },
-  { name: 'wicked-bus', lang: 'JS', href: 'https://github.com/mikeparcewski/wicked-bus', desc: 'Fire-and-forget. Minus the forgetting.' },
   { name: 'wicked-brain', lang: 'JS', href: 'https://github.com/mikeparcewski/wicked-brain', desc: 'Agents forget everything. This one doesn\'t.' },
-  { name: 'wicked-understanding', lang: 'PY', href: 'https://github.com/mikeparcewski/wicked-understanding', desc: 'Not what the code does — why it does it.' },
+  { name: 'wicked-bus', lang: 'JS', href: 'https://github.com/mikeparcewski/wicked-bus', desc: 'Fire-and-forget. Minus the forgetting.' },
   { name: 'wicked-vault', lang: 'JS', href: 'https://github.com/mikeparcewski/wicked-vault', desc: 'The diff said it worked. The vault says what happened.' },
   { name: 'wicked-loom', lang: 'PY', href: 'https://github.com/mikeparcewski/wicked-loom', desc: 'Teaches the agent what you built before you got here.' },
 ];
@@ -48,16 +49,17 @@ const packages = [
 
 <!-- ════════════════════════════════════════════════════════════════
      SHIPPED — THE LIVING IDE split-editor (tree-only, dual-mode preview)
-     shipped. — file-tree of twelve packages (2 folders) drives a dual-mode
+     shipped. — file-tree of nine packages (3 folders: Building Blocks /
+     Utilities / Solutions, mirroring the nav dropdown) drives a dual-mode
      preview pane: browser-frame for the 3 sites, faux code-editor for the
-     9 libraries.
+     6 libraries.
      ════════════════════════════════════════════════════════════════ -->
 <section class="zoneB-section" id="projects">
   <div class="ide-track">
     <div class="ide-stage">
   <div class="zone-inner">
     <div class="zone-head">
-      <span class="zone-kicker">WORKSPACE · 12 PACKAGES · 3 DEPLOYED</span>
+      <span class="zone-kicker">WORKSPACE · 9 PACKAGES · 3 DEPLOYED</span>
       <h2 class="zone-title">shipped.</h2>
     </div>
 
@@ -68,71 +70,72 @@ const packages = [
       </div>
 
       <div class="split-editor">
-        <!-- LEFT: EXPLORER tree (the twelve packages, TWO folders) -->
+        <!-- LEFT: EXPLORER tree — the nine packages, THREE folders that mirror
+             the nav dropdown / footer taxonomy (Solutions / Utilities / Building
+             Blocks, per wicked-web Topbar.astro). data-idx is contiguous 0..8 in
+             DOM order (solutions 0-1, utilities 2-3, building-blocks 4-8);
+             solutions opens by default. -->
         <aside class="ide-explorer" aria-label="Package explorer">
           <div class="explorer-head"><span>the packages.</span><span class="ws">wicked.code-workspace</span></div>
           <p class="tree-root-comment"># AI is an org problem, not a model problem.</p>
 
-          <!-- products/ — hue #ffe45c (signal yellow) — the 6 agent-facing products -->
-          <div class="tree-folder" data-cat="products" id="folder-products">
-            <button class="folder-row" type="button" aria-expanded="true" aria-controls="children-products">
-              <span class="caret" aria-hidden="true">▾</span><span class="fname--products">products/</span>
+          <!-- solutions/ — signal yellow — drive the work (opens by default) -->
+          <div class="tree-folder" data-cat="solutions" id="folder-solutions">
+            <button class="folder-row" type="button" aria-expanded="true" aria-controls="children-solutions">
+              <span class="caret" aria-hidden="true">▾</span><span class="fname--solutions">solutions/</span>
             </button>
-            <div class="folder-children" id="children-products" role="group">
-              <a class="tree-leaf" href="https://github.com/mikeparcewski/wicked-signals" target="_blank" rel="noopener" data-idx="0" data-mode="lib" data-lib="wicked-signals">
-                <span class="leaf-line"><span class="leaf-glyph" aria-hidden="true">TS</span><span class="leaf-name">wicked-signals.ts</span><span class="leaf-tag">npm·MIT</span></span>
-                <span class="leaf-desc">// Text in. Intent out. Routes any signal to the right crew.</span>
-              </a>
-              <a class="tree-leaf" href="https://github.com/mikeparcewski/wicked-crew" target="_blank" rel="noopener" data-idx="1" data-mode="lib" data-lib="wicked-crew">
+            <div class="folder-children" id="children-solutions" role="group">
+              <a class="tree-leaf" href="https://github.com/mikeparcewski/wicked-crew" target="_blank" rel="noopener" data-idx="0" data-mode="lib" data-lib="wicked-crew">
                 <span class="leaf-line"><span class="leaf-glyph" aria-hidden="true">JS</span><span class="leaf-name">wicked-crew.js</span><span class="leaf-tag">npm·MIT</span></span>
                 <span class="leaf-desc">// Phase-gated sessions. HITL. Council. Audit trail.</span>
               </a>
-              <a class="tree-leaf" href="https://wi.wickedagile.com" data-idx="2" data-mode="site" data-preview="0">
+              <a class="tree-leaf" href="https://wi.wickedagile.com" data-idx="1" data-mode="site" data-preview="0">
                 <span class="leaf-line"><span class="leaf-glyph" aria-hidden="true">JS</span><span class="leaf-name">wicked-interactive.js</span><span class="leaf-tag">npm·MIT·wi.wickedagile.com</span></span>
                 <span class="leaf-desc">// Say the thing. Watch it build. Point at what's wrong. Ship.</span>
-              </a>
-              <a class="tree-leaf" href="https://github.com/mikeparcewski/wicked-studio" target="_blank" rel="noopener" data-idx="3" data-mode="lib" data-lib="wicked-studio">
-                <span class="leaf-line"><span class="leaf-glyph" aria-hidden="true">RS</span><span class="leaf-name">wicked-studio.rs</span><span class="leaf-tag">crate·MIT</span></span>
-                <span class="leaf-desc">// Desktop HITL shell — Tauri, stateful, offline.</span>
-              </a>
-              <a class="tree-leaf" href="https://github.com/mikeparcewski/wicked-testing" target="_blank" rel="noopener" data-idx="4" data-mode="lib" data-lib="wicked-testing">
-                <span class="leaf-line"><span class="leaf-glyph" aria-hidden="true">JS</span><span class="leaf-name">wicked-testing.js</span><span class="leaf-tag">npm·MIT</span></span>
-                <span class="leaf-desc">// AI-generated tests that require proof. Novel concept.</span>
-              </a>
-              <a class="tree-leaf" href="https://wg.wickedagile.com" data-idx="5" data-mode="site" data-preview="1">
-                <span class="leaf-line"><span class="leaf-glyph" aria-hidden="true">PY</span><span class="leaf-name">wicked-garden.py</span><span class="leaf-tag">pip·MIT·wg.wickedagile.com</span></span>
-                <span class="leaf-desc">// Orchestration without the org chart.</span>
               </a>
             </div>
           </div>
 
-          <!-- platform/ — hue #e6adb3 (wine/pink) — foundational infrastructure -->
-          <div class="tree-folder is-collapsed" data-cat="platform" id="folder-platform">
-            <button class="folder-row" type="button" aria-expanded="false" aria-controls="children-platform">
-              <span class="caret" aria-hidden="true">▾</span><span class="fname--platform">platform/</span>
+          <!-- utilities/ — blue — sharpen the loop -->
+          <div class="tree-folder is-collapsed" data-cat="utilities" id="folder-utilities">
+            <button class="folder-row" type="button" aria-expanded="false" aria-controls="children-utilities">
+              <span class="caret" aria-hidden="true">▾</span><span class="fname--utilities">utilities/</span>
             </button>
-            <div class="folder-children" id="children-platform" role="group">
-              <a class="tree-leaf" href="https://we.wickedagile.com" data-idx="6" data-mode="site" data-preview="2">
+            <div class="folder-children" id="children-utilities" role="group">
+              <a class="tree-leaf" href="https://wg.wickedagile.com" data-idx="2" data-mode="site" data-preview="1">
+                <span class="leaf-line"><span class="leaf-glyph" aria-hidden="true">PY</span><span class="leaf-name">wicked-garden.py</span><span class="leaf-tag">pip·MIT·wg.wickedagile.com</span></span>
+                <span class="leaf-desc">// Orchestration without the org chart.</span>
+              </a>
+              <a class="tree-leaf" href="https://github.com/mikeparcewski/wicked-testing" target="_blank" rel="noopener" data-idx="3" data-mode="lib" data-lib="wicked-testing">
+                <span class="leaf-line"><span class="leaf-glyph" aria-hidden="true">JS</span><span class="leaf-name">wicked-testing.js</span><span class="leaf-tag">npm·MIT</span></span>
+                <span class="leaf-desc">// AI-generated tests that require proof. Novel concept.</span>
+              </a>
+            </div>
+          </div>
+
+          <!-- building-blocks/ — wine — the bedrock everything queries -->
+          <div class="tree-folder is-collapsed" data-cat="blocks" id="folder-blocks">
+            <button class="folder-row" type="button" aria-expanded="false" aria-controls="children-blocks">
+              <span class="caret" aria-hidden="true">▾</span><span class="fname--blocks">building-blocks/</span>
+            </button>
+            <div class="folder-children" id="children-blocks" role="group">
+              <a class="tree-leaf" href="https://we.wickedagile.com" data-idx="4" data-mode="site" data-preview="2">
                 <span class="leaf-line"><span class="leaf-glyph" aria-hidden="true">RS</span><span class="leaf-name">wicked-estate.rs</span><span class="leaf-tag">crate·MIT·we.wickedagile.com</span></span>
                 <span class="leaf-desc">// Every agentic env becomes a crime scene. Forensics kit.</span>
               </a>
-              <a class="tree-leaf" href="https://github.com/mikeparcewski/wicked-bus" target="_blank" rel="noopener" data-idx="7" data-mode="lib" data-lib="wicked-bus">
-                <span class="leaf-line"><span class="leaf-glyph" aria-hidden="true">JS</span><span class="leaf-name">wicked-bus.js</span><span class="leaf-tag">npm·MIT</span></span>
-                <span class="leaf-desc">// Fire-and-forget. Minus the forgetting.</span>
-              </a>
-              <a class="tree-leaf" href="https://github.com/mikeparcewski/wicked-brain" target="_blank" rel="noopener" data-idx="8" data-mode="lib" data-lib="wicked-brain">
+              <a class="tree-leaf" href="https://github.com/mikeparcewski/wicked-brain" target="_blank" rel="noopener" data-idx="5" data-mode="lib" data-lib="wicked-brain">
                 <span class="leaf-line"><span class="leaf-glyph" aria-hidden="true">JS</span><span class="leaf-name">wicked-brain.js</span><span class="leaf-tag">npm·MIT</span></span>
                 <span class="leaf-desc">// Agents forget everything. This one doesn't.</span>
               </a>
-              <a class="tree-leaf" href="https://github.com/mikeparcewski/wicked-understanding" target="_blank" rel="noopener" data-idx="9" data-mode="lib" data-lib="wicked-understanding">
-                <span class="leaf-line"><span class="leaf-glyph" aria-hidden="true">PY</span><span class="leaf-name">wicked-understanding.py</span><span class="leaf-tag">pip·MIT</span></span>
-                <span class="leaf-desc">// Not what the code does — why it does it.</span>
+              <a class="tree-leaf" href="https://github.com/mikeparcewski/wicked-bus" target="_blank" rel="noopener" data-idx="6" data-mode="lib" data-lib="wicked-bus">
+                <span class="leaf-line"><span class="leaf-glyph" aria-hidden="true">JS</span><span class="leaf-name">wicked-bus.js</span><span class="leaf-tag">npm·MIT</span></span>
+                <span class="leaf-desc">// Fire-and-forget. Minus the forgetting.</span>
               </a>
-              <a class="tree-leaf" href="https://github.com/mikeparcewski/wicked-vault" target="_blank" rel="noopener" data-idx="10" data-mode="lib" data-lib="wicked-vault">
+              <a class="tree-leaf" href="https://github.com/mikeparcewski/wicked-vault" target="_blank" rel="noopener" data-idx="7" data-mode="lib" data-lib="wicked-vault">
                 <span class="leaf-line"><span class="leaf-glyph" aria-hidden="true">JS</span><span class="leaf-name">wicked-vault.js</span><span class="leaf-tag">npm·MIT</span></span>
                 <span class="leaf-desc">// The diff said it worked. The vault says what happened.</span>
               </a>
-              <a class="tree-leaf" href="https://github.com/mikeparcewski/wicked-loom" target="_blank" rel="noopener" data-idx="11" data-mode="lib" data-lib="wicked-loom">
+              <a class="tree-leaf" href="https://github.com/mikeparcewski/wicked-loom" target="_blank" rel="noopener" data-idx="8" data-mode="lib" data-lib="wicked-loom">
                 <span class="leaf-line"><span class="leaf-glyph" aria-hidden="true">PY</span><span class="leaf-name">wicked-loom.py</span><span class="leaf-tag">pip·MIT</span></span>
                 <span class="leaf-desc">// Teaches the agent what you built before you got here.</span>
               </a>
@@ -140,10 +143,15 @@ const packages = [
           </div>
         </aside>
 
-        <!-- RIGHT: PREVIEW pane (DUAL-MODE) -->
-        <div class="ide-preview" id="idePreview" data-mode="site">
+        <!-- RIGHT: PREVIEW pane (DUAL-MODE) — opens in LIB mode on the new
+             leaf-0 (solutions[0] = wicked-crew, a lib), so this static markup
+             matches shipped.js initPreview() and the scroll-walk's step-0
+             target with no pre-scroll flash. In lib mode the site tab strip is
+             display:none (CSS), tabs carry no aria-selected, and tab-0 holds the
+             rove-able tabindex — mirroring syncActive()'s lib branch. -->
+        <div class="ide-preview" id="idePreview" data-mode="lib">
           <div class="preview-tabs" id="previewTabs" role="tablist" aria-label="Shipped site previews">
-            <button class="editor-tab" id="editorTab-0" role="tab" data-idx="0" aria-selected="true" aria-controls="previewPanel" tabindex="0">
+            <button class="editor-tab" id="editorTab-0" role="tab" data-idx="0" aria-selected="false" aria-controls="previewPanel" tabindex="0">
               <span class="close-dot" aria-hidden="true"></span>wicked-interactive
             </button>
             <button class="editor-tab" id="editorTab-1" role="tab" data-idx="1" aria-selected="false" aria-controls="previewPanel" tabindex="-1">
@@ -155,13 +163,13 @@ const packages = [
           </div>
 
           <div class="preview-stage" id="previewPanel" role="tabpanel" aria-labelledby="editorTab-0">
-            <div class="preview-breadcrumb">shipped <span aria-hidden="true">›</span> <b id="crumbName">wicked-interactive</b> <span aria-hidden="true">›</span> preview</div>
+            <div class="preview-breadcrumb">shipped <span aria-hidden="true">›</span> <b id="crumbName">wicked-crew</b> <span aria-hidden="true">›</span> preview</div>
 
-            <!-- MODE (a): SITE — browser-frame -->
-            <div class="browser-frame" id="browserFrame">
+            <!-- MODE (a): SITE — browser-frame (hidden at init; leaf-0 is a lib) -->
+            <div class="browser-frame" id="browserFrame" hidden>
               <div class="browser-chrome">
                 <span class="lights" aria-hidden="true"><i></i><i></i><i></i></span>
-                <span class="url" id="previewUrl">wi.wickedagile.com</span>
+                <span class="url" id="previewUrl">we.wickedagile.com</span>
                 <span class="live"><span class="pulse" aria-hidden="true"></span>Live</span>
               </div>
               <div class="browser-shot" id="browserShot">
@@ -170,11 +178,12 @@ const packages = [
               </div>
             </div>
 
-            <!-- MODE (b): LIBRARY — faux code-editor card -->
-            <div class="code-card" id="codeCard" hidden aria-hidden="true">
+            <!-- MODE (b): LIBRARY — faux code-editor card (shown at init for
+                 leaf-0 = wicked-crew; codeBlock body is filled by shipped.js) -->
+            <div class="code-card" id="codeCard" aria-hidden="false">
               <div class="code-card-chrome">
-                <span class="cc-glyph" aria-hidden="true">TS</span>
-                <span class="cc-file" id="codeFile">wicked-brain.ts</span>
+                <span class="cc-glyph" aria-hidden="true">JS</span>
+                <span class="cc-file" id="codeFile">wicked-crew.js</span>
                 <span class="cc-badge">read-only</span>
               </div>
               <div class="code-card-body">
@@ -184,8 +193,8 @@ const packages = [
           </div>
 
           <div class="preview-readout">
-            <div class="readout-desc" id="readoutDesc">Say the thing. Watch it build. Point at what's wrong. Ship.</div>
-            <a class="readout-cta" id="readoutCta" href="https://wi.wickedagile.com">Open Preview ↗</a>
+            <div class="readout-desc" id="readoutDesc">The harness for your agent harnesses.</div>
+            <a class="readout-cta" id="readoutCta" href="https://github.com/mikeparcewski/wicked-crew">npm i wicked-crew ↗</a>
           </div>
         </div>
       </div>
@@ -210,13 +219,13 @@ const packages = [
 
       <!-- bottom STATUS BAR (workspace, chrome aria-hidden) -->
       <div class="ide-statusbar" aria-hidden="true">
-        <span class="sb-left"><span class="sb-branch">⎇ main</span><span>12 packages</span><span>3 deployed</span></span>
+        <span class="sb-left"><span class="sb-branch">⎇ main</span><span>9 packages</span><span>3 deployed</span></span>
         <span class="sb-right"><span id="sbTheme">dark · #0d0f12</span></span>
       </div>
     </div>
   </div>
     </div>
-    <div class="ide-steps" aria-hidden="true"><i class="ide-step" data-step="0"></i><i class="ide-step" data-step="1"></i><i class="ide-step" data-step="2"></i><i class="ide-step" data-step="3"></i><i class="ide-step" data-step="4"></i><i class="ide-step" data-step="5"></i><i class="ide-step" data-step="6"></i><i class="ide-step" data-step="7"></i><i class="ide-step" data-step="8"></i><i class="ide-step" data-step="9"></i><i class="ide-step" data-step="10"></i><i class="ide-step" data-step="11"></i></div>
+    <div class="ide-steps" aria-hidden="true"><i class="ide-step" data-step="0"></i><i class="ide-step" data-step="1"></i><i class="ide-step" data-step="2"></i><i class="ide-step" data-step="3"></i><i class="ide-step" data-step="4"></i><i class="ide-step" data-step="5"></i><i class="ide-step" data-step="6"></i><i class="ide-step" data-step="7"></i><i class="ide-step" data-step="8"></i></div>
   </div>
 </section>
 
@@ -255,25 +264,28 @@ const packages = [
 .zoneB-section{
   border-top:1px solid var(--hairline);
 }
-/* SCROLL-DRIVEN IDE: a tall track holds 12 invisible snap steps; the IDE stage
+/* SCROLL-DRIVEN IDE: a tall track holds 9 invisible snap steps; the IDE stage
    pins (sticky) and scrolling snaps step-by-step, each step = one package. */
-.ide-track{position:relative;min-height:calc(12 * 56vh)}
+.ide-track{position:relative;min-height:calc(9 * 56svh)}
 .ide-stage{
   position:sticky;top:var(--topbar-h);z-index:2;
-  height:calc(100vh - var(--topbar-h));
+  /* min-height (not fixed height) so the pinned stage grows rather than clips
+     on short/chrome viewports; = one screen under the fixed bar at spec.
+     Consumes the foundation baseline token (see global.css :root). */
+  min-height:var(--section-stage-h);
   display:flex;flex-direction:column;justify-content:center;
   padding:clamp(14px,2.6vh,30px) 0
 }
 .ide-steps{position:absolute;inset:0;z-index:1;pointer-events:none}
-.ide-step{display:block;height:56vh;scroll-snap-align:start;scroll-snap-stop:always;scroll-margin-top:var(--topbar-h)}
-/* title→content gap raised 18px → 33px to match the articles section */
-.zone-inner{max-width:1240px;width:100%;margin:0 auto;padding:0 28px;display:flex;flex-direction:column;gap:33px}
+.ide-step{display:block;height:56svh;scroll-snap-align:start;scroll-snap-stop:always;scroll-margin-top:var(--section-snap-margin)}
+/* title→content gap: clamp so it tightens on short viewports (fit headroom) */
+.zone-inner{max-width:1240px;width:100%;margin:0 auto;padding:0 28px;display:flex;flex-direction:column;gap:clamp(18px,2.4vh,28px)}
 .zone-title{
   font-family:var(--font-display);font-weight:900;font-stretch:125%;
   font-size:clamp(2.2rem,3.8vw,3.4rem);color:var(--ink);
   line-height:.93;letter-spacing:-.03em;margin:0
 }
-.split-editor{display:grid;grid-template-columns:38% 62%;min-height:520px}
+.split-editor{display:grid;grid-template-columns:38% 62%;min-height:clamp(440px,54vh,520px)}
 
 /* LEFT — EXPLORER tree */
 .ide-explorer{
@@ -301,15 +313,17 @@ const packages = [
 .folder-row:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
 .folder-row .caret{font-size:.6rem;transition:transform .2s var(--ease);display:inline-block}
 .tree-folder.is-collapsed .caret{transform:rotate(-90deg)}
-/* TWO folders, one on-brand hue each (AA on the #0d0f12 editor body) */
-.folder-row .fname--products{color:#ffda19}   /* signal yellow */
-.folder-row .fname--platform{color:#d99aa1}   /* wine — lifted from #c97f87 for AA on dark */
+/* THREE folders, one on-brand hue each (AA on the #0d0f12 editor body).
+   Hues mirror the nav taxonomy: building-blocks / utilities / solutions. */
+.folder-row .fname--blocks{color:#d99aa1}     /* wine — building blocks */
+.folder-row .fname--utilities{color:#79c0ff}  /* blue — utilities */
+.folder-row .fname--solutions{color:#ffda19}  /* signal yellow — solutions */
 .folder-children{display:flex;flex-direction:column;overflow:hidden;transition:max-height .26s var(--ease),opacity .2s var(--ease);max-height:600px;opacity:1}
 .tree-folder.is-collapsed .folder-children{max-height:0;opacity:0}
 
 .tree-leaf{
   position:relative;display:block;text-decoration:none;color:inherit;
-  padding:7px 8px 9px 22px;border-radius:6px;margin-left:8px;cursor:pointer;
+  padding:6px 8px 7px 22px;border-radius:6px;margin-left:8px;cursor:pointer;
   transition:background .15s var(--ease)
 }
 .tree-leaf:hover{background:rgba(255,255,255,.04)}
@@ -324,8 +338,9 @@ const packages = [
 .leaf-glyph{font-family:var(--font-mono);font-size:.66rem;opacity:.55;flex-shrink:0}
 .leaf-name{font-family:var(--font-mono);font-size:.74rem;font-weight:500;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 /* leaf-name tint = the folder hue, one step brighter for AA on dark */
-.tree-folder[data-cat="products"] .leaf-name{color:#ffe45c}
-.tree-folder[data-cat="platform"] .leaf-name{color:#e6adb3}
+.tree-folder[data-cat="blocks"] .leaf-name{color:#e6adb3}
+.tree-folder[data-cat="utilities"] .leaf-name{color:#a5d6ff}
+.tree-folder[data-cat="solutions"] .leaf-name{color:#ffe45c}
 .leaf-tag{font-family:var(--font-mono);font-size:.52rem;color:var(--muted);letter-spacing:.06em;flex-shrink:0}
 /* TREE-ONLY catalog: each leaf carries its one-line description INLINE,
    always visible (not hover-only) so the tree reads as a real catalog. */
@@ -483,9 +498,9 @@ const packages = [
   .shot-bg-front{transition:none!important}
 }
 
-/* ── MOBILE (≤640): drop the scroll-driven split-editor; show the twelve
+/* ── MOBILE (≤640): drop the scroll-driven split-editor; show the nine
    packages as a simple ordered list. Deployed sites render with their
-   screenshot. Kills the 12×56vh sticky track on phones. ─────────────────── */
+   screenshot. Kills the 9×56vh sticky track on phones. ─────────────────── */
 .shipped-mobile{display:none}
 @media(max-width:640px){
   .ide-track{min-height:0!important}
