@@ -35,9 +35,9 @@ export var reposPromise=fetch('https://api.github.com/users/mikeparcewski/repos?
    Order = the deployed-site tab order (interactive · garden · estate). */
 export var FEATURED=[
   {name:'wicked-interactive',url:'https://wi.wickedagile.com',screenshot:'/screenshots/wicked-interactive.png',
-   desc:'Describe it, watch it build in your browser, ship it.'},
+   desc:'A creative surface on the same substrate: describe it, watch it build, ship HTML/PDF/deck. It composes the family\'s building blocks; it does not close the loop.'},
   {name:'wicked-garden',url:'https://wg.wickedagile.com',screenshot:'/screenshots/wicked-garden.png',
-   desc:'Curated toolkit for what coding agents can\'t do alone.'},
+   desc:'Steering before execution — reads each prompt\'s work-shape + risk and applies the right rigor, plus the capabilities a planner-executor can\'t do alone.'},
   {name:'wicked-estate',url:'https://we.wickedagile.com',screenshot:'/screenshots/wicked-estate.png',
-   desc:'The code graph agents actually trust.'},
+   desc:'Your live technical environment, queryable — requirements↔implementation, blast-radius, infra + policy relationships, operational history.'},
 ];
