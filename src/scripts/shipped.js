@@ -297,14 +297,15 @@ function boot(){
     var firstLeaf=allLeaves[0];
     if(!firstLeaf)return;
     if(firstLeaf.dataset.mode==='site'){
-      mode='site';
       var featIdx=parseInt(firstLeaf.dataset.preview,10);
+      var front=browserShot.querySelector('.shot-bg-front');
+      if(isNaN(featIdx) || !FEATURED[featIdx] || !front)return;
+      mode='site';
       activeSite=featIdx;
       idePreview.dataset.mode='site';
       if(codeCard){codeCard.hidden=true;codeCard.setAttribute('aria-hidden','true');}
       if(browserFrame)browserFrame.hidden=false;
       var p=FEATURED[featIdx];
-      var front=browserShot.querySelector('.shot-bg-front');
       front.style.clipPath='inset(0 0 0 0)';
       front.style.backgroundImage="url('"+p.screenshot+"')";
       activeLeafIdx=parseInt(firstLeaf.dataset.idx,10);
