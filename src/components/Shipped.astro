@@ -4,11 +4,11 @@
  * Decomposed from index.next.html (#projects). TREE-ONLY: the
  * instrument-panel service grid (.svc-grid / .sw-tool) is intentionally
  * DROPPED — there is no separate packages/service grid, the tree IS the
- * catalog. Kept: the nine-package explorer file-tree, grouped into the
+ * catalog. Kept: the eight-package explorer file-tree, grouped into the
  * SAME THREE folders the nav dropdown / footer use (Building Blocks /
  * Utilities / Solutions — see wicked-web Topbar.astro), so the tree and the
  * nav stay consistent. It drives a DUAL-MODE preview pane + readout/status
- * bar. Each of the nine
+ * bar. Each of the eight
  * tree leaves carries an inline one-line description (always visible — the
  * tree reads as a real catalog, not hover-only) AND a data-idx so every
  * leaf is clickable.
@@ -18,7 +18,7 @@
  *       browser-frame via local /screenshots/<name>.png (clip-path wipe,
  *       reduced-motion gated). FEATURED in data.js is ordered
  *       [interactive, garden, estate] = preview indices 0,1,2.
- *   (b) LIBRARIES — the other 6 packages (data-mode="lib") have no
+ *   (b) LIBRARIES — the other 5 packages (data-mode="lib") have no
  *       screenshot, so they render a faux code-editor "source file" card
  *       in the SAME pane: header "<name>.ts", a line-number gutter, and a
  *       short syntax-highlighted TS snippet (reuses the global t-* tokens).
@@ -29,7 +29,7 @@
  * data module (FEATURED, esc, safeUrl, delay).
  */
 
-// Mobile view: the nine packages in order. The three with a `shot` are the
+// Mobile view: the eight packages in order. The three with a `shot` are the
 // deployed sites (rendered with their screenshot); the rest are libraries.
 const packages = [
   // ── solutions/ — drive the work (nav: Solutions) ─────────────────────────────
@@ -42,24 +42,23 @@ const packages = [
   { name: 'wicked-estate', lang: 'RS', site: 'we.wickedagile.com', href: 'https://we.wickedagile.com', shot: '/screenshots/wicked-estate.png', desc: 'Every agentic env becomes a crime scene. Forensics kit.' },
   { name: 'wicked-brain', lang: 'JS', href: 'https://github.com/mikeparcewski/wicked-brain', desc: 'Agents forget everything. This one doesn\'t.' },
   { name: 'wicked-bus', lang: 'JS', href: 'https://github.com/mikeparcewski/wicked-bus', desc: 'Fire-and-forget. Minus the forgetting.' },
-  { name: 'wicked-vault', lang: 'JS', href: 'https://github.com/mikeparcewski/wicked-vault', desc: 'The diff said it worked. The vault says what happened.' },
-  { name: 'wicked-loom', lang: 'PY', href: 'https://github.com/mikeparcewski/wicked-loom', desc: 'Teaches the agent what you built before you got here.' },
+  { name: 'wicked-vault', lang: 'JS', href: 'https://github.com/mikeparcewski/wicked-vault', desc: 'The content-addressed evidence backend behind wicked-testing.' },
 ];
 ---
 
 <!-- ════════════════════════════════════════════════════════════════
      SHIPPED — THE LIVING IDE split-editor (tree-only, dual-mode preview)
-     shipped. — file-tree of nine packages (3 folders: Building Blocks /
+     shipped. — file-tree of eight packages (3 folders: Building Blocks /
      Utilities / Solutions, mirroring the nav dropdown) drives a dual-mode
      preview pane: browser-frame for the 3 sites, faux code-editor for the
-     6 libraries.
+     5 libraries.
      ════════════════════════════════════════════════════════════════ -->
 <section class="zoneB-section" id="projects">
   <div class="ide-track">
     <div class="ide-stage">
   <div class="zone-inner">
     <div class="zone-head">
-      <span class="zone-kicker">WORKSPACE · 9 PACKAGES · 3 DEPLOYED</span>
+      <span class="zone-kicker">WORKSPACE · 8 PACKAGES · 3 DEPLOYED</span>
       <h2 class="zone-title">shipped.</h2>
     </div>
 
@@ -70,10 +69,10 @@ const packages = [
       </div>
 
       <div class="split-editor">
-        <!-- LEFT: EXPLORER tree — the nine packages, THREE folders that mirror
+        <!-- LEFT: EXPLORER tree — the eight packages, THREE folders that mirror
              the nav dropdown / footer taxonomy (Solutions / Utilities / Building
-             Blocks, per wicked-web Topbar.astro). data-idx is contiguous 0..8 in
-             DOM order (solutions 0-1, utilities 2-3, building-blocks 4-8);
+             Blocks, per wicked-web Topbar.astro). data-idx is contiguous 0..7 in
+             DOM order (solutions 0-1, utilities 2-3, building-blocks 4-7);
              solutions opens by default. -->
         <aside class="ide-explorer" aria-label="Package explorer">
           <div class="explorer-head"><span>the packages.</span><span class="ws">wicked.code-workspace</span></div>
@@ -133,11 +132,7 @@ const packages = [
               </a>
               <a class="tree-leaf" href="https://github.com/mikeparcewski/wicked-vault" target="_blank" rel="noopener" data-idx="7" data-mode="lib" data-lib="wicked-vault">
                 <span class="leaf-line"><span class="leaf-glyph" aria-hidden="true">JS</span><span class="leaf-name">wicked-vault.js</span><span class="leaf-tag">npm·MIT</span></span>
-                <span class="leaf-desc">// The diff said it worked. The vault says what happened.</span>
-              </a>
-              <a class="tree-leaf" href="https://github.com/mikeparcewski/wicked-loom" target="_blank" rel="noopener" data-idx="8" data-mode="lib" data-lib="wicked-loom">
-                <span class="leaf-line"><span class="leaf-glyph" aria-hidden="true">PY</span><span class="leaf-name">wicked-loom.py</span><span class="leaf-tag">pip·MIT</span></span>
-                <span class="leaf-desc">// Teaches the agent what you built before you got here.</span>
+                <span class="leaf-desc">// The content-addressed evidence backend behind wicked-testing.</span>
               </a>
             </div>
           </div>
@@ -219,13 +214,13 @@ const packages = [
 
       <!-- bottom STATUS BAR (workspace, chrome aria-hidden) -->
       <div class="ide-statusbar" aria-hidden="true">
-        <span class="sb-left"><span class="sb-branch">⎇ main</span><span>9 packages</span><span>3 deployed</span></span>
+        <span class="sb-left"><span class="sb-branch">⎇ main</span><span>8 packages</span><span>3 deployed</span></span>
         <span class="sb-right"><span id="sbTheme">dark · #0d0f12</span></span>
       </div>
     </div>
   </div>
     </div>
-    <div class="ide-steps" aria-hidden="true"><i class="ide-step" data-step="0"></i><i class="ide-step" data-step="1"></i><i class="ide-step" data-step="2"></i><i class="ide-step" data-step="3"></i><i class="ide-step" data-step="4"></i><i class="ide-step" data-step="5"></i><i class="ide-step" data-step="6"></i><i class="ide-step" data-step="7"></i><i class="ide-step" data-step="8"></i></div>
+    <div class="ide-steps" aria-hidden="true"><i class="ide-step" data-step="0"></i><i class="ide-step" data-step="1"></i><i class="ide-step" data-step="2"></i><i class="ide-step" data-step="3"></i><i class="ide-step" data-step="4"></i><i class="ide-step" data-step="5"></i><i class="ide-step" data-step="6"></i><i class="ide-step" data-step="7"></i></div>
   </div>
 </section>
 
@@ -264,9 +259,9 @@ const packages = [
 .zoneB-section{
   border-top:1px solid var(--hairline);
 }
-/* SCROLL-DRIVEN IDE: a tall track holds 9 invisible snap steps; the IDE stage
+/* SCROLL-DRIVEN IDE: a tall track holds 8 invisible snap steps; the IDE stage
    pins (sticky) and scrolling snaps step-by-step, each step = one package. */
-.ide-track{position:relative;min-height:calc(9 * 56svh)}
+.ide-track{position:relative;min-height:calc(8 * 56svh)}
 .ide-stage{
   position:sticky;top:var(--topbar-h);z-index:2;
   /* min-height (not fixed height) so the pinned stage grows rather than clips
@@ -498,9 +493,9 @@ const packages = [
   .shot-bg-front{transition:none!important}
 }
 
-/* ── MOBILE (≤640): drop the scroll-driven split-editor; show the nine
+/* ── MOBILE (≤640): drop the scroll-driven split-editor; show the eight
    packages as a simple ordered list. Deployed sites render with their
-   screenshot. Kills the 9×56vh sticky track on phones. ─────────────────── */
+   screenshot. Kills the 8×56vh sticky track on phones. ─────────────────── */
 .shipped-mobile{display:none}
 @media(max-width:640px){
   .ide-track{min-height:0!important}
