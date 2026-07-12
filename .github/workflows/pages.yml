@@ -1,10 +1,9 @@
-name: Deploy site (manual)
+name: Deploy site to GitHub Pages
 
-# DORMANT / human-gated: this workflow runs ONLY when triggered by hand from the
-# Actions tab. It never runs on push or merge, so publishing wickedagile.com is
-# always a deliberate action. The custom domain (public/CNAME) means the Astro
-# `site` is https://wickedagile.com with no base path.
+# Auto-deploys the site on every push to main; also runnable by hand.
 on:
+  push:
+    branches: [main]
   workflow_dispatch:
 
 permissions:

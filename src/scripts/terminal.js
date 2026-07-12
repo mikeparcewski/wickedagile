@@ -19,7 +19,7 @@ function boot(){
 
   /* TERMINAL COPY BANKS */
   var ART_I=['surfacing the latest thinking from the field...','here\'s what\'s been keeping me up at night...','recent dispatches from production.','field notes. unfiltered.','the good stuff. no padding.','things that needed to be written down.','dispatches from the build.','pulled from Medium. the real stuff.'];
-  var PRJ_I=['ten tools. one coherent idea.','the tools you keep shipping for the problem you keep seeing.','the stack, exposed.','local-first. agent-native. actually useful.','ten packages. one thesis.','tools that solve the org problem, not just the model problem.','the repo state. pulled fresh.','the wicked-* family. current.'];
+  var PRJ_I=['seven packages. one loop.','the tools you keep shipping for the problem you keep seeing.','the stack, exposed.','local-first. agent-native. actually useful.','seven packages. one thesis.','tools that solve the org problem, not just the model problem.','the repo state. pulled fresh.','the wicked-* family. current.'];
   var ABT_I=['the human in the loop.','brief history. no padding.','the career, summarized.','who wrote the tools.','the arc.','this is mike.','thirty years, five chapters.','the backstory.'];
 
   /* TERMINAL */
@@ -57,7 +57,7 @@ function boot(){
     await typeCmd('projects');await delay(140);commitCmd('projects');await delay(160);
     await typeOut('\n'+randFrom(PRJ_I)+'\n\n',17);
     var repos=await Promise.race([reposPromise,delay(3500).then(function(){return null})]);
-    var FB=[{name:'wicked-garden',description:'Steering before execution — reads work-shape + risk, applies the right rigor'},{name:'wicked-estate',description:'Your live technical environment, queryable — reqs↔impl, blast-radius, infra + policy'},{name:'wicked-brain',description:'Memory + code-graph with provenance — search, challenge, correct, trace to source'},{name:'wicked-testing',description:'No agent grades its own homework — the runner and the judge are walled off'},{name:'wicked-core',description:"The engine that makes 'done' a mechanism — workflow-as-data, dual gates, evidence"},{name:'wicked-crew',description:'The control room for governed agent delivery — drive, gate, audit; human in command'},{name:'wicked-bus',description:'The durable nervous system beneath it all — local-first, at-least-once, replayable'},{name:'wicked-interactive',description:'A creative surface on the same substrate — describe it, watch it build, ship it'}];
+    var FB=[{name:'wicked-garden',description:'Steering before execution — reads work-shape + risk, applies the right rigor'},{name:'wicked-estate',description:'Your live technical environment, queryable — reqs↔impl, blast-radius, infra + policy'},{name:'wicked-brain',description:'Memory + code-graph with provenance — search, challenge, correct, trace to source'},{name:'wicked-testing',description:'No agent grades its own homework — the runner and the judge are walled off'},{name:'wicked-crew',description:'The control room for governed agent delivery — drive, gate, audit; human in command'},{name:'wicked-bus',description:'The durable nervous system beneath it all — local-first, at-least-once, replayable'},{name:'wicked-interactive',description:'A creative surface on the same substrate — describe it, watch it build, ship it'}];
     var list=(repos&&repos.length)?repos:FB;
     commitLine('<span class="t-d">'+esc(SEP)+'</span>');appendTxt('\n');
     for(var r=0;r<list.length;r++){
@@ -73,7 +73,7 @@ function boot(){
     commitLine('<span class="t-c">│</span>  <span class="t-b">mike parcewski</span>  <span class="t-d">principal architect · accenture</span>  <span class="t-c">│</span>');
     commitLine('<span class="t-c">└────────────────────────────────────────────┘</span>');
     appendTxt('\n');await delay(280);
-    var ERAS=[['EARLY YEARS','Commercial internet. Travel tech. Expedia.\nLucky to be in the room when it mattered.'],['SCALE','Financial services. UBS. Singapore Exchange.\nThe tolerance for failure got very small.'],['ARCHITECTURE','Shaping how orgs build, not just what they build.\nWork that survives contact with reality.'],['AI GAP','The gap between demo and production at a global\ninstitution. Org problem. Not a model problem.'],['NOW','Ten tools for the problem that was always there.\nAgents just made it obvious.']];
+    var ERAS=[['EARLY YEARS','Commercial internet. Travel tech. Expedia.\nLucky to be in the room when it mattered.'],['SCALE','Financial services. UBS. Singapore Exchange.\nThe tolerance for failure got very small.'],['ARCHITECTURE','Shaping how orgs build, not just what they build.\nWork that survives contact with reality.'],['AI GAP','The gap between demo and production at a global\ninstitution. Org problem. Not a model problem.'],['NOW','Seven packages for the problem that was always there.\nAgents just made it obvious.']];
     for(var k=0;k<ERAS.length;k++){
       var bar='─'.repeat(Math.max(0,40-ERAS[k][0].length-2));
       commitLine('<span class="t-y t-b">◆ '+esc(ERAS[k][0])+' '+bar+'</span>');
