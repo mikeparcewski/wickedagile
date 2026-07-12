@@ -1,20 +1,19 @@
 /* ──────────────────────────────────────────────────────────────
-   wickedagile — SHIPPED : the living IDE split-editor (tree-only)
-   Recovered from the pre-Operability-Board design and reconciled to the
-   current eight-package catalog, grouped into the SAME three folders the nav
-   dropdown / footer use (Building Blocks / Utilities / Solutions).
+   wickedagile — SHIPPED : the living IDE split-editor (loop-role tree)
+   The seven-package catalog grouped by LOOP ROLE (steer / equip / verify /
+   govern / fabric / surface) — the canonical wicked loop.
    DUAL-MODE preview pane:
 
      (a) SITE  — the 3 DEPLOYED sites (FEATURED[0..2] = interactive · garden ·
          estate) drive the browser-frame: /screenshots/<name>.png via a
          clip-path wipe, 3 editor-tabs (all gated by prefers-reduced-motion).
-     (b) LIB   — the other 5 packages (brain · bus · vault · testing · crew)
-         have no screenshot;
+     (b) LIB   — the other 4 packages (brain · testing · crew · bus) have no
+         screenshot;
          selecting one hides the browser-frame and renders a faux code-editor
          card in the SAME pane (header "<name>.<ext>", line-number gutter,
          short syntax-highlighted snippet) with a repo CTA.
 
-   EVERY one of the eight tree leaves is clickable (data-idx 0..7). Exactly
+   EVERY one of the seven tree leaves is clickable (data-idx 0..6). Exactly
    one active state is kept across the tab strip + the tree (aria-selected /
    aria-current). The visitor's scroll drives the package walk — no timer.
 
@@ -32,56 +31,46 @@ var PREFERS_REDUCED = window.matchMedia && window.matchMedia('(prefers-reduced-m
    Copy is honest product positioning (crew = harness, bus = durable fabric). */
 var LIB_SNIPPETS = {
   'wicked-brain': {
-    tagline: "Your AI agent's memory — markdown and SQLite, no vector DB.",
+    tagline: 'Memory + code-graph with provenance — knowledge the agent can search, challenge, correct, and trace to its source.',
     repo: 'https://github.com/mikeparcewski/wicked-brain',
     ext: 'js', glyph: 'JS', install: 'npm i',
     lines: [
-      "// no embeddings. no vector db. markdown + SQLite FTS5.",
+      "// memory + code-graph with provenance. markdown + SQLite FTS5, no vector db.",
       "import { brain } from 'wicked-brain'",
       "await brain.remember(decision)",
-      "const ctx = await brain.recall('why sqlite?')  // cited · [[backlinked]] · local"
+      "const ctx = await brain.recall('why sqlite?')  // cited · [[backlinked]] · traceable"
     ]
   },
   'wicked-bus': {
-    tagline: 'A durable, tiered event fabric for AI agents and dev tools.',
+    tagline: 'The durable nervous system beneath it all — local-first, at-least-once, replayable.',
     repo: 'https://github.com/mikeparcewski/wicked-bus',
     ext: 'js', glyph: 'JS', install: 'npm i',
     lines: [
-      "// durable, tiered, at-least-once. dead-letter + replay. single host = the honest boundary.",
+      "// the fabric beneath the loop: durable, at-least-once, replayable. local-first.",
       "import { bus } from 'wicked-bus'",
       "bus.emit('order.placed', payload)   // cursor-poll, causality-tracked",
-      "bus.subscribe('order.*', handle)"
+      "bus.subscribe('order.*', handle)    // dead-letter + operator replay"
     ]
   },
   'wicked-testing': {
-    tagline: "A complete QE team for AI coding CLIs that can't self-grade.",
+    tagline: 'No agent grades its own homework — an enforced wall between the agent that runs the tests and the one that judges them.',
     repo: 'https://github.com/mikeparcewski/wicked-testing',
     ext: 'js', glyph: 'JS', install: 'npm i',
     lines: [
-      "// writer runs the tests. the reviewer never sees the executor's context.",
+      "// no agent grades its own homework. the judge never sees the runner's context.",
       "import { acceptance } from 'wicked-testing'",
       "const verdict = await acceptance(scenario)  // PASS | FAIL, evidence-gated"
     ]
   },
   'wicked-crew': {
-    tagline: 'The harness for your agent harnesses.',
+    tagline: 'The control room for governed agent delivery — drive, gate, and audit the work; the human stays in command.',
     repo: 'https://github.com/mikeparcewski/wicked-crew',
     ext: 'js', glyph: 'JS', install: 'npm i',
     lines: [
-      "// harnesses the coding agents you already pay for. owns the workflow, not the work.",
+      "// the control room: drive, gate, audit the coding agents you already run.",
       "$ wicked-crew launch --type feature \\",
       "    --problem 'Add OAuth to the API'",
       "// → { session_id, current_phase: 'clarify', deny_dominates: true }"
-    ]
-  },
-  'wicked-vault': {
-    tagline: 'The content-addressed evidence backend behind wicked-testing.',
-    repo: 'https://github.com/mikeparcewski/wicked-vault',
-    ext: 'js', glyph: 'JS', install: 'npm i',
-    lines: [
-      "// content-addressed evidence — the backend behind wicked-testing.",
-      "import { vault } from 'wicked-vault'",
-      "vault.record(run)   // evidence, not assertions — content-addressed"
     ]
   }
 };
@@ -147,9 +136,9 @@ function boot(){
   /* the 3 site leaves map their data-preview → FEATURED idx */
   var siteLeaves=allLeaves.filter(function(l){return l.dataset.mode==='site';});
 
-  var activeSite=0;        /* current FEATURED preview index (0..2); 0=interactive — the first SITE leaf in the new solutions-first order. Only a fallback for tab state while a LIB is shown (leaf-0 = crew is a lib, so no site is painted at init). */
-  var activeLeafIdx=0;     /* current tree leaf data-idx (0..7); 0=wicked-crew leaf (solutions[0], the new first leaf in DOM order) */
-  var mode='lib';          /* 'site' | 'lib' — the new leaf-0 (crew) is a LIB, so we open in lib mode (matches idePreview data-mode="lib" in the static HTML) */
+  var activeSite=1;        /* current FEATURED preview index (0..2); leaf-0 = steer[0] = wicked-garden = FEATURED[1], so the opening site is 1 (garden). */
+  var activeLeafIdx=0;     /* current tree leaf data-idx (0..6); 0 = wicked-garden leaf (steer[0], the first leaf in DOM order) */
+  var mode='site';         /* 'site' | 'lib' — leaf-0 (garden) is a deployed SITE, so we open in site mode (matches idePreview data-mode="site" in the static HTML) */
 
   /* ── wipeSlot — two-layer clip-path inset wipe (reduced-motion gated) ── */
   function wipeSlot(el,project){
@@ -301,16 +290,19 @@ function boot(){
   function initPreview(){
     /* Paint the FIRST leaf in DOM order (= the scroll-walk's step-0 target) so
        the static HTML, shipped.js, AND the scroll walk all agree on the opening
-       package — no pre-scroll flash. After the solutions-first reorder, leaf-0
-       is solutions[0] = wicked-crew, a LIB leaf, so we open on its faux
-       code-card (matching idePreview data-mode="lib" in the static HTML). The
-       site branch is kept (direct paint, no wipe transition) so this stays
-       correct if leaf-0 ever becomes a site again. */
+       package — no pre-scroll flash. After the loop-role reorg, leaf-0 is
+       steer[0] = wicked-garden, a deployed SITE leaf, so we open on its
+       browser-frame (matching idePreview data-mode="site" in the static HTML).
+       The lib branch is kept for the case where leaf-0 is ever a library. */
     var firstLeaf=allLeaves[0];
     if(!firstLeaf)return;
     if(firstLeaf.dataset.mode==='site'){
+      mode='site';
       var featIdx=parseInt(firstLeaf.dataset.preview,10);
       activeSite=featIdx;
+      idePreview.dataset.mode='site';
+      if(codeCard){codeCard.hidden=true;codeCard.setAttribute('aria-hidden','true');}
+      if(browserFrame)browserFrame.hidden=false;
       var p=FEATURED[featIdx];
       var front=browserShot.querySelector('.shot-bg-front');
       front.style.clipPath='inset(0 0 0 0)';
@@ -319,7 +311,7 @@ function boot(){
       if(previewUrl)previewUrl.textContent=p.url.replace('https://','');
       if(crumbName)crumbName.textContent=p.name;
       if(readoutDesc)readoutDesc.textContent=p.desc;
-      if(readoutCta)readoutCta.href=safeUrl(p.url);
+      if(readoutCta){readoutCta.href=safeUrl(p.url);readoutCta.textContent='Open Preview ↗';}
       syncActive(activeLeafIdx, featIdx);
     }else{
       /* lib leaf-0: render its faux code-card (no wipe transition to gate) */
