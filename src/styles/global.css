@@ -48,34 +48,12 @@ html { scroll-snap-type: y mandatory; scroll-padding-top: var(--topbar-h); }
   --section-snap-margin: var(--topbar-h);             /* anchor/snap clearance  */
 }
 
-/* ── SPLASH SITE: NO SELF-REPO GITHUB LINK ────────────────────────────────
-   wickedagile.com is the apex splash — the "living loop" landing page. It has
-   no repo, tools, or content of its own to browse, so it must NOT advertise a
-   link to its own GitHub repo. The shared family chrome (Topbar/Footer, from
-   the wicked-web package) always renders a GitHub affordance from its `repo`
-   prop and exposes no opt-out flag; since editing that shared component is out
-   of scope for this site, the three self-repo GitHub links are hidden here.
-
-   Scope is deliberately narrow — all three are matched on the self `repo` href
-   (https://github.com/mikeparcewski, with/without a trailing slash) so the
-   FAMILY repo links (brain/bus → github.com/mikeparcewski/wicked-*) and the
-   Medium links are untouched. The topbar icon is matched by href (not its
-   aria-label) so a future non-self `repo` prop would keep its affordance.
-     1. Topbar desktop GitHub icon      (.topbar .nav a[href=self])
-     2. Topbar hamburger "GitHub" item  (.mobile-menu a.mm-item[href=self])
-     3. Footer "GitHub ↗" chiclet       (.footer-cta a[href=self])
-
-   Out of scope by design: the hero terminal's `all → github.com/mikeparcewski`
-   line (src/scripts/terminal.js) is curated portfolio narrative, not the shared
-   chrome's "browse this site's repo" affordance — it stays.                    */
-.topbar .nav a[href="https://github.com/mikeparcewski"],
-.topbar .nav a[href="https://github.com/mikeparcewski/"],
-.mobile-menu a.mm-item[href="https://github.com/mikeparcewski"],
-.mobile-menu a.mm-item[href="https://github.com/mikeparcewski/"],
-.footer .footer-cta a[href="https://github.com/mikeparcewski"],
-.footer .footer-cta a[href="https://github.com/mikeparcewski/"] {
-  display: none !important;
-}
+/* GitHub affordance → the author's PROFILE. The shared chrome (Topbar/Footer)
+   renders a GitHub link from its `repo` prop; this site sets that to the
+   profile (github.com/mikeparcewski), not a repo. That profile link is shown
+   on both desktop and mobile — the site has no repo of its own, but the
+   profile is a wanted link back. (The hero terminal's github.com/mikeparcewski
+   line stays too — curated portfolio narrative.) */
 
 body::before {
   content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none;
