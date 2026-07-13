@@ -294,8 +294,9 @@ function boot(){
 
   /* ── boot: default selected = the first ring node (Steer / wicked-garden) ── */
   function initPreview(){
-    /* seq[0] is garden (smallest track length); stations[0] is now the surface
-       strip in DOM order, so target the ring set explicitly. */
+    /* seq[0] is garden (smallest track length); stations[0] is NOT garden in DOM
+       order (crew's frame / the interactive bar also match), so target the ring
+       set explicitly. */
     var first=(seq[0] && seq[0].el) || stations[0];
     selectStation(first, false); /* no wipe on load — static HTML already matches */
   }

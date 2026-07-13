@@ -36,7 +36,7 @@ export var reposPromise=fetch('https://api.github.com/users/mikeparcewski/repos?
    OWN real screenshot + a specific tagline so no preview reads as a template. */
 export var FEATURED=[
   {name:'wicked-interactive',url:'https://wi.wickedagile.com',screenshot:'/screenshots/wicked-interactive.png',
-   desc:'A sample application on the same substrate — describe it, watch it build, ship HTML/PDF/deck. It composes the family\'s blocks; it does not close the loop.'},
+   desc:'A different way to work with agents — real-time, human-in-the-creative-loop: describe it, watch it build, point to refine. A foil to the governed loop.'},
   {name:'wicked-garden',url:'https://wg.wickedagile.com',screenshot:'/screenshots/wicked-garden.png',
    desc:'Steering before execution — reads each prompt\'s work-shape + risk and applies the right rigor, plus the capabilities a planner-executor can\'t do alone.'},
   {name:'wicked-estate',url:'https://we.wickedagile.com',screenshot:'/screenshots/wicked-estate.png',

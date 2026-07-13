@@ -2,12 +2,13 @@
 /**
  * Shipped.astro — "experiments." · wicked-crew is the governed BOX around the loop.
  *
- * Layering, top to bottom: HUMAN AUTHORITY (a command bar — the human commands
- * crew) → wicked-crew (the labeled purple FRAME — the harness of your harnesses,
- * the box the whole loop runs inside) → the LOOP the "current" flows around.
- * wicked-interactive is a SAMPLE APPLICATION strip ON TOP of the box (a surface
- * on the same substrate, not part of the governed loop). wicked-bus is the
- * FABRIC beneath the track.
+ * Layering, top to bottom: wicked-crew (the labeled purple FRAME — the harness
+ * of your harnesses, the box the whole loop runs inside) → the LOOP the "current"
+ * flows around → a full-width wicked-interactive BAR directly under the center
+ * preview pane. wicked-interactive is NOT part of the governed loop: it's a
+ * DIFFERENT collaboration mode (real-time, human-in-the-creative-loop — describe
+ * it, watch it build, point to refine), a foil to crew's governed autonomy.
+ * wicked-bus is the FABRIC beneath the track.
  *
  * The loop (inside crew) is a STADIUM (two straights + two semicircular caps)
  * drawn in an SVG viewBox (240×100); the orbit box shares that 2.4:1 aspect so
@@ -18,7 +19,7 @@
  * parks statically under prefers-reduced-motion.
  *
  * Five inner selectable stations (garden/estate/brain/testing/bus) + the crew
- * frame + the interactive strip all carry data-idx + data-mode + data-preview/
+ * frame + the interactive bar all carry data-idx + data-mode + data-preview/
  * data-lib, so shipped.js drives the reused preview pane (showSite / showLib /
  * wipeSlot) unchanged. Five products are live sites (garden · estate · testing ·
  * crew · interactive) → real screenshots; brain + bus (no site) render distinct
@@ -70,8 +71,9 @@ const crew = {
   idx: 4, mode: 'site', preview: '4', href: 'https://wc.wickedagile.com',
 };
 
-// wicked-interactive — a SAMPLE APPLICATION on the substrate: a slim strip ON TOP
-// of the governed box (not in the loop). Selectable → its wi. site preview.
+// wicked-interactive — a DIFFERENT collaboration mode (real-time, creative-loop):
+// a full-width bar UNDER the center preview, inside crew's box but not in the
+// governed loop. Selectable → its wi. site preview.
 const surface = {
   key: 'wicked-interactive', role: 'Surface', color: '#f0a868',
   idx: 6, mode: 'site', preview: '0', href: 'https://wi.wickedagile.com',
@@ -81,7 +83,7 @@ const surface = {
 const trackPath = `M${LCAP},${TOP} L${RCAP},${TOP} A${CAPR},${CAPR} 0 0 1 ${RCAP},${BOT} L${LCAP},${BOT} A${CAPR},${CAPR} 0 0 1 ${LCAP},${TOP} Z`;
 const returnPath = `M10,50 A${CAPR},${CAPR} 0 0 1 ${LCAP},${TOP}`; // record → intent (left cap)
 
-// MOBILE derived sets: crew wraps, interactive sits on top, the rest are the loop.
+// MOBILE derived sets: interactive (a different mode) sits above, crew wraps, the rest are the loop.
 const loopPkgs = packages.filter((p) => p.name !== 'wicked-crew' && p.name !== 'wicked-interactive');
 const crewPkg = packages.find((p) => p.name === 'wicked-crew');
 const surfacePkg = packages.find((p) => p.name === 'wicked-interactive');
@@ -89,9 +91,9 @@ const surfacePkg = packages.find((p) => p.name === 'wicked-interactive');
 
 <!-- ════════════════════════════════════════════════════════════════
      SHIPPED — "experiments." · crew is the governed BOX around the loop.
-     Layering: HUMAN AUTHORITY (command bar) → wicked-crew (the frame) →
-     the loop the "current" flows around. wicked-interactive is a sample
-     application ON TOP of the substrate; wicked-bus is the fabric beneath.
+     Layering: wicked-crew (the frame) → the loop the "current" flows around →
+     a full-width wicked-interactive BAR under the center preview (a different
+     collaboration mode, not the governed loop). wicked-bus is the fabric beneath.
      ════════════════════════════════════════════════════════════════ -->
 <section class="zoneB-section snap-section" id="projects">
   <div class="orbit-shell">
@@ -101,23 +103,6 @@ const surfacePkg = packages.find((p) => p.name === 'wicked-interactive');
       <h2 class="zone-title">experiments.</h2>
       <p class="orbit-caption">You cannot stabilize the harness — so the durable system sits <b>around</b> it.</p>
     </div>
-
-    <!-- HUMAN AUTHORITY — the command bar above crew (the human commands crew) -->
-    <div class="authority-bar" role="note">
-      <span class="ab-dot" aria-hidden="true"></span>
-      <span class="ab-text">Human authority <span class="ab-sep" aria-hidden="true">·</span> approve <span class="ab-sep" aria-hidden="true">·</span> redirect <span class="ab-sep" aria-hidden="true">·</span> pause <span class="ab-sep" aria-hidden="true">·</span> cancel</span>
-    </div>
-
-    <!-- wicked-interactive — a SAMPLE APPLICATION strip on top of the substrate.
-         It sits ON TOP of the governed box, not inside the loop. Clickable. -->
-    <a class="surface-strip" href={surface.href} target="_self" rel="noopener"
-       data-idx={surface.idx} data-mode={surface.mode} data-preview={surface.preview}
-       data-role={surface.role} data-color={surface.color}
-       aria-label="wicked-interactive — a sample application on the same substrate (click to preview)">
-      <span class="ss-dot" aria-hidden="true"></span>
-      <span class="ss-label"><b>wicked-interactive</b> <span class="ss-sep" aria-hidden="true">·</span> a sample application on the same substrate</span>
-      <span class="ss-tag">sample app ↗</span>
-    </a>
 
     <!-- ── crew: THE GOVERNED BOX the whole loop runs inside ──────────── -->
     <div class="crew-wrap">
@@ -226,6 +211,19 @@ const surfacePkg = packages.find((p) => p.name === 'wicked-interactive');
               </div>{/* .orbit-center */}
             </div>{/* .orbit */}
           </div>{/* .orbit-wrap */}
+
+          <!-- wicked-interactive — a FULL-WIDTH bar directly UNDER the center
+               preview pane. Not part of the governed loop: it's a DIFFERENT
+               collaboration mode — real-time, human-in-the-creative-loop.
+               Clickable → its wi. site preview (reuses showSite / data-idx). -->
+          <a class="surface-strip" href={surface.href} target="_self" rel="noopener"
+             data-idx={surface.idx} data-mode={surface.mode} data-preview={surface.preview}
+             data-role={surface.role} data-color={surface.color}
+             aria-label="wicked-interactive — a different way to work with agents: describe it, watch it build, point to refine (click to preview)">
+            <span class="ss-dot" aria-hidden="true"></span>
+            <span class="ss-label"><b>wicked-interactive</b> <span class="ss-sep" aria-hidden="true">·</span> a different way to work with agents — describe it, watch it build, point to refine</span>
+            <span class="ss-tag">try it ↗</span>
+          </a>
         </div>{/* .crew-body */}
       </div>{/* .crew-box */}
     </div>{/* .crew-wrap */}
@@ -238,15 +236,13 @@ const surfacePkg = packages.find((p) => p.name === 'wicked-interactive');
       <span class="ap-text">auto-playing · click any station to drive</span>
     </button>
 
-    <!-- MOBILE (≤880): human authority, then wicked-interactive (sample app on
-         top), then wicked-crew as the labeled wrapper around the vertical loop. -->
+    <!-- MOBILE (≤880): wicked-interactive (a different collaboration mode) on top,
+         then wicked-crew as the labeled wrapper around the vertical loop. -->
     <div class="shipped-mobile" aria-label="wicked-crew and the loop it governs (vertical)">
-      <div class="shm-authority">Human authority · approve · redirect · pause · cancel</div>
-
-      <!-- interactive — the sample application on top of the substrate -->
+      <!-- interactive — a different way to work with agents (real-time creative loop) -->
       <a class="shm-surface" href={surfacePkg.href} target="_self" rel="noopener" style={`--role:${surfacePkg.color}`}>
         <span class="shm-dot" aria-hidden="true"></span>
-        <span class="shm-surface-label"><b>wicked-interactive</b> · a sample application on the same substrate</span>
+        <span class="shm-surface-label"><b>wicked-interactive</b> · a different way to work with agents — describe it, watch it build, point to refine</span>
         <span class="shm-badge shm-badge--live"><span class="shm-live-dot" aria-hidden="true"></span>live ↗</span>
       </a>
 
@@ -328,30 +324,19 @@ const surfacePkg = packages.find((p) => p.name === 'wicked-interactive');
 }
 .orbit-caption b{color:var(--ink);font-weight:700}
 
-/* ── HUMAN AUTHORITY — command bar above crew (human commands crew) ─ */
-.authority-bar{
-  display:inline-flex;align-items:center;gap:9px;
-  font-family:var(--font-mono);font-size:.56rem;letter-spacing:.16em;text-transform:uppercase;
-  color:var(--muted);border:1px solid var(--hairline-strong);border-radius:8px;
-  padding:6px 16px;background:linear-gradient(rgba(255,255,255,.035),rgba(255,255,255,.01))
-}
-.authority-bar .ab-dot{
-  width:6px;height:6px;border-radius:50%;background:var(--accent);flex-shrink:0;
-  box-shadow:0 0 0 0 rgba(255,218,25,.5);animation:oaPulse 2.4s ease-in-out infinite
-}
-.authority-bar .ab-sep{opacity:.4;margin:0 1px}
-@keyframes oaPulse{0%,100%{box-shadow:0 0 0 0 rgba(255,218,25,.45)}50%{box-shadow:0 0 0 5px rgba(255,218,25,0)}}
-
-/* ── wicked-interactive — the SAMPLE APPLICATION strip on top of the box ─ */
+/* ── wicked-interactive — a FULL-WIDTH bar directly UNDER the center preview,
+     inside crew's box. A DIFFERENT collaboration mode (real-time, creative-loop),
+     not part of the governed loop. Spans the full loop-area width. ─ */
 .surface-strip{
-  display:inline-flex;align-items:center;gap:10px;max-width:100%;
+  display:flex;align-items:center;gap:10px;width:100%;
+  margin-top:clamp(6px,1vw,14px);
   font-family:var(--font-mono);font-size:.62rem;text-decoration:none;color:var(--muted);
   border:1px dashed color-mix(in oklab,#f0a868 45%,var(--hairline));border-radius:8px;
-  padding:7px 15px;background:linear-gradient(color-mix(in oklab,#f0a868 7%,transparent),transparent);
+  padding:8px 15px;background:linear-gradient(color-mix(in oklab,#f0a868 7%,transparent),transparent);
   transition:border-color .18s var(--ease),box-shadow .22s var(--ease),background .18s
 }
-.surface-strip .ss-dot{width:8px;height:8px;border-radius:50%;background:var(--role);box-shadow:0 0 8px -1px var(--role);flex-shrink:0}
-.surface-strip .ss-label{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.surface-strip .ss-dot{width:8px;height:8px;border-radius:50%;background:#f0a868;box-shadow:0 0 8px -1px #f0a868;flex-shrink:0}
+.surface-strip .ss-label{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .surface-strip .ss-label b{color:#f6bd8a;font-weight:700}
 .surface-strip .ss-sep{opacity:.5;margin:0 2px}
 .surface-strip .ss-tag{font-size:.55rem;letter-spacing:.06em;text-transform:uppercase;font-weight:700;color:#f0a868;flex-shrink:0}
@@ -407,8 +392,8 @@ const surfacePkg = packages.find((p) => p.name === 'wicked-interactive');
 .orbit{
   position:relative;
   /* width is the driver; height follows the 2.4:1 aspect. Bounded by BOTH
-     viewport width and height — smaller than before since it now sits INSIDE
-     crew's box (which adds a titlebar + the authority + surface strips above).
+     viewport width and height — smaller than a full-bleed loop since it sits
+     INSIDE crew's box (a titlebar above, the full-width interactive bar below).
      The 52vh term caps the loop HEIGHT so the interior clears the station rows. */
   --loop-w:min(90vw, 2.4 * 52vh, 1080px);
   width:var(--loop-w);aspect-ratio:2.4;
@@ -630,7 +615,6 @@ const surfacePkg = packages.find((p) => p.name === 'wicked-interactive');
 /* ── REDUCED MOTION — freeze the kinetics to a steady state ─────── */
 @media(prefers-reduced-motion:reduce){
   .orbit-ring{animation:none;stroke-dashoffset:0}
-  .orbit-authority .oa-dot,
   .orbit-autoplay .ap-dot,
   .browser-chrome .live .pulse{animation:none}
   .shot-bg-front{transition:none!important}
@@ -645,8 +629,6 @@ const surfacePkg = packages.find((p) => p.name === 'wicked-interactive');
     min-height:auto;overflow:visible;
     padding:52px 20px 8px;justify-content:flex-start
   }
-  .authority-bar,
-  .surface-strip,
   .crew-wrap,
   .orbit-autoplay{display:none} /* the loop + its chrome are desktop-only */
   .orbit-head{align-items:flex-start;text-align:left}
@@ -656,12 +638,7 @@ const surfacePkg = packages.find((p) => p.name === 'wicked-interactive');
   .shipped-mobile{display:flex;flex-direction:column;width:100%;margin-top:18px;gap:10px}
 }
 
-/* ── MOBILE: interactive (sample app) + crew wrapper + the vertical loop ─ */
-.shm-authority{
-  font-family:var(--font-mono);font-size:.54rem;letter-spacing:.14em;text-transform:uppercase;
-  color:var(--muted);text-align:center;padding:9px 12px;
-  border:1px solid var(--hairline-strong);border-radius:8px;align-self:center
-}
+/* ── MOBILE: interactive (a different collaboration mode) + crew wrapper + loop ─ */
 .shm-surface{
   display:flex;align-items:center;gap:9px;text-decoration:none;color:var(--muted);
   font-family:var(--font-mono);font-size:.66rem;
