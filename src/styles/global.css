@@ -56,16 +56,24 @@ html { scroll-snap-type: y mandatory; scroll-padding-top: var(--topbar-h); }
    prop and exposes no opt-out flag; since editing that shared component is out
    of scope for this site, the three self-repo GitHub links are hidden here.
 
-   Scope is deliberately narrow — matched on the self `repo` href
-   (https://github.com/mikeparcewski) and the topbar's aria-label — so the
+   Scope is deliberately narrow — all three are matched on the self `repo` href
+   (https://github.com/mikeparcewski, with/without a trailing slash) so the
    FAMILY repo links (brain/bus → github.com/mikeparcewski/wicked-*) and the
-   Medium links are untouched.
-     1. Topbar desktop GitHub icon      (.topbar a[aria-label="GitHub"])
+   Medium links are untouched. The topbar icon is matched by href (not its
+   aria-label) so a future non-self `repo` prop would keep its affordance.
+     1. Topbar desktop GitHub icon      (.topbar .nav a[href=self])
      2. Topbar hamburger "GitHub" item  (.mobile-menu a.mm-item[href=self])
-     3. Footer "GitHub ↗" chiclet       (.footer-cta a[href=self])              */
-.topbar .nav a[aria-label="GitHub"],
+     3. Footer "GitHub ↗" chiclet       (.footer-cta a[href=self])
+
+   Out of scope by design: the hero terminal's `all → github.com/mikeparcewski`
+   line (src/scripts/terminal.js) is curated portfolio narrative, not the shared
+   chrome's "browse this site's repo" affordance — it stays.                    */
+.topbar .nav a[href="https://github.com/mikeparcewski"],
+.topbar .nav a[href="https://github.com/mikeparcewski/"],
 .mobile-menu a.mm-item[href="https://github.com/mikeparcewski"],
-.footer .footer-cta a[href="https://github.com/mikeparcewski"] {
+.mobile-menu a.mm-item[href="https://github.com/mikeparcewski/"],
+.footer .footer-cta a[href="https://github.com/mikeparcewski"],
+.footer .footer-cta a[href="https://github.com/mikeparcewski/"] {
   display: none !important;
 }
 
