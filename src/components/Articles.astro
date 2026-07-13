@@ -95,17 +95,27 @@ const feat = list[0] || null;
           </div>
         </div>
 
-        <!-- MOBILE: just the first 3 articles as hero-image cards -->
+        <!-- MOBILE: feature the latest with image, then the rest as a compact
+             thumbnail + title + intro list (all articles). -->
         <div class="art-mobile">
-          {list.slice(0, 3).map((art, i) => (
-            <a class="artm-card" href={art.link} target="_blank" rel="noopener">
-              <div class="artm-shot" style={art.thumbnail ? `background-image:url('${art.thumbnail}')` : ''}>
-                <span class="artm-idx">{String(i + 1).padStart(2, '0')}</span>
+          {feat && (
+            <a class="artm-card" href={feat.link} target="_blank" rel="noopener">
+              <div class="artm-shot" style={feat.thumbnail ? `background-image:url('${feat.thumbnail}')` : ''}>
+                <span class="artm-idx">01</span>
               </div>
               <div class="artm-body">
-                <h3 class="artm-title">{art.title}</h3>
-                <div class="artm-meta">{`${fmt(art.pubDate) ? fmt(art.pubDate) + ' · ' : ''}${art.readTime} min read`}</div>
+                <h3 class="artm-title">{feat.title}</h3>
+                <div class="artm-meta">{`${fmt(feat.pubDate) ? fmt(feat.pubDate) + ' · ' : ''}${feat.readTime} min read`}</div>
               </div>
+            </a>
+          )}
+          {articles.slice(1).map((art) => (
+            <a class="artm-row" href={art.link} target="_blank" rel="noopener">
+              <span class={`artm-row-thumb${art.thumbnail ? '' : ' is-empty'}`} style={art.thumbnail ? `background-image:url('${art.thumbnail}')` : ''}></span>
+              <span class="artm-row-body">
+                <span class="artm-row-title">{art.title}</span>
+                {art.intro && <span class="artm-row-intro">{art.intro}</span>}
+              </span>
             </a>
           ))}
         </div>
@@ -414,6 +424,15 @@ const feat = list[0] || null;
 .artm-body{padding:13px 15px 15px}
 .artm-title{font-family:var(--font-display);font-weight:900;font-stretch:115%;font-size:clamp(1.05rem,4.6vw,1.4rem);line-height:1.12;letter-spacing:-.02em;color:var(--ink)}
 .artm-meta{font-family:var(--font-mono);font-size:.62rem;color:var(--muted);letter-spacing:.04em;margin-top:8px}
+/* compact list row = the non-featured articles: small hero thumbnail + title + intro.
+   Lives inside .art-mobile, so it only renders on phones (≤640). */
+.artm-row{display:flex;gap:12px;align-items:flex-start;border:1px solid var(--hairline-strong);border-radius:10px;padding:11px;background:var(--surface);text-decoration:none;color:inherit;transition:border-color .18s var(--ease)}
+.artm-row:hover,.artm-row:focus-visible{border-color:rgba(255,218,25,.4)}
+.artm-row-thumb{flex-shrink:0;width:64px;height:64px;border-radius:7px;background:var(--surface-2);background-size:cover;background-position:center top;border:1px solid var(--hairline-strong)}
+.artm-row-thumb.is-empty{background:var(--surface-2)}
+.artm-row-body{display:flex;flex-direction:column;gap:5px;min-width:0}
+.artm-row-title{font-family:var(--font-display);font-weight:800;font-stretch:110%;font-size:1rem;line-height:1.16;letter-spacing:-.01em;color:var(--ink);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.artm-row-intro{font-size:.78rem;line-height:1.4;color:var(--muted);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 </style>
 
 <script>

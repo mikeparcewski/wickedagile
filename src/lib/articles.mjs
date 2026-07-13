@@ -12,8 +12,20 @@ function readTime(html) {
   return Math.max(1, Math.round(wc / 200));
 }
 
+/* A clean intro snippet for the mobile article list: strip tags/entities,
+   collapse whitespace, then hard-cap at n chars on a word boundary + ellipsis. */
+function introSnippet(html, n = 120) {
+  const txt = String(html || '')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/&[a-z]+;|&#\d+;/gi, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+  if (txt.length <= n) return txt;
+  return txt.slice(0, n).replace(/\s+\S*$/, '').trim() + '…';
+}
+
 function mapRss2json(items) {
-  return items.slice(0, 6).map((it) => {
+  return items.slice(0, 12).map((it) => {
     const html = it.content || it.description || '';
     let thumb = it.thumbnail || '';
     if (!thumb) { const m = html.match(/<img[^>]+src="([^"]+)"/); if (m) thumb = m[1]; }
@@ -23,6 +35,7 @@ function mapRss2json(items) {
       pubDate: it.pubDate || '',
       thumbnail: thumb || '',
       readTime: readTime(html),
+      intro: introSnippet(it.description || it.content || ''),
     };
   }).filter((a) => a.title && a.link);
 }
@@ -41,8 +54,8 @@ function parseXml(xml) {
     const content = pick('content:encoded') || pick('description');
     let thumb = '';
     const im = content.match(/<img[^>]+src="([^"]+)"/); if (im) thumb = im[1];
-    if (title && link) out.push({ title, link, pubDate: pick('pubDate'), thumbnail: thumb, readTime: readTime(content) });
-    if (out.length >= 6) break;
+    if (title && link) out.push({ title, link, pubDate: pick('pubDate'), thumbnail: thumb, readTime: readTime(content), intro: introSnippet(pick('description') || content) });
+    if (out.length >= 12) break;
   }
   return out;
 }
@@ -50,7 +63,7 @@ function parseXml(xml) {
 export async function getArticles() {
   // primary: rss2json (clean JSON, works server-side)
   try {
-    const r = await fetch('https://api.rss2json.com/v1/api.json?rss_url=' + encodeURIComponent(FEED) + '&count=6');
+    const r = await fetch('https://api.rss2json.com/v1/api.json?rss_url=' + encodeURIComponent(FEED) + '&count=12');
     if (r.ok) {
       const j = await r.json();
       if (j && j.status === 'ok' && Array.isArray(j.items) && j.items.length) return mapRss2json(j.items);
