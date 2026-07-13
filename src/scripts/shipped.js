@@ -30,50 +30,31 @@ import { FEATURED, esc, safeUrl } from './data.js';
 
 var PREFERS_REDUCED = window.matchMedia && window.matchMedia('(prefers-reduced-motion:reduce)').matches;
 
-/* ── LIBRARY snippets (one per LIB station) ───────────────────────
-   Copy is honest product positioning (crew = harness, bus = durable fabric). */
+/* ── LIBRARY snippets — the two NO-SITE products (garden/estate/testing/crew/
+   interactive are live sites → real screenshots). brain and bus are deliberately
+   distinct from each other: brain = memory/code-graph, bus = durable event log. */
 var LIB_SNIPPETS = {
   'wicked-brain': {
-    tagline: 'Memory + code-graph with provenance — knowledge the agent can search, challenge, correct, and trace to its source.',
+    tagline: 'Memory + code-graph with provenance — knowledge the agent can search, challenge, correct, and trace back to its source.',
     repo: 'https://github.com/mikeparcewski/wicked-brain',
     ext: 'js', glyph: 'JS', install: 'npm i',
     lines: [
-      "// memory + code-graph with provenance. markdown + SQLite FTS5, no vector db.",
+      "// memory + code-graph with provenance. markdown + SQLite FTS5 — no vector db.",
       "import { brain } from 'wicked-brain'",
-      "await brain.remember(decision)",
-      "const ctx = await brain.recall('why sqlite?')  // cited · [[backlinked]] · traceable"
+      "await brain.remember('chose SQLite: zero-infra, ACID, crash-safe')",
+      "const why = await brain.recall('why sqlite?')",
+      "// → cited · [[backlinked]] · traceable to the commit that decided it"
     ]
   },
   'wicked-bus': {
-    tagline: 'The durable nervous system beneath it all — local-first, at-least-once, replayable. The fabric the loop rides on.',
+    tagline: 'The durable event fabric beneath it all — local-first, at-least-once, replayable. The nervous system the loop rides on.',
     repo: 'https://github.com/mikeparcewski/wicked-bus',
     ext: 'js', glyph: 'JS', install: 'npm i',
     lines: [
-      "// the fabric beneath the loop: durable, at-least-once, replayable. local-first.",
-      "import { bus } from 'wicked-bus'",
-      "bus.emit('order.placed', payload)   // cursor-poll, causality-tracked",
-      "bus.subscribe('order.*', handle)    // dead-letter + operator replay"
-    ]
-  },
-  'wicked-testing': {
-    tagline: 'No agent grades its own homework — an enforced wall between the agent that runs the tests and the one that judges them.',
-    repo: 'https://github.com/mikeparcewski/wicked-testing',
-    ext: 'js', glyph: 'JS', install: 'npm i',
-    lines: [
-      "// no agent grades its own homework. the judge never sees the runner's context.",
-      "import { acceptance } from 'wicked-testing'",
-      "const verdict = await acceptance(scenario)  // PASS | FAIL, evidence-gated"
-    ]
-  },
-  'wicked-crew': {
-    tagline: 'The control room for governed agent delivery — drive, gate, and audit the work; the human stays in command.',
-    repo: 'https://github.com/mikeparcewski/wicked-crew',
-    ext: 'js', glyph: 'JS', install: 'npm i',
-    lines: [
-      "// the control room: drive, gate, audit the coding agents you already run.",
-      "$ wicked-crew launch --type feature \\",
-      "    --problem 'Add OAuth to the API'",
-      "// → { session_id, current_phase: 'clarify', deny_dominates: true }"
+      "// durable event log: at-least-once, causality-traced, replayable. local-first.",
+      "bus.emit('wicked.qe.verdict.passed', { run: 42 })",
+      "// log ▸ 12:04:07 delivered ▸ 12:04:07 acked ▸ 1 subscriber",
+      "bus.subscribe('wicked.qe.*', handle)  // dead-letter + operator replay"
     ]
   }
 };
@@ -130,12 +111,15 @@ function boot(){
   var centerRole=document.getElementById('centerRole');
   var readoutDesc=document.getElementById('readoutDesc');
   var readoutCta=document.getElementById('readoutCta');
-  /* the ring stations (formerly tree leaves) — same data-attrs */
-  var stations=Array.prototype.slice.call(document.querySelectorAll('.orbit-station[data-idx]'));
+  /* every selectable "station": the inner ring nodes PLUS the crew frame legend
+     and the wicked-interactive strip (all carry data-idx + data-mode). */
+  var stations=Array.prototype.slice.call(document.querySelectorAll('#projects [data-idx][data-mode]'));
   if(!stations.length)return;
+  var crewBox=document.getElementById('crewBox');
 
-  /* ring stations (exclude the off-loop satellite) — the auto-play walk set */
-  var ringStations=stations.filter(function(s){return !s.classList.contains('orbit-station--sat');});
+  /* the AUTO-PLAY walk set = only the on-track ring nodes (they carry data-vx);
+     crew (the box) and interactive (the strip) are NOT on the ring, so excluded. */
+  var ringStations=stations.filter(function(s){return s.dataset.vx!==undefined;});
 
   /* ── PULSE: driven along #ringPath via getPointAtLength (no SMIL) ─────
      The "current" pulse walks the auto-play selection station→station; it is
@@ -269,6 +253,8 @@ function boot(){
   function easeInOut(t){return t<0.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;}
 
   function setAffordance(playing){
+    /* crew's frame gets a gentle govern-purple "running" glow while auto-playing */
+    if(crewBox)crewBox.classList.toggle('is-running',playing);
     if(!toggle)return;
     toggle.classList.toggle('is-paused',!playing);
     if(toggleText)toggleText.textContent=playing
@@ -306,9 +292,12 @@ function boot(){
     selectStation(el,animate);
   }
 
-  /* ── boot: default selected = the first station (Steer / wicked-garden) ── */
+  /* ── boot: default selected = the first ring node (Steer / wicked-garden) ── */
   function initPreview(){
-    selectStation(stations[0], false); /* no wipe on load — static HTML already matches */
+    /* seq[0] is garden (smallest track length); stations[0] is now the surface
+       strip in DOM order, so target the ring set explicitly. */
+    var first=(seq[0] && seq[0].el) || stations[0];
+    selectStation(first, false); /* no wipe on load — static HTML already matches */
   }
 
   function wireStations(){
@@ -323,21 +312,21 @@ function boot(){
       el.addEventListener('focus',function(){ if(autoplay)pin(el,true); });
     });
 
-    /* arrow-key walk around the ring (pins) */
-    var orbit=document.querySelector('.orbit');
-    if(orbit){
+    /* arrow-key walk around the ring nodes (pins). Only the on-track ring set. */
+    var ring=ringStations, orbit=document.querySelector('.orbit');
+    if(orbit && ring.length){
       orbit.addEventListener('keydown',function(e){
-        var idx=stations.indexOf(document.activeElement);
+        var idx=ring.indexOf(document.activeElement);
         if(idx<0)return;
         var next=-1;
-        if(e.key==='ArrowRight'||e.key==='ArrowDown')next=(idx+1)%stations.length;
-        else if(e.key==='ArrowLeft'||e.key==='ArrowUp')next=(idx-1+stations.length)%stations.length;
+        if(e.key==='ArrowRight'||e.key==='ArrowDown')next=(idx+1)%ring.length;
+        else if(e.key==='ArrowLeft'||e.key==='ArrowUp')next=(idx-1+ring.length)%ring.length;
         else if(e.key==='Home')next=0;
-        else if(e.key==='End')next=stations.length-1;
+        else if(e.key==='End')next=ring.length-1;
         if(next>=0){
           e.preventDefault();
-          stations[next].focus();
-          pin(stations[next],true);
+          ring[next].focus();
+          pin(ring[next],true);
         }
       });
     }

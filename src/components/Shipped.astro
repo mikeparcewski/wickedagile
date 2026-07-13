@@ -1,31 +1,29 @@
 ---
 /**
- * Shipped.astro — "experiments." reimagined as THE LOOP (living orbit).
+ * Shipped.astro — "experiments." · wicked-crew is the governed BOX around the loop.
  *
- * A single, dominant, wide RACETRACK loop replaces the old thesis-paragraph +
- * loop-rail + IDE split-editor vertical stack (which overflowed the section).
- * The seven packages are STATIONS on the loop; the REUSED preview pane sits in
- * the CENTER (a big landscape panel). The whole thing is tuned to fill one
- * snapped viewport (~100svh), like the hero — big and legible, not a modest ring.
+ * Layering, top to bottom: HUMAN AUTHORITY (a command bar — the human commands
+ * crew) → wicked-crew (the labeled purple FRAME — the harness of your harnesses,
+ * the box the whole loop runs inside) → the LOOP the "current" flows around.
+ * wicked-interactive is a SAMPLE APPLICATION strip ON TOP of the box (a surface
+ * on the same substrate, not part of the governed loop). wicked-bus is the
+ * FABRIC beneath the track.
  *
- * Cycle order (clockwise from the top-left):
- *   intent → Steer:garden → Equip:estate → Equip:brain → (harness) →
- *   Verify:testing → Govern:crew → record → ↺ intent
- * with wicked-bus riding the loop track itself (the fabric beneath, bottom-center)
- * and wicked-interactive a satellite OFF the loop (a surface beside).
- *
- * The loop is a STADIUM (two straights + two semicircular caps) drawn in an
- * SVG viewBox (240×100); the orbit box shares that 2.4:1 aspect so the SVG
- * scales uniformly. Every geometry point is computed at BUILD TIME (no runtime
- * trig): the ring, the ↺ return arc and the satellite tether are one inline SVG.
+ * The loop (inside crew) is a STADIUM (two straights + two semicircular caps)
+ * drawn in an SVG viewBox (240×100); the orbit box shares that 2.4:1 aspect so
+ * the SVG scales uniformly. Geometry is computed at BUILD TIME (no runtime trig).
  * The travelling "current" pulse is driven by shipped.js along #ringPath
- * (getPointAtLength) — it auto-plays the selection around the loop until the
- * visitor takes control, and parks statically under prefers-reduced-motion.
+ * (getPointAtLength) — it auto-plays the selection around the loop (crew's frame
+ * gets a govern-purple "running" glow) until the visitor takes control, and
+ * parks statically under prefers-reduced-motion.
  *
- * Stations carry the SAME data-attrs the old tree leaves did (data-idx 0..6,
- * data-mode site|lib, data-preview, data-lib) so shipped.js drives the reused
- * preview pane (showSite / showLib / wipeSlot) unchanged. Below ~880px the loop
- * can't hold 8 nodes, so we fall back to a vertical loop (.shipped-mobile).
+ * Five inner selectable stations (garden/estate/brain/testing/bus) + the crew
+ * frame + the interactive strip all carry data-idx + data-mode + data-preview/
+ * data-lib, so shipped.js drives the reused preview pane (showSite / showLib /
+ * wipeSlot) unchanged. Five products are live sites (garden · estate · testing ·
+ * crew · interactive) → real screenshots; brain + bus (no site) render distinct
+ * faux source cards. Below ~880px it falls back to a vertical loop wrapped by a
+ * crew header (.shipped-mobile).
  */
 
 // ── MOBILE fallback: the seven packages in LOOP-ROLE (cycle) order. ──────────
@@ -33,8 +31,8 @@ const packages = [
   { name: 'wicked-garden', role: 'Steer', color: '#ffda19', lang: 'JS', site: 'wg.wickedagile.com', href: 'https://wg.wickedagile.com', shot: '/screenshots/wicked-garden.png', desc: "Steering before execution — reads each prompt's work-shape + risk and applies the right rigor, plus the capabilities a planner-executor can't do alone." },
   { name: 'wicked-estate', role: 'Equip', color: '#79c0ff', lang: 'RS', site: 'we.wickedagile.com', href: 'https://we.wickedagile.com', shot: '/screenshots/wicked-estate.png', desc: 'Your live technical environment, queryable — requirements↔implementation, blast-radius, infra + policy relationships, operational history.' },
   { name: 'wicked-brain', role: 'Equip', color: '#79c0ff', lang: 'JS', href: 'https://github.com/mikeparcewski/wicked-brain', desc: 'Memory + code-graph with provenance — search, challenge, correct, trace to source.' },
-  { name: 'wicked-testing', role: 'Verify', color: '#56d364', lang: 'JS', href: 'https://github.com/mikeparcewski/wicked-testing', desc: 'No agent grades its own homework — a wall between who runs the tests and who judges.' },
-  { name: 'wicked-crew', role: 'Govern', color: '#d2a8ff', lang: 'JS', href: 'https://github.com/mikeparcewski/wicked-crew', desc: 'The control room for governed delivery — drive, gate, audit; the human stays in command.' },
+  { name: 'wicked-testing', role: 'Verify', color: '#56d364', lang: 'JS', site: 'wt.wickedagile.com', href: 'https://wt.wickedagile.com', shot: '/screenshots/wicked-testing.png', desc: 'No agent grades its own homework — an enforced wall between the agent that runs the tests and the one that judges them.' },
+  { name: 'wicked-crew', role: 'Govern', color: '#d2a8ff', lang: 'JS', site: 'wc.wickedagile.com', href: 'https://wc.wickedagile.com', shot: '/screenshots/wicked-crew.png', desc: 'The control room for governed agent delivery — drive, gate, audit; the human stays in command. The harness for your agent harnesses.' },
   { name: 'wicked-bus', role: 'Fabric', color: '#9aa7b3', lang: 'JS', href: 'https://github.com/mikeparcewski/wicked-bus', desc: 'The durable nervous system beneath it all — local-first, at-least-once, replayable. The fabric the loop rides on.' },
   { name: 'wicked-interactive', role: 'Surface', color: '#f0a868', lang: 'JS', site: 'wi.wickedagile.com', href: 'https://wi.wickedagile.com', shot: '/screenshots/wicked-interactive.png', desc: "A surface beside — composes the family's building blocks; it does not close the loop. Describe it, watch it build, ship HTML/PDF/deck." },
 ];
@@ -45,130 +43,147 @@ const TOP = 15, BOT = 85, CAPR = 35;                  // straights + cap radius 
 const LCAP = 45, RCAP = 195;                          // cap centers; extremes at 10 / 230
 const pct = (x, y) => ({ x: +(x / VB_W * 100).toFixed(2), y: +(y / VB_H * 100).toFixed(2) });
 
-// Selectable package stations ON the track (clockwise). idx / mode / preview /
-// lib wire straight into shipped.js — the preview logic is unchanged.
+// INNER stations ON the track (clockwise). crew is NO LONGER a station — it is
+// the governed BOX around the loop (below). Five inner stations remain; four
+// are live sites (garden/estate/testing drive a real screenshot preview), bus +
+// brain are the two no-site products (faux source cards, made distinct).
 const stations = [
   { key: 'wicked-garden',  short: 'garden',  role: 'Steer',  color: '#ffda19', tint: '#ffe45c', vx: 95,  vy: TOP, idx: 0, mode: 'site', preview: '1', href: 'https://wg.wickedagile.com', glyph: 'JS' },
   { key: 'wicked-estate',  short: 'estate',  role: 'Equip',  color: '#79c0ff', tint: '#a5d6ff', vx: 145, vy: TOP, idx: 1, mode: 'site', preview: '2', href: 'https://we.wickedagile.com', glyph: 'RS' },
   { key: 'wicked-brain',   short: 'brain',   role: 'Equip',  color: '#79c0ff', tint: '#a5d6ff', vx: 195, vy: TOP, idx: 2, mode: 'lib', href: 'https://github.com/mikeparcewski/wicked-brain', glyph: 'JS' },
-  { key: 'wicked-testing', short: 'testing', role: 'Verify', color: '#56d364', tint: '#7ee787', vx: 170, vy: BOT, idx: 3, mode: 'lib', href: 'https://github.com/mikeparcewski/wicked-testing', glyph: 'JS' },
+  { key: 'wicked-testing', short: 'testing', role: 'Verify', color: '#56d364', tint: '#7ee787', vx: 170, vy: BOT, idx: 3, mode: 'site', preview: '3', href: 'https://wt.wickedagile.com', glyph: 'JS' },
   { key: 'wicked-bus',     short: 'bus',     role: 'Fabric', color: '#9aa7b3', tint: '#b6c2ce', vx: 120, vy: BOT, idx: 5, mode: 'lib', href: 'https://github.com/mikeparcewski/wicked-bus', glyph: 'JS', track: true },
-  { key: 'wicked-crew',    short: 'crew',    role: 'Govern', color: '#d2a8ff', tint: '#e2c5ff', vx: 70,  vy: BOT, idx: 4, mode: 'lib', href: 'https://github.com/mikeparcewski/wicked-crew', glyph: 'JS' },
 ].map((s) => ({ ...s, pos: pct(s.vx, s.vy) }));
 
-// Soft (non-package) waypoints — dimmer, smaller, not selectable.
+// Soft (non-package) waypoints — dimmer, smaller, not selectable. (harness = the
+// external CLIs crew wraps — nicely, it sits INSIDE crew's box.)
 const waypoints = [
   { label: 'intent', ...pct(LCAP, TOP) },              // top-left junction
   { label: 'harness', sub: 'claude · codex · cursor', ...pct(230, 50) }, // right cap apex
   { label: 'record', ...pct(10, 50) },                 // left cap apex
 ];
 
-// wicked-interactive — a satellite OFF the loop (bottom-right), dotted tether.
-const satellite = {
-  key: 'wicked-interactive', short: 'interactive', role: 'Surface', color: '#f0a868',
+// wicked-crew — the governed BOX around the whole loop. Still SELECTABLE via its
+// frame legend (drives its own wc. site preview). idx 4 / mode site / preview 4.
+const crew = {
+  key: 'wicked-crew', role: 'Govern', color: '#d2a8ff', tint: '#e2c5ff',
+  idx: 4, mode: 'site', preview: '4', href: 'https://wc.wickedagile.com',
+};
+
+// wicked-interactive — a SAMPLE APPLICATION on the substrate: a slim strip ON TOP
+// of the governed box (not in the loop). Selectable → its wi. site preview.
+const surface = {
+  key: 'wicked-interactive', role: 'Surface', color: '#f0a868',
   idx: 6, mode: 'site', preview: '0', href: 'https://wi.wickedagile.com',
-  pos: pct(212, 94), tether: pct(220, 66),
 };
 
 // paths (viewBox units) — the track drives both the stroke and the pulse
 const trackPath = `M${LCAP},${TOP} L${RCAP},${TOP} A${CAPR},${CAPR} 0 0 1 ${RCAP},${BOT} L${LCAP},${BOT} A${CAPR},${CAPR} 0 0 1 ${LCAP},${TOP} Z`;
 const returnPath = `M10,50 A${CAPR},${CAPR} 0 0 1 ${LCAP},${TOP}`; // record → intent (left cap)
-const returnMark = pct(20.3, 25.3);                    // ↺ midpoint on the left cap
+
+// MOBILE derived sets: crew wraps, interactive sits on top, the rest are the loop.
+const loopPkgs = packages.filter((p) => p.name !== 'wicked-crew' && p.name !== 'wicked-interactive');
+const crewPkg = packages.find((p) => p.name === 'wicked-crew');
+const surfacePkg = packages.find((p) => p.name === 'wicked-interactive');
 ---
 
 <!-- ════════════════════════════════════════════════════════════════
-     SHIPPED — THE LOOP (living orbit)
-     A big racetrack the loop's "current" flows around: seven packages as
-     stations, the reused preview pane in the center, under human authority, on
-     the wicked-bus fabric, with wicked-interactive a satellite beside it.
+     SHIPPED — "experiments." · crew is the governed BOX around the loop.
+     Layering: HUMAN AUTHORITY (command bar) → wicked-crew (the frame) →
+     the loop the "current" flows around. wicked-interactive is a sample
+     application ON TOP of the substrate; wicked-bus is the fabric beneath.
      ════════════════════════════════════════════════════════════════ -->
 <section class="zoneB-section snap-section" id="projects">
   <div class="orbit-shell">
     <!-- compact header (no big multi-line thesis — that caused the overflow) -->
     <div class="orbit-head">
-      <span class="zone-kicker">WORKSPACE · 7 PACKAGES · 3 DEPLOYED · ONE LOOP</span>
+      <span class="zone-kicker">WORKSPACE · 7 PACKAGES · 5 DEPLOYED · ONE LOOP</span>
       <h2 class="zone-title">experiments.</h2>
       <p class="orbit-caption">You cannot stabilize the harness — so the durable system sits <b>around</b> it.</p>
-      <div class="orbit-authority" role="note">
-        <span class="oa-dot" aria-hidden="true"></span>
-        Human authority · approve · redirect · pause · cancel
-      </div>
     </div>
 
-    <!-- ── THE LOOP ──────────────────────────────────────────────────── -->
-    <div class="orbit-wrap">
-      <div class="orbit" role="group" aria-label="The wicked loop: intent, then Steer (wicked-garden), Equip (wicked-estate, wicked-brain), the coding-agent harness, Verify (wicked-testing) and Govern (wicked-crew), then record — riding the wicked-bus fabric, with wicked-interactive a surface beside it.">
-        <!-- track + arcs + tether + travelling pulse (viewBox units) -->
-        <svg class="orbit-svg" viewBox="0 0 240 100" preserveAspectRatio="xMidYMid meet" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" focusable="false">
-          <!-- human-authority frame — a faint outer track around the whole loop -->
-          <rect class="orbit-frame" x="4" y="4" width="232" height="92" rx="46" ry="46" />
-          <!-- the wicked-bus fabric = the loop track itself -->
-          <path class="orbit-ring-glow" d={trackPath} />
-          <path id="ringPath" class="orbit-ring" d={trackPath} />
-          <!-- ↺ return arc: record → intent -->
-          <path class="orbit-return" d={returnPath} />
-          <text class="orbit-return-mark" x={20.3} y={25.3} text-anchor="middle" dominant-baseline="central">↺</text>
-          <!-- dotted tether out to the wicked-interactive satellite -->
-          <line class="orbit-tether" x1={220} y1={66} x2={212} y2={94} />
-          <!-- the "current": a glowing dash driven by shipped.js along #ringPath
-               (getPointAtLength). It walks the auto-play selection station→station
-               and pins/parks on interaction + prefers-reduced-motion. Initial
-               cx/cy sit on the top straight (near garden) to avoid a pre-JS flash. -->
-          <circle class="orbit-pulse-glow" cx="95" cy="15" r="6"></circle>
-          <circle class="orbit-pulse" cx="95" cy="15" r="2.4"></circle>
-        </svg>
+    <!-- HUMAN AUTHORITY — the command bar above crew (the human commands crew) -->
+    <div class="authority-bar" role="note">
+      <span class="ab-dot" aria-hidden="true"></span>
+      <span class="ab-text">Human authority <span class="ab-sep" aria-hidden="true">·</span> approve <span class="ab-sep" aria-hidden="true">·</span> redirect <span class="ab-sep" aria-hidden="true">·</span> pause <span class="ab-sep" aria-hidden="true">·</span> cancel</span>
+    </div>
 
-        <!-- soft waypoints (narrative, not selectable) -->
-        {waypoints.map((w) => (
-          <span class="orbit-waypoint" style={`left:${w.x}%;top:${w.y}%`}>
-            <span class="wp-label">{w.label}</span>
-            {w.sub && <span class="wp-sub">{w.sub}</span>}
-          </span>
-        ))}
+    <!-- wicked-interactive — a SAMPLE APPLICATION strip on top of the substrate.
+         It sits ON TOP of the governed box, not inside the loop. Clickable. -->
+    <a class="surface-strip" href={surface.href} target="_self" rel="noopener"
+       data-idx={surface.idx} data-mode={surface.mode} data-preview={surface.preview}
+       data-role={surface.role} data-color={surface.color}
+       aria-label="wicked-interactive — a sample application on the same substrate (click to preview)">
+      <span class="ss-dot" aria-hidden="true"></span>
+      <span class="ss-label"><b>wicked-interactive</b> <span class="ss-sep" aria-hidden="true">·</span> a sample application on the same substrate</span>
+      <span class="ss-tag">sample app ↗</span>
+    </a>
 
-        <!-- package stations (selectable — drive the center preview) -->
-        {stations.map((s) => (
-          <a
-            class:list={["orbit-station", s.track && "orbit-station--track"]}
-            href={s.href}
-            target={s.mode === 'site' ? '_self' : '_blank'}
-            rel="noopener"
-            style={`left:${s.pos.x}%;top:${s.pos.y}%;--role:${s.color};--role-tint:${s.tint}`}
-            data-idx={s.idx}
-            data-mode={s.mode}
-            data-preview={s.preview}
-            data-lib={s.mode === 'lib' ? s.key : undefined}
-            data-role={s.role}
-            data-color={s.color}
-            data-vx={s.vx}
-            data-vy={s.vy}
-            aria-label={`${s.key} — ${s.role}`}
-          >
-            <span class="st-dot" aria-hidden="true"></span>
-            <span class="st-name">{s.short}</span>
-            <span class="st-role">{s.role}</span>
-          </a>
-        ))}
-
-        <!-- wicked-interactive — satellite off the loop -->
-        <a
-          class="orbit-station orbit-station--sat"
-          href={satellite.href}
-          target="_self"
-          rel="noopener"
-          style={`left:${satellite.pos.x}%;top:${satellite.pos.y}%;--role:${satellite.color};--role-tint:${satellite.color}`}
-          data-idx={satellite.idx}
-          data-mode={satellite.mode}
-          data-preview={satellite.preview}
-          data-role={satellite.role}
-          data-color={satellite.color}
-          aria-label="wicked-interactive — Surface (a surface beside the loop; it does not close it)"
-        >
-          <span class="st-head"><span class="st-dot" aria-hidden="true"></span><span class="st-name">interactive</span><span class="st-role">Surface</span></span>
-          <span class="st-note">a surface beside — composes the family's blocks; it does not close the loop</span>
+    <!-- ── crew: THE GOVERNED BOX the whole loop runs inside ──────────── -->
+    <div class="crew-wrap">
+      <div class="crew-box" id="crewBox">
+        <!-- crew frame legend (IDE-window titlebar) — clickable → crew's preview -->
+        <a class="crew-bar" href={crew.href} target="_self" rel="noopener"
+           data-idx={crew.idx} data-mode={crew.mode} data-preview={crew.preview}
+           data-role={crew.role} data-color={crew.color}
+           aria-label="wicked-crew — Govern · the harness of your harnesses, the box the whole loop runs inside (click to preview)">
+          <span class="crew-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="crew-title">wicked-crew <span class="ct-sep" aria-hidden="true">·</span> <b>the harness of your harnesses</b></span>
+          <span class="crew-role">GOVERN</span>
         </a>
 
-        <!-- ── CENTER: the REUSED preview pane (big landscape) ──────────── -->
+        <div class="crew-body">
+          <!-- ── THE LOOP (inside crew) ──────────────────────────────── -->
+          <div class="orbit-wrap">
+            <div class="orbit" role="group" aria-label="The wicked loop, governed by wicked-crew: intent, then Steer (wicked-garden), Equip (wicked-estate, wicked-brain), the coding-agent harness, then Verify (wicked-testing), riding the wicked-bus fabric, and record — back to intent.">
+              <!-- track + arcs + travelling pulse (viewBox units) -->
+              <svg class="orbit-svg" viewBox="0 0 240 100" preserveAspectRatio="xMidYMid meet" aria-hidden="true" focusable="false">
+                <!-- the wicked-bus fabric = the loop track itself -->
+                <path class="orbit-ring-glow" d={trackPath} />
+                <path id="ringPath" class="orbit-ring" d={trackPath} />
+                <!-- ↺ return arc: record → intent -->
+                <path class="orbit-return" d={returnPath} />
+                <text class="orbit-return-mark" x={20.3} y={25.3} text-anchor="middle" dominant-baseline="central">↺</text>
+                <!-- the "current": a glowing dash driven by shipped.js along #ringPath
+                     (getPointAtLength). It walks the auto-play selection station→station
+                     and pins/parks on interaction + prefers-reduced-motion. -->
+                <circle class="orbit-pulse-glow" cx="95" cy="15" r="6"></circle>
+                <circle class="orbit-pulse" cx="95" cy="15" r="2.4"></circle>
+              </svg>
+
+              <!-- soft waypoints (narrative, not selectable) -->
+              {waypoints.map((w) => (
+                <span class="orbit-waypoint" style={`left:${w.x}%;top:${w.y}%`}>
+                  <span class="wp-label">{w.label}</span>
+                  {w.sub && <span class="wp-sub">{w.sub}</span>}
+                </span>
+              ))}
+
+              <!-- inner stations (selectable — drive the center preview) -->
+              {stations.map((s) => (
+                <a
+                  class:list={["orbit-station", s.track && "orbit-station--track"]}
+                  href={s.href}
+                  target={s.mode === 'site' ? '_self' : '_blank'}
+                  rel="noopener"
+                  style={`left:${s.pos.x}%;top:${s.pos.y}%;--role:${s.color};--role-tint:${s.tint}`}
+                  data-idx={s.idx}
+                  data-mode={s.mode}
+                  data-preview={s.preview}
+                  data-lib={s.mode === 'lib' ? s.key : undefined}
+                  data-role={s.role}
+                  data-color={s.color}
+                  data-vx={s.vx}
+                  data-vy={s.vy}
+                  aria-label={`${s.key} — ${s.role}`}
+                >
+                  <span class="st-dot" aria-hidden="true"></span>
+                  <span class="st-name">{s.short}</span>
+                  <span class="st-role">{s.role}</span>
+                </a>
+              ))}
+
+              <!-- ── CENTER: the REUSED preview pane (big landscape) ──────────── -->
         <div class="orbit-center" id="workspacePane">
           <div class="ide-preview" id="idePreview" data-mode="site">
             <div class="center-titlebar">
@@ -208,9 +223,12 @@ const returnMark = pct(20.3, 25.3);                    // ↺ midpoint on the le
               <a class="readout-cta" id="readoutCta" href="https://wg.wickedagile.com">Open ↗</a>
             </div>
           </div>
-        </div>
-      </div>
-    </div>
+              </div>{/* .orbit-center */}
+            </div>{/* .orbit */}
+          </div>{/* .orbit-wrap */}
+        </div>{/* .crew-body */}
+      </div>{/* .crew-box */}
+    </div>{/* .crew-wrap */}
 
     <!-- auto-play affordance: signals the loop is self-playing + lets the visitor
          take control / resume (matches the pattern on the other family sites).
@@ -220,32 +238,49 @@ const returnMark = pct(20.3, 25.3);                    // ↺ midpoint on the le
       <span class="ap-text">auto-playing · click any station to drive</span>
     </button>
 
-    <!-- MOBILE (≤880): a clean VERTICAL loop — the packages in cycle order,
-         with ↓ connectors between them and a ↺ return at the end. -->
-    <div class="shipped-mobile" aria-label="The wicked loop (vertical)">
+    <!-- MOBILE (≤880): human authority, then wicked-interactive (sample app on
+         top), then wicked-crew as the labeled wrapper around the vertical loop. -->
+    <div class="shipped-mobile" aria-label="wicked-crew and the loop it governs (vertical)">
       <div class="shm-authority">Human authority · approve · redirect · pause · cancel</div>
-      <div class="shm-loop">
-        <div class="shm-node shm-node--soft"><span class="shm-soft-label">intent</span></div>
-        {packages.map((p) => (
-          <>
-            <div class="shm-arrow" aria-hidden="true">↓</div>
-            <a class={`shm-item${p.shot ? ' has-shot' : ''}`} href={p.href} target={p.shot ? '_self' : '_blank'} rel="noopener" style={`--role:${p.color}`}>
-              <div class="shm-row">
-                <span class="shm-dot" aria-hidden="true"></span>
-                <span class="shm-idx">{p.role}</span>
-                <span class="shm-name">{p.name}</span>
-                {p.site
-                  ? (<span class="shm-badge shm-badge--live"><span class="shm-live-dot" aria-hidden="true"></span>live</span>)
-                  : (<span class="shm-badge">{p.lang}</span>)}
-              </div>
-              {p.shot && (<div class="shm-shot" style={`background-image:url('${p.shot}')`}></div>)}
-              <div class="shm-desc">{p.desc}</div>
-              {p.site && (<div class="shm-url">{p.site} ↗</div>)}
-            </a>
-          </>
-        ))}
-        <div class="shm-arrow shm-arrow--return" aria-hidden="true">↺</div>
-        <div class="shm-node shm-node--soft"><span class="shm-soft-label">record → intent</span></div>
+
+      <!-- interactive — the sample application on top of the substrate -->
+      <a class="shm-surface" href={surfacePkg.href} target="_self" rel="noopener" style={`--role:${surfacePkg.color}`}>
+        <span class="shm-dot" aria-hidden="true"></span>
+        <span class="shm-surface-label"><b>wicked-interactive</b> · a sample application on the same substrate</span>
+        <span class="shm-badge shm-badge--live"><span class="shm-live-dot" aria-hidden="true"></span>live ↗</span>
+      </a>
+
+      <!-- crew — the governed box; the loop runs inside it -->
+      <div class="shm-crew" style={`--role:${crewPkg.color}`}>
+        <a class="shm-crew-head" href={crewPkg.href} target="_self" rel="noopener">
+          <span class="shm-crew-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="shm-crew-name">wicked-crew</span>
+          <span class="shm-crew-tag">the harness of your harnesses</span>
+          <span class="shm-crew-role">GOVERN ↗</span>
+        </a>
+        <div class="shm-loop">
+          <div class="shm-node shm-node--soft"><span class="shm-soft-label">intent</span></div>
+          {loopPkgs.map((p) => (
+            <>
+              <div class="shm-arrow" aria-hidden="true">↓</div>
+              <a class={`shm-item${p.shot ? ' has-shot' : ''}`} href={p.href} target={p.shot ? '_self' : '_blank'} rel="noopener" style={`--role:${p.color}`}>
+                <div class="shm-row">
+                  <span class="shm-dot" aria-hidden="true"></span>
+                  <span class="shm-idx">{p.role}</span>
+                  <span class="shm-name">{p.name}</span>
+                  {p.site
+                    ? (<span class="shm-badge shm-badge--live"><span class="shm-live-dot" aria-hidden="true"></span>live</span>)
+                    : (<span class="shm-badge">{p.lang}</span>)}
+                </div>
+                {p.shot && (<div class="shm-shot" style={`background-image:url('${p.shot}')`}></div>)}
+                <div class="shm-desc">{p.desc}</div>
+                {p.site && (<div class="shm-url">{p.site} ↗</div>)}
+              </a>
+            </>
+          ))}
+          <div class="shm-arrow shm-arrow--return" aria-hidden="true">↺</div>
+          <div class="shm-node shm-node--soft"><span class="shm-soft-label">record → intent</span></div>
+        </div>
       </div>
     </div>
   </div>
@@ -292,26 +327,90 @@ const returnMark = pct(20.3, 25.3);                    // ↺ midpoint on the le
   line-height:1.4;color:var(--muted);margin:0;max-width:62ch
 }
 .orbit-caption b{color:var(--ink);font-weight:700}
-.orbit-authority{
-  display:inline-flex;align-items:center;gap:8px;
-  font-family:var(--font-mono);font-size:.55rem;letter-spacing:.15em;text-transform:uppercase;
-  color:var(--muted);border:1px solid var(--hairline);border-radius:999px;
-  padding:5px 13px;background:rgba(255,255,255,.02)
+
+/* ── HUMAN AUTHORITY — command bar above crew (human commands crew) ─ */
+.authority-bar{
+  display:inline-flex;align-items:center;gap:9px;
+  font-family:var(--font-mono);font-size:.56rem;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--muted);border:1px solid var(--hairline-strong);border-radius:8px;
+  padding:6px 16px;background:linear-gradient(rgba(255,255,255,.035),rgba(255,255,255,.01))
 }
-.orbit-authority .oa-dot{
+.authority-bar .ab-dot{
   width:6px;height:6px;border-radius:50%;background:var(--accent);flex-shrink:0;
   box-shadow:0 0 0 0 rgba(255,218,25,.5);animation:oaPulse 2.4s ease-in-out infinite
 }
+.authority-bar .ab-sep{opacity:.4;margin:0 1px}
 @keyframes oaPulse{0%,100%{box-shadow:0 0 0 0 rgba(255,218,25,.45)}50%{box-shadow:0 0 0 5px rgba(255,218,25,0)}}
 
-/* ── THE LOOP (dominant, wide racetrack) ───────────────────────── */
-.orbit-wrap{position:relative;width:100%;display:flex;justify-content:center}
+/* ── wicked-interactive — the SAMPLE APPLICATION strip on top of the box ─ */
+.surface-strip{
+  display:inline-flex;align-items:center;gap:10px;max-width:100%;
+  font-family:var(--font-mono);font-size:.62rem;text-decoration:none;color:var(--muted);
+  border:1px dashed color-mix(in oklab,#f0a868 45%,var(--hairline));border-radius:8px;
+  padding:7px 15px;background:linear-gradient(color-mix(in oklab,#f0a868 7%,transparent),transparent);
+  transition:border-color .18s var(--ease),box-shadow .22s var(--ease),background .18s
+}
+.surface-strip .ss-dot{width:8px;height:8px;border-radius:50%;background:var(--role);box-shadow:0 0 8px -1px var(--role);flex-shrink:0}
+.surface-strip .ss-label{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.surface-strip .ss-label b{color:#f6bd8a;font-weight:700}
+.surface-strip .ss-sep{opacity:.5;margin:0 2px}
+.surface-strip .ss-tag{font-size:.55rem;letter-spacing:.06em;text-transform:uppercase;font-weight:700;color:#f0a868;flex-shrink:0}
+.surface-strip:hover{border-color:#f0a868;background:linear-gradient(color-mix(in oklab,#f0a868 12%,transparent),transparent)}
+.surface-strip:focus-visible{outline:none;border-color:#f0a868;box-shadow:0 0 0 2px color-mix(in oklab,#f0a868 55%,transparent)}
+.surface-strip[aria-current="true"]{
+  border-style:solid;border-color:#f0a868;
+  box-shadow:0 0 0 1px color-mix(in oklab,#f0a868 40%,transparent),0 0 28px -8px #f0a868
+}
+
+/* ── crew: THE GOVERNED BOX around the loop ────────────────────────── */
+.crew-wrap{width:100%;display:flex;justify-content:center;position:relative}
+.crew-box{
+  position:relative;width:fit-content;max-width:100%;
+  border:1.5px solid color-mix(in oklab,#d2a8ff 42%,var(--hairline));border-radius:14px;
+  background:linear-gradient(color-mix(in oklab,#d2a8ff 5%,transparent),transparent 62%);
+  box-shadow:0 0 0 1px color-mix(in oklab,#d2a8ff 10%,transparent),0 24px 60px -32px rgba(0,0,0,.65);
+  overflow:hidden;transition:border-color .4s var(--ease),box-shadow .4s var(--ease)
+}
+/* auto-play running → gentle govern-purple pulse on the frame */
+.crew-box.is-running{animation:crewRun 3.6s ease-in-out infinite}
+@keyframes crewRun{
+  0%,100%{box-shadow:0 0 0 1px color-mix(in oklab,#d2a8ff 16%,transparent),0 0 30px -14px #d2a8ff,0 24px 60px -32px rgba(0,0,0,.65)}
+  50%{box-shadow:0 0 0 1px color-mix(in oklab,#d2a8ff 30%,transparent),0 0 52px -6px #d2a8ff,0 24px 60px -32px rgba(0,0,0,.65)}
+}
+/* crew frame legend = an IDE-window titlebar; the whole bar selects crew */
+.crew-bar{
+  display:flex;align-items:center;gap:10px;text-decoration:none;
+  padding:8px 15px;background:color-mix(in oklab,#d2a8ff 11%,#14181d);
+  border-bottom:1px solid color-mix(in oklab,#d2a8ff 30%,var(--hairline));
+  transition:background .16s
+}
+.crew-bar:hover{background:color-mix(in oklab,#d2a8ff 17%,#14181d)}
+.crew-bar:focus-visible{outline:2px solid #d2a8ff;outline-offset:-2px}
+.crew-bar .crew-dots{display:flex;gap:5px;flex-shrink:0}
+.crew-bar .crew-dots i{width:9px;height:9px;border-radius:50%;background:color-mix(in oklab,#d2a8ff 55%,transparent)}
+.crew-bar .crew-title{
+  flex:1;min-width:0;font-family:var(--font-mono);font-size:.72rem;color:var(--ink);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis
+}
+.crew-bar .crew-title b{color:#e2c5ff;font-weight:700}
+.crew-bar .ct-sep{opacity:.5;margin:0 2px}
+.crew-bar .crew-role{
+  font-family:var(--font-mono);font-size:.56rem;letter-spacing:.16em;text-transform:uppercase;
+  font-weight:700;color:#d2a8ff;flex-shrink:0
+}
+.crew-bar[aria-current="true"]{background:color-mix(in oklab,#d2a8ff 22%,#14181d)}
+.crew-bar[aria-current="true"] .crew-dots i:first-child{background:#d2a8ff;box-shadow:0 0 8px 0 #d2a8ff}
+.crew-body{padding:clamp(6px,1vw,16px)}
+
+/* ── THE LOOP (wide racetrack, inside crew's box) ──────────────── */
+.orbit-wrap{position:relative;display:flex;justify-content:center}
 .orbit{
   position:relative;
   /* width is the driver; height follows the 2.4:1 aspect. Bounded by BOTH
-     viewport width and height so it stays big yet fits ~100svh. The 60vh term
-     caps the loop HEIGHT (=width/2.4) so the interior clears the station rows. */
-  --loop-w:min(94vw, 2.4 * 64vh, 1180px);
+     viewport width and height — smaller than before since it now sits INSIDE
+     crew's box (which adds a titlebar + the authority + surface strips above).
+     The 52vh term caps the loop HEIGHT so the interior clears the station rows. */
+  --loop-w:min(90vw, 2.4 * 52vh, 1080px);
   width:var(--loop-w);aspect-ratio:2.4;
   overflow:visible;flex:0 0 auto;
   /* size container so the center pane can be sized in % of the LOOP box (cqw/cqh)
@@ -320,8 +419,6 @@ const returnMark = pct(20.3, 25.3);                    // ↺ midpoint on the le
 }
 .orbit-svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none;z-index:1}
 
-/* human-authority frame (faint outer track) */
-.orbit-frame{fill:none;stroke:var(--hairline);stroke-width:.35;stroke-dasharray:1 3.4}
 /* the wicked-bus fabric = the loop track */
 .orbit-ring{
   fill:none;stroke:#9aa7b3;stroke-width:.9;stroke-linecap:round;
@@ -333,8 +430,6 @@ const returnMark = pct(20.3, 25.3);                    // ↺ midpoint on the le
 /* ↺ return arc: record → intent */
 .orbit-return{fill:none;stroke:var(--accent);stroke-width:1;stroke-linecap:round;stroke-dasharray:.3 4;opacity:.8}
 .orbit-return-mark{fill:var(--accent);font-size:7px;font-family:var(--font-mono);opacity:.9}
-/* dotted tether to the satellite */
-.orbit-tether{stroke:#f0a868;stroke-width:.7;stroke-dasharray:1 3;opacity:.5}
 /* the travelling current */
 .orbit-pulse{fill:#fff}
 .orbit-pulse-glow{fill:var(--accent);opacity:.5;filter:blur(2px)}
@@ -378,15 +473,6 @@ const returnMark = pct(20.3, 25.3);                    // ↺ midpoint on the le
 /* wicked-bus rides the track: greyer, dashed, reads as part of the fabric */
 .orbit-station--track{background:linear-gradient(#12161a,#0d1013);border-style:dashed}
 .orbit-station--track .st-name{color:#b6c2ce}
-
-/* the satellite is a stacked chip with a note; sits OFF the loop */
-.orbit-station--sat{
-  flex-direction:column;align-items:flex-start;gap:5px;
-  max-width:212px;white-space:normal;padding:10px 13px;border-radius:12px;
-  border-style:dashed
-}
-.orbit-station--sat .st-head{display:inline-flex;align-items:center;gap:8px}
-.orbit-station--sat .st-note{font-size:.58rem;line-height:1.45;color:var(--muted);letter-spacing:.01em}
 
 /* ── SOFT WAYPOINTS (narrative) ────────────────────────────────── */
 .orbit-waypoint{
@@ -552,30 +638,53 @@ const returnMark = pct(20.3, 25.3);                    // ↺ midpoint on the le
   .orbit-autoplay{display:none} /* no auto-play to advertise; loop parks on garden */
 }
 
-/* ── DESKTOP ↔ MOBILE SWITCH (≤880: the loop can't hold 8 nodes) ── */
+/* ── DESKTOP ↔ MOBILE SWITCH (≤880: the loop can't hold the nodes) ── */
 .shipped-mobile{display:none}
 @media(max-width:880px){
   .zoneB-section{
     min-height:auto;overflow:visible;
     padding:52px 20px 8px;justify-content:flex-start
   }
-  .orbit-wrap{display:none}
-  .orbit-autoplay{display:none} /* auto-play is a loop affordance — no loop on mobile */
+  .authority-bar,
+  .surface-strip,
+  .crew-wrap,
+  .orbit-autoplay{display:none} /* the loop + its chrome are desktop-only */
   .orbit-head{align-items:flex-start;text-align:left}
   .orbit-head .zone-kicker{justify-content:flex-start}
   .orbit-head .zone-kicker::after{display:none}
-  .orbit-head .orbit-authority{display:none} /* the vertical loop owns the authority framing */
   .orbit-caption{max-width:100%}
-  .shipped-mobile{display:flex;flex-direction:column;width:100%;margin-top:18px}
+  .shipped-mobile{display:flex;flex-direction:column;width:100%;margin-top:18px;gap:10px}
 }
 
-/* ── MOBILE: the vertical loop ─────────────────────────────────── */
+/* ── MOBILE: interactive (sample app) + crew wrapper + the vertical loop ─ */
 .shm-authority{
   font-family:var(--font-mono);font-size:.54rem;letter-spacing:.14em;text-transform:uppercase;
-  color:var(--muted);text-align:center;padding:9px 12px;margin-bottom:6px;
-  border:1px solid var(--hairline);border-radius:999px;align-self:center
+  color:var(--muted);text-align:center;padding:9px 12px;
+  border:1px solid var(--hairline-strong);border-radius:8px;align-self:center
 }
-.shm-loop{display:flex;flex-direction:column;align-items:stretch;gap:0}
+.shm-surface{
+  display:flex;align-items:center;gap:9px;text-decoration:none;color:var(--muted);
+  font-family:var(--font-mono);font-size:.66rem;
+  border:1px dashed color-mix(in oklab,#f0a868 45%,var(--hairline));border-radius:8px;
+  padding:10px 13px;background:linear-gradient(color-mix(in oklab,#f0a868 7%,transparent),transparent)
+}
+.shm-surface .shm-surface-label{flex:1;min-width:0;line-height:1.4}
+.shm-surface .shm-surface-label b{color:#f6bd8a;font-weight:700}
+.shm-crew{
+  border:1.5px solid color-mix(in oklab,#d2a8ff 40%,var(--hairline));border-radius:12px;overflow:hidden;
+  background:linear-gradient(color-mix(in oklab,#d2a8ff 5%,transparent),transparent 60%)
+}
+.shm-crew-head{
+  display:flex;align-items:center;gap:9px;text-decoration:none;color:inherit;flex-wrap:wrap;
+  padding:11px 14px;background:color-mix(in oklab,#d2a8ff 12%,#14181d);
+  border-bottom:1px solid color-mix(in oklab,#d2a8ff 28%,var(--hairline))
+}
+.shm-crew-head .shm-crew-dots{display:flex;gap:5px;flex-shrink:0}
+.shm-crew-head .shm-crew-dots i{width:8px;height:8px;border-radius:50%;background:color-mix(in oklab,#d2a8ff 55%,transparent)}
+.shm-crew-head .shm-crew-name{font-family:var(--font-mono);font-size:.86rem;font-weight:700;color:#e2c5ff}
+.shm-crew-head .shm-crew-tag{font-family:var(--font-mono);font-size:.6rem;color:var(--muted);flex:1;min-width:0}
+.shm-crew-head .shm-crew-role{font-family:var(--font-mono);font-size:.54rem;letter-spacing:.14em;text-transform:uppercase;font-weight:700;color:#d2a8ff;flex-shrink:0}
+.shm-loop{display:flex;flex-direction:column;align-items:stretch;gap:0;padding:12px 12px 14px}
 .shm-arrow{
   font-family:var(--font-mono);font-size:1rem;color:var(--faint);text-align:center;
   line-height:1;padding:6px 0
