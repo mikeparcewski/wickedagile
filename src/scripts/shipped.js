@@ -150,7 +150,7 @@ function boot(){
     }
     return best;
   }
-  /* auto-play order = ring stations sorted along the track (garden→…→crew) */
+  /* auto-play order = ring stations sorted along the track (garden→…→bus) */
   var seq=ringStations.map(function(s){
     return {el:s,len:nearestLen(parseFloat(s.dataset.vx),parseFloat(s.dataset.vy))};
   }).sort(function(a,b){return a.len-b.len;});
@@ -244,8 +244,9 @@ function boot(){
   }
 
   /* ── AUTO-PLAY: the loop plays itself until the visitor takes control ──
-     The active station advances around the cycle (garden→estate→brain→testing→
-     bus→crew→back), dwelling ~DWELL ms each; the "current" pulse travels the
+     The active station advances around the ring cycle (garden→estate→brain→
+     testing→bus→back; crew is the box and interactive the strip — both off-ring),
+     dwelling ~DWELL ms each; the "current" pulse travels the
      track in lock-step and ARRIVES at each station exactly as it becomes active.
      Any click / focus / arrow-key pins the loop; the affordance resumes it. */
   var DWELL=3400;
@@ -312,7 +313,8 @@ function boot(){
         e.preventDefault();
         pin(el,true);
       });
-      /* focus (tab/keyboard) pins too — matches "you're driving" on the family sites */
+      /* while autoplaying, focusing a station (tab/keyboard) also pins it so a
+         keyboard user can interrupt the loop; once stopped, Enter/click drives */
       el.addEventListener('focus',function(){ if(autoplay)pin(el,true); });
     });
 
