@@ -1,6 +1,6 @@
 ---
 /**
- * Shipped.astro — "shipped." reimagined as THE LOOP (living orbit).
+ * Shipped.astro — "experiments." reimagined as THE LOOP (living orbit).
  *
  * A single, dominant, wide RACETRACK loop replaces the old thesis-paragraph +
  * loop-rail + IDE split-editor vertical stack (which overflowed the section).
@@ -17,9 +17,10 @@
  * The loop is a STADIUM (two straights + two semicircular caps) drawn in an
  * SVG viewBox (240×100); the orbit box shares that 2.4:1 aspect so the SVG
  * scales uniformly. Every geometry point is computed at BUILD TIME (no runtime
- * trig): the ring, the ↺ return arc, the satellite tether and the travelling
- * "current" pulse are one inline SVG. The pulse is SVG <animateMotion> along
- * the track; shipped.js parks it (static glow) under prefers-reduced-motion.
+ * trig): the ring, the ↺ return arc and the satellite tether are one inline SVG.
+ * The travelling "current" pulse is driven by shipped.js along #ringPath
+ * (getPointAtLength) — it auto-plays the selection around the loop until the
+ * visitor takes control, and parks statically under prefers-reduced-motion.
  *
  * Stations carry the SAME data-attrs the old tree leaves did (data-idx 0..6,
  * data-mode site|lib, data-preview, data-lib) so shipped.js drives the reused
@@ -86,7 +87,7 @@ const returnMark = pct(20.3, 25.3);                    // ↺ midpoint on the le
     <!-- compact header (no big multi-line thesis — that caused the overflow) -->
     <div class="orbit-head">
       <span class="zone-kicker">WORKSPACE · 7 PACKAGES · 3 DEPLOYED · ONE LOOP</span>
-      <h2 class="zone-title">shipped.</h2>
+      <h2 class="zone-title">experiments.</h2>
       <p class="orbit-caption">You cannot stabilize the harness — so the durable system sits <b>around</b> it.</p>
       <div class="orbit-authority" role="note">
         <span class="oa-dot" aria-hidden="true"></span>
@@ -109,19 +110,12 @@ const returnMark = pct(20.3, 25.3);                    // ↺ midpoint on the le
           <text class="orbit-return-mark" x={20.3} y={25.3} text-anchor="middle" dominant-baseline="central">↺</text>
           <!-- dotted tether out to the wicked-interactive satellite -->
           <line class="orbit-tether" x1={220} y1={66} x2={212} y2={94} />
-          <!-- the "current": a glowing dash travelling the track clockwise.
-               animateMotion follows the track via an <mpath> child (NOT an href
-               attribute — animateMotion has no such attribute). -->
-          <circle class="orbit-pulse-glow" cx="0" cy="0" r="6">
-            <animateMotion class="orbit-anim" dur="16s" repeatCount="indefinite" calcMode="linear">
-              <mpath href="#ringPath" xlink:href="#ringPath" />
-            </animateMotion>
-          </circle>
-          <circle class="orbit-pulse" cx="0" cy="0" r="2.4">
-            <animateMotion class="orbit-anim" dur="16s" repeatCount="indefinite" calcMode="linear">
-              <mpath href="#ringPath" xlink:href="#ringPath" />
-            </animateMotion>
-          </circle>
+          <!-- the "current": a glowing dash driven by shipped.js along #ringPath
+               (getPointAtLength). It walks the auto-play selection station→station
+               and pins/parks on interaction + prefers-reduced-motion. Initial
+               cx/cy sit on the top straight (near garden) to avoid a pre-JS flash. -->
+          <circle class="orbit-pulse-glow" cx="95" cy="15" r="6"></circle>
+          <circle class="orbit-pulse" cx="95" cy="15" r="2.4"></circle>
         </svg>
 
         <!-- soft waypoints (narrative, not selectable) -->
@@ -146,6 +140,8 @@ const returnMark = pct(20.3, 25.3);                    // ↺ midpoint on the le
             data-lib={s.mode === 'lib' ? s.key : undefined}
             data-role={s.role}
             data-color={s.color}
+            data-vx={s.vx}
+            data-vy={s.vy}
             aria-label={`${s.key} — ${s.role}`}
           >
             <span class="st-dot" aria-hidden="true"></span>
@@ -215,6 +211,14 @@ const returnMark = pct(20.3, 25.3);                    // ↺ midpoint on the le
         </div>
       </div>
     </div>
+
+    <!-- auto-play affordance: signals the loop is self-playing + lets the visitor
+         take control / resume (matches the pattern on the other family sites).
+         shipped.js toggles .is-paused + the label. Hidden under reduced motion. -->
+    <button class="orbit-autoplay" id="autoplayToggle" type="button" aria-live="polite">
+      <span class="ap-dot" aria-hidden="true"></span>
+      <span class="ap-text">auto-playing · click any station to drive</span>
+    </button>
 
     <!-- MOBILE (≤880): a clean VERTICAL loop — the packages in cycle order,
          with ↓ connectors between them and a ↺ return at the end. -->
@@ -309,7 +313,10 @@ const returnMark = pct(20.3, 25.3);                    // ↺ midpoint on the le
      caps the loop HEIGHT (=width/2.4) so the interior clears the station rows. */
   --loop-w:min(94vw, 2.4 * 64vh, 1180px);
   width:var(--loop-w);aspect-ratio:2.4;
-  overflow:visible;flex:0 0 auto
+  overflow:visible;flex:0 0 auto;
+  /* size container so the center pane can be sized in % of the LOOP box (cqw/cqh)
+     — it then always clears the station rows, at any viewport, with no overlap. */
+  container-type:size
 }
 .orbit-svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none;z-index:1}
 
@@ -394,12 +401,17 @@ const returnMark = pct(20.3, 25.3);                    // ↺ midpoint on the le
 }
 .orbit-waypoint .wp-sub{font-size:.52rem;letter-spacing:.05em;color:var(--faint);opacity:.85}
 
-/* ── CENTER: the reused preview pane (big landscape) ───────────── */
+/* ── CENTER: the reused preview pane (floats in the loop interior) ──
+   Sized in cqw/cqh (% of the LOOP box) + capped in px, so it always clears the
+   station rows with breathing room, at any viewport — never overlapping a node.
+   Height flows down the flex chain so the shot fills whatever space is left. */
 .orbit-center{
   position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:5;
-  width:clamp(320px,46%,480px)
+  width:min(44cqw,440px);height:min(56cqh,300px);
+  display:flex
 }
 .orbit-center .ide-preview{
+  flex:1;min-height:0;
   display:flex;flex-direction:column;background:#0d0f12;border-radius:12px;overflow:hidden;
   font-family:var(--font-mono);
   border:1px solid rgba(255,255,255,.06);
@@ -415,10 +427,11 @@ const returnMark = pct(20.3, 25.3);                    // ↺ midpoint on the le
 .center-titlebar .ct-name{font-size:.78rem;font-weight:700;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .center-titlebar .ct-role{font-size:.56rem;letter-spacing:.14em;text-transform:uppercase;font-weight:700;flex-shrink:0}
 
-.preview-stage{display:flex;flex-direction:column;padding:12px 13px 0;min-height:0}
+.preview-stage{flex:1;min-height:0;display:flex;flex-direction:column;padding:12px 13px 0}
 .browser-frame{
+  flex:1;min-height:0;
   display:flex;flex-direction:column;border-radius:9px;overflow:hidden;
-  border:1px solid var(--hairline-strong);background:#080c10;min-height:0;
+  border:1px solid var(--hairline-strong);background:#080c10;
   box-shadow:0 10px 30px rgba(0,0,0,.5)
 }
 .browser-frame[hidden]{display:none}
@@ -439,8 +452,10 @@ const returnMark = pct(20.3, 25.3);                    // ↺ midpoint on the le
 }
 .browser-chrome .live .pulse{width:6px;height:6px;border-radius:999px;background:var(--accent);animation:livePulse 1.8s ease-in-out infinite}
 @keyframes livePulse{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(255,218,25,.55)}50%{opacity:.6;box-shadow:0 0 0 4px rgba(255,218,25,0)}}
-.browser-shot{position:relative;overflow:hidden;background:#080c10;height:clamp(94px,15vh,158px)}
-.shot-bg{position:absolute;inset:0;background-size:cover;background-position:top center}
+.browser-shot{position:relative;flex:1;min-height:0;overflow:hidden;background:#080c10}
+/* frame the site around mid-page so it reads as a complete preview, never a
+   giant hero headline cropped mid-word */
+.shot-bg{position:absolute;inset:0;background-size:cover;background-position:center 52%}
 .shot-bg-back{z-index:1}
 .shot-bg-front{z-index:2}
 .browser-shot::before{
@@ -450,8 +465,9 @@ const returnMark = pct(20.3, 25.3);                    // ↺ midpoint on the le
 
 /* MODE (b): library faux code-editor card */
 .code-card{
+  flex:1;min-height:0;
   display:flex;flex-direction:column;border-radius:9px;overflow:hidden;
-  border:1px solid var(--hairline-strong);background:#0d0f12;min-height:0;
+  border:1px solid var(--hairline-strong);background:#0d0f12;
   box-shadow:0 10px 30px rgba(0,0,0,.5)
 }
 .code-card[hidden]{display:none}
@@ -471,7 +487,7 @@ const returnMark = pct(20.3, 25.3);                    // ↺ midpoint on the le
   font-family:var(--font-mono);font-size:.48rem;letter-spacing:.12em;text-transform:uppercase;
   color:var(--muted);border:1px solid var(--hairline);border-radius:5px;padding:2px 7px;flex-shrink:0
 }
-.code-card-body{overflow:auto;background:#0d0f12;height:clamp(94px,15vh,158px)}
+.code-card-body{flex:1;min-height:0;overflow:auto;background:#0d0f12}
 .code-card-body::-webkit-scrollbar{width:4px;height:4px}
 .code-card-body::-webkit-scrollbar-thumb{background:rgba(255,255,255,.08);border-radius:2px}
 .code-block{margin:0;padding:12px 14px 14px 0;font-family:var(--font-mono);font-size:.7rem;line-height:1.8}
@@ -505,13 +521,35 @@ const returnMark = pct(20.3, 25.3);                    // ↺ midpoint on the le
 .readout-cta:hover{opacity:.78}
 .readout-cta:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:2px}
 
+/* ── AUTO-PLAY affordance ──────────────────────────────────────── */
+.orbit-autoplay{
+  appearance:none;cursor:pointer;align-self:center;margin-top:2px;
+  display:inline-flex;align-items:center;gap:8px;
+  font-family:var(--font-mono);font-size:.56rem;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--muted);background:rgba(255,255,255,.02);
+  border:1px solid var(--hairline);border-radius:999px;padding:6px 14px;
+  transition:color .16s,border-color .16s,background .16s
+}
+.orbit-autoplay:hover{color:var(--ink);border-color:var(--hairline-strong);background:rgba(255,255,255,.04)}
+.orbit-autoplay:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.orbit-autoplay .ap-dot{
+  width:7px;height:7px;border-radius:50%;flex-shrink:0;background:var(--accent);
+  box-shadow:0 0 8px -1px var(--accent);animation:apBlink 1.6s ease-in-out infinite
+}
+@keyframes apBlink{0%,100%{opacity:1}50%{opacity:.35}}
+/* paused: the visitor is driving — the dot goes solid + accent border to resume */
+.orbit-autoplay.is-paused{color:var(--ink);border-color:color-mix(in oklab,var(--accent) 40%,transparent)}
+.orbit-autoplay.is-paused .ap-dot{animation:none;background:var(--muted);box-shadow:none}
+
 /* ── REDUCED MOTION — freeze the kinetics to a steady state ─────── */
 @media(prefers-reduced-motion:reduce){
   .orbit-ring{animation:none;stroke-dashoffset:0}
   .orbit-authority .oa-dot,
+  .orbit-autoplay .ap-dot,
   .browser-chrome .live .pulse{animation:none}
   .shot-bg-front{transition:none!important}
   .orbit-pulse-glow{opacity:.85}
+  .orbit-autoplay{display:none} /* no auto-play to advertise; loop parks on garden */
 }
 
 /* ── DESKTOP ↔ MOBILE SWITCH (≤880: the loop can't hold 8 nodes) ── */
@@ -522,6 +560,7 @@ const returnMark = pct(20.3, 25.3);                    // ↺ midpoint on the le
     padding:52px 20px 8px;justify-content:flex-start
   }
   .orbit-wrap{display:none}
+  .orbit-autoplay{display:none} /* auto-play is a loop affordance — no loop on mobile */
   .orbit-head{align-items:flex-start;text-align:left}
   .orbit-head .zone-kicker{justify-content:flex-start}
   .orbit-head .zone-kicker::after{display:none}

@@ -11,11 +11,18 @@
          screenshot; selecting one hides the browser-frame and renders a faux
          code-editor card in the SAME pane.
 
-   Every station carries data-idx 0..6 + data-mode/site|lib + data-preview/lib,
-   plus data-role/data-color used to tint the center. Exactly one station holds
-   aria-current. The "current" pulse (SVG <animateMotion>) is parked to a static
-   glow under prefers-reduced-motion. The old tree-folder toggles + scroll-walk
-   are gone — the orbit fits one screen.
+   Every station carries data-idx 0..6 + data-mode/site|lib + data-preview/lib +
+   data-vx/data-vy (viewBox point), plus data-role/data-color used to tint the
+   center. Exactly one station holds aria-current.
+
+   AUTO-PLAY: on load the loop plays itself — the active station advances around
+   the cycle (garden→estate→brain→testing→bus→crew→back), and the "current" pulse
+   is DRIVEN along #ringPath (getPointAtLength) in lock-step, arriving at each
+   station exactly as it becomes active. Any click / focus / arrow-key pins the
+   loop (the affordance resumes it). Under prefers-reduced-motion there is no
+   auto-advance: the loop parks on garden with a static pulse.
+
+   The old tree-folder toggles + scroll-walk are gone — the orbit fits one screen.
 
    FEATURED + shared helpers come from the data module.
    ────────────────────────────────────────────────────────────── */
@@ -127,18 +134,39 @@ function boot(){
   var stations=Array.prototype.slice.call(document.querySelectorAll('.orbit-station[data-idx]'));
   if(!stations.length)return;
 
-  var mode='site';   /* 'site' | 'lib' — default station (garden) is a deployed SITE */
+  /* ring stations (exclude the off-loop satellite) — the auto-play walk set */
+  var ringStations=stations.filter(function(s){return !s.classList.contains('orbit-station--sat');});
 
-  /* ── PULSE: gate the SVG <animateMotion> to a static glow when reduced ── */
-  function gatePulse(){
-    if(!PREFERS_REDUCED)return;
-    var anims=document.querySelectorAll('.orbit-svg animateMotion');
-    Array.prototype.forEach.call(anims,function(a){a.parentNode.removeChild(a);});
-    /* park the dot on the top straight of the track so it rests as a steady glow
-       (viewBox 240x100 units — must sit ON the stadium path) */
-    var dots=document.querySelectorAll('.orbit-pulse,.orbit-pulse-glow');
-    Array.prototype.forEach.call(dots,function(c){c.setAttribute('cx','120');c.setAttribute('cy','15');});
+  /* ── PULSE: driven along #ringPath via getPointAtLength (no SMIL) ─────
+     The "current" pulse walks the auto-play selection station→station; it is
+     pinned/parked on interaction and under prefers-reduced-motion. */
+  var ringPathEl=document.getElementById('ringPath');
+  var pulseDot=document.querySelector('.orbit-pulse');
+  var pulseGlow=document.querySelector('.orbit-pulse-glow');
+  var pathLen=(ringPathEl&&ringPathEl.getTotalLength)?ringPathEl.getTotalLength():0;
+
+  function setPulseLen(L){
+    if(!ringPathEl||!pathLen)return;
+    L=((L%pathLen)+pathLen)%pathLen;
+    var p=ringPathEl.getPointAtLength(L);
+    if(pulseDot){pulseDot.setAttribute('cx',p.x);pulseDot.setAttribute('cy',p.y);}
+    if(pulseGlow){pulseGlow.setAttribute('cx',p.x);pulseGlow.setAttribute('cy',p.y);}
   }
+  /* the path-length nearest a station's viewBox point (coarse sample is plenty) */
+  function nearestLen(vx,vy){
+    if(!ringPathEl||!pathLen)return 0;
+    var best=0,bd=Infinity,N=480,i,L,p,dx,dy,d;
+    for(i=0;i<=N;i++){
+      L=pathLen*i/N;p=ringPathEl.getPointAtLength(L);
+      dx=p.x-vx;dy=p.y-vy;d=dx*dx+dy*dy;
+      if(d<bd){bd=d;best=L;}
+    }
+    return best;
+  }
+  /* auto-play order = ring stations sorted along the track (garden→…→crew) */
+  var seq=ringStations.map(function(s){
+    return {el:s,len:nearestLen(parseFloat(s.dataset.vx),parseFloat(s.dataset.vy))};
+  }).sort(function(a,b){return a.len-b.len;});
 
   /* ── wipeSlot — two-layer clip-path inset wipe (reduced-motion gated) ── */
   function wipeSlot(el,project){
@@ -177,7 +205,6 @@ function boot(){
   function showSite(featIdx, animate){
     var p=FEATURED[featIdx];
     if(!p)return;
-    mode='site';
     idePreview.dataset.mode='site';
     if(codeCard){codeCard.hidden=true;codeCard.setAttribute('aria-hidden','true');}
     if(browserFrame)browserFrame.hidden=false;
@@ -197,7 +224,6 @@ function boot(){
   function showLib(libKey){
     var snip=LIB_SNIPPETS[libKey];
     if(!snip){return;}
-    mode='lib';
     idePreview.dataset.mode='lib';
     if(browserFrame)browserFrame.hidden=true;
     if(codeCard){codeCard.hidden=false;codeCard.setAttribute('aria-hidden','false');}
@@ -230,6 +256,56 @@ function boot(){
     }
   }
 
+  /* ── AUTO-PLAY: the loop plays itself until the visitor takes control ──
+     The active station advances around the cycle (garden→estate→brain→testing→
+     bus→crew→back), dwelling ~DWELL ms each; the "current" pulse travels the
+     track in lock-step and ARRIVES at each station exactly as it becomes active.
+     Any click / focus / arrow-key pins the loop; the affordance resumes it. */
+  var DWELL=3400;
+  var autoplay=false, rafId=0, segStart=0, curIdx=0;
+  var toggle=document.getElementById('autoplayToggle');
+  var toggleText=toggle&&toggle.querySelector('.ap-text');
+
+  function easeInOut(t){return t<0.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;}
+
+  function setAffordance(playing){
+    if(!toggle)return;
+    toggle.classList.toggle('is-paused',!playing);
+    if(toggleText)toggleText.textContent=playing
+      ? 'auto-playing · click any station to drive'
+      : 'you’re driving · resume auto-play ↺';
+  }
+
+  function tick(now){
+    if(!autoplay)return;
+    var from=seq[curIdx].len, to=seq[(curIdx+1)%seq.length].len;
+    if(to<from)to+=pathLen;                 /* wrap the closing leg past the seam */
+    var t=Math.min((now-segStart)/DWELL,1);
+    setPulseLen(from+(to-from)*easeInOut(t));
+    if(t>=1){                                /* arrived → select the next station */
+      curIdx=(curIdx+1)%seq.length;
+      selectStation(seq[curIdx].el,true);
+      segStart=now;
+    }
+    rafId=requestAnimationFrame(tick);
+  }
+  function startAuto(fromIdx){
+    if(PREFERS_REDUCED||!seq.length)return;
+    if(typeof fromIdx==='number')curIdx=fromIdx;
+    autoplay=true;setAffordance(true);
+    segStart=(window.performance&&performance.now)?performance.now():Date.now();
+    cancelAnimationFrame(rafId);rafId=requestAnimationFrame(tick);
+  }
+  function stopAuto(){
+    autoplay=false;cancelAnimationFrame(rafId);setAffordance(false);
+  }
+  /* pin the loop to a station (stops auto-play + snaps the pulse to it) */
+  function pin(el,animate){
+    stopAuto();
+    for(var k=0;k<seq.length;k++){if(seq[k].el===el){curIdx=k;setPulseLen(seq[k].len);break;}}
+    selectStation(el,animate);
+  }
+
   /* ── boot: default selected = the first station (Steer / wicked-garden) ── */
   function initPreview(){
     selectStation(stations[0], false); /* no wipe on load — static HTML already matches */
@@ -237,16 +313,17 @@ function boot(){
 
   function wireStations(){
     stations.forEach(function(el){
-      /* left-click updates the in-page preview; the href stays live so
-         cmd/ctrl-click + keyboard still open the real destination. */
+      /* left-click updates the preview + pins (href stays live for cmd/ctrl-click) */
       el.addEventListener('click',function(e){
         if(e.metaKey||e.ctrlKey||e.shiftKey||e.button===1)return;
         e.preventDefault();
-        selectStation(el, true);
+        pin(el,true);
       });
+      /* focus (tab/keyboard) pins too — matches "you're driving" on the family sites */
+      el.addEventListener('focus',function(){ if(autoplay)pin(el,true); });
     });
 
-    /* optional: arrow-key walk around the ring (stations are in cycle order) */
+    /* arrow-key walk around the ring (pins) */
     var orbit=document.querySelector('.orbit');
     if(orbit){
       orbit.addEventListener('keydown',function(e){
@@ -260,15 +337,28 @@ function boot(){
         if(next>=0){
           e.preventDefault();
           stations[next].focus();
-          selectStation(stations[next], true);
+          pin(stations[next],true);
         }
+      });
+    }
+
+    /* the affordance pauses / resumes the auto-play */
+    if(toggle){
+      toggle.addEventListener('click',function(){
+        if(autoplay)stopAuto();
+        else startAuto(curIdx);
       });
     }
   }
 
-  gatePulse();
   initPreview();
   wireStations();
+  var isMobile=window.matchMedia&&window.matchMedia('(max-width:880px)').matches;
+  if(PREFERS_REDUCED||isMobile){
+    if(seq.length)setPulseLen(seq[0].len); /* park the current on garden (static) */
+  }else{
+    startAuto(0);                           /* garden → estate → … self-playing */
+  }
 }
 
 if(document.readyState==='loading'){
