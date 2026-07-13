@@ -4,23 +4,25 @@
    ring; the reused preview pane sits in the CENTER. Selecting a station drives
    the same DUAL-MODE preview pane the old split-editor used:
 
-     (a) SITE  — the 3 DEPLOYED sites (FEATURED[0..2] = interactive · garden ·
-         estate) drive the browser-frame: /screenshots/<name>.png via a
+     (a) SITE  — the 5 DEPLOYED sites (interactive · garden · estate · testing ·
+         crew) drive the browser-frame: /screenshots/<name>.png via a
          clip-path wipe (gated by prefers-reduced-motion).
-     (b) LIB   — the other 4 packages (brain · testing · crew · bus) have no
-         screenshot; selecting one hides the browser-frame and renders a faux
-         code-editor card in the SAME pane.
+     (b) LIB   — the two no-site packages (brain · bus) have no screenshot;
+         selecting one hides the browser-frame and renders a faux code-editor
+         card in the SAME pane.
 
    Every station carries data-idx 0..6 + data-mode/site|lib + data-preview/lib +
-   data-vx/data-vy (viewBox point), plus data-role/data-color used to tint the
-   center. Exactly one station holds aria-current.
+   data-role/data-color used to tint the center; the five RING stations also
+   carry data-vx/data-vy (viewBox point). Exactly one station holds aria-current.
 
    AUTO-PLAY: on load the loop plays itself — the active station advances around
-   the cycle (garden→estate→brain→testing→bus→crew→back), and the "current" pulse
-   is DRIVEN along #ringPath (getPointAtLength) in lock-step, arriving at each
-   station exactly as it becomes active. Any click / focus / arrow-key pins the
-   loop (the affordance resumes it). Under prefers-reduced-motion there is no
-   auto-advance: the loop parks on garden with a static pulse.
+   the ring cycle (garden→estate→brain→testing→bus→back; crew is the enclosing
+   box and the interactive strip is off-ring, so neither joins the ring walk),
+   and the "current" pulse is DRIVEN along #ringPath (getPointAtLength) in
+   lock-step, arriving at each station exactly as it becomes active. Any click /
+   focus / arrow-key pins the loop (the affordance resumes it). Under
+   prefers-reduced-motion there is no auto-advance: the loop parks on garden
+   with a static pulse.
 
    The old tree-folder toggles + scroll-walk are gone — the orbit fits one screen.
 
@@ -52,6 +54,7 @@ var LIB_SNIPPETS = {
     ext: 'js', glyph: 'JS', install: 'npm i',
     lines: [
       "// durable event log: at-least-once, causality-traced, replayable. local-first.",
+      "import { bus } from 'wicked-bus'",
       "bus.emit('wicked.qe.verdict.passed', { run: 42 })",
       "// log ▸ 12:04:07 delivered ▸ 12:04:07 acked ▸ 1 subscriber",
       "bus.subscribe('wicked.qe.*', handle)  // dead-letter + operator replay"
