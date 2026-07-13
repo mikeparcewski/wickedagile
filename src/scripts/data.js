@@ -29,15 +29,20 @@ export var reposPromise=fetch('https://api.github.com/users/mikeparcewski/repos?
   .catch(function(){return null});
 
 /* ── FEATURED ─────────────────────────────────────────────────── */
-/* The 3 DEPLOYED sites for the shipped split-editor preview. Screenshots
-   resolve from the public/ root → '/screenshots/<name>.png'. Consumed by
-   shipped.js as preview indices 0,1,2 (the tree's data-preview mapping).
-   Order = the deployed-site tab order (interactive · garden · estate). */
+/* The DEPLOYED sites shown in the loop's center preview (browser-frame mode).
+   Screenshots resolve from the public/ root → '/screenshots/<name>.png'.
+   Consumed by shipped.js via each station's data-preview index. Five live
+   sites now: interactive · garden · estate · testing · crew. Each carries its
+   OWN real screenshot + a specific tagline so no preview reads as a template. */
 export var FEATURED=[
   {name:'wicked-interactive',url:'https://wi.wickedagile.com',screenshot:'/screenshots/wicked-interactive.png',
-   desc:'A creative surface on the same substrate: describe it, watch it build, ship HTML/PDF/deck. It composes the family\'s building blocks; it does not close the loop.'},
+   desc:'A different way to work with agents — real-time, human-in-the-creative-loop: describe it, watch it build, point to refine. A foil to the governed loop.'},
   {name:'wicked-garden',url:'https://wg.wickedagile.com',screenshot:'/screenshots/wicked-garden.png',
    desc:'Steering before execution — reads each prompt\'s work-shape + risk and applies the right rigor, plus the capabilities a planner-executor can\'t do alone.'},
   {name:'wicked-estate',url:'https://we.wickedagile.com',screenshot:'/screenshots/wicked-estate.png',
    desc:'Your live technical environment, queryable — requirements↔implementation, blast-radius, infra + policy relationships, operational history.'},
+  {name:'wicked-testing',url:'https://wt.wickedagile.com',screenshot:'/screenshots/wicked-testing.png',
+   desc:'No agent grades its own homework — an enforced wall between the agent that runs the tests and the one that judges them.'},
+  {name:'wicked-crew',url:'https://wc.wickedagile.com',screenshot:'/screenshots/wicked-crew.png',
+   desc:'The control room for governed agent delivery — drive, gate, and audit; the human stays in command. The harness for your agent harnesses.'},
 ];
