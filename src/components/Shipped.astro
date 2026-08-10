@@ -31,9 +31,9 @@
 const packages = [
   { name: 'wicked-garden', role: 'Steer', color: '#ffda19', lang: 'JS', site: 'wg.wickedagile.com', href: 'https://wg.wickedagile.com', shot: '/screenshots/wicked-garden.png', desc: "Steering before execution — reads each prompt's work-shape + risk and applies the right rigor, plus the capabilities a planner-executor can't do alone." },
   { name: 'wicked-estate', role: 'Equip', color: '#79c0ff', lang: 'RS', site: 'we.wickedagile.com', href: 'https://we.wickedagile.com', shot: '/screenshots/wicked-estate.png', desc: 'Your live technical environment, queryable — requirements↔implementation, blast-radius, infra + policy relationships, operational history.' },
-  { name: 'wicked-brain', role: 'Equip', color: '#79c0ff', lang: 'JS', href: 'https://github.com/mikeparcewski/wicked-brain', desc: 'The domain & requirements brain — product intent, decisions, and conformance you can search, challenge, correct, and trace to source. The domain layer, distinct from estate\'s code graph.' },
+  { name: 'wicked-brain', role: 'Equip', color: '#79c0ff', lang: 'JS', href: 'https://github.com/mikeparcewski/wicked-brain', desc: 'The learning layer — captures domain, requirements, decisions and learnings with provenance; search, challenge, correct, trace to source. What learns into estate, distinct from its code graph.' },
   { name: 'wicked-testing', role: 'Verify', color: '#56d364', lang: 'JS', site: 'wt.wickedagile.com', href: 'https://wt.wickedagile.com', shot: '/screenshots/wicked-testing.png', desc: 'No agent grades its own homework — an enforced wall between the agent that runs the tests and the one that judges them.' },
-  { name: 'wicked-crew', role: 'Meta-harness', color: '#d2a8ff', lang: 'JS', site: 'wc.wickedagile.com', href: 'https://wc.wickedagile.com', shot: '/screenshots/wicked-crew.png', desc: 'The control room for governed agent delivery — drive, gate, audit; the human stays in command. The harness for your agent harnesses.' },
+  { name: 'wicked-crew', role: 'Control plane', color: '#d2a8ff', lang: 'JS', site: 'wc.wickedagile.com', href: 'https://wc.wickedagile.com', shot: '/screenshots/wicked-crew.png', desc: 'The control room for governed agent delivery — drive, gate, audit; the human stays in command. The harness for your agent harnesses.' },
   { name: 'wicked-bus', role: 'Fabric', color: '#9aa7b3', lang: 'JS', href: 'https://github.com/mikeparcewski/wicked-bus', desc: 'The durable nervous system beneath it all — local-first, at-least-once, replayable. The fabric the loop rides on.' },
   { name: 'wicked-interactive', role: 'Surface', color: '#f0a868', lang: 'JS', site: 'wi.wickedagile.com', href: 'https://wi.wickedagile.com', shot: '/screenshots/wicked-interactive.png', desc: "A surface beside — composes the family's building blocks; it does not close the loop. Describe it, watch it build, ship HTML/PDF/deck." },
 ];
@@ -67,7 +67,7 @@ const waypoints = [
 // wicked-crew — the governed BOX around the whole loop. Still SELECTABLE via its
 // frame legend (drives its own wc. site preview). idx 4 / mode site / preview 4.
 const crew = {
-  key: 'wicked-crew', role: 'Meta-harness', color: '#d2a8ff', tint: '#e2c5ff',
+  key: 'wicked-crew', role: 'Control plane', color: '#d2a8ff', tint: '#e2c5ff',
   idx: 4, mode: 'site', preview: '4', href: 'https://wc.wickedagile.com',
 };
 
@@ -111,10 +111,10 @@ const restPkgs = packages.filter((p) => p.name !== 'wicked-crew');
         <a class="crew-bar" href={crew.href} target="_self" rel="noopener"
            data-idx={crew.idx} data-mode={crew.mode} data-preview={crew.preview}
            data-role={crew.role} data-color={crew.color}
-           aria-label="wicked-crew — Govern · the harness of your harnesses, the box the whole loop runs inside (click to preview)">
+           aria-label="wicked-crew — Control plane · the harness of your harnesses, the box the whole loop runs inside (click to preview)">
           <span class="crew-dots" aria-hidden="true"><i></i><i></i><i></i></span>
           <span class="crew-title">wicked-crew <span class="ct-sep" aria-hidden="true">·</span> <b>the harness of your harnesses</b></span>
-          <span class="crew-role">GOVERN</span>
+          <span class="crew-role">CONTROL PLANE</span>
         </a>
 
         <div class="crew-body">
