@@ -1,30 +1,26 @@
 /* ──────────────────────────────────────────────────────────────
-   wickedagile — SHIPPED : THE LOOP (living orbit)
-   The seven-package catalog as an orbital loop. Package STATIONS sit around a
-   ring; the reused preview pane sits in the CENTER. Selecting a station drives
-   the same DUAL-MODE preview pane the old split-editor used:
+   wickedagile — SHIPPED : THE LAYERED STACK (building blocks → a solution)
+   The seven-package catalog as a platform stack. Package BLOCKS sit in four
+   layers (infra → tools → learning → control plane); the reused preview pane
+   sits BESIDE them. Selecting a block drives the same DUAL-MODE preview pane:
 
      (a) SITE  — the 5 DEPLOYED sites (interactive · garden · estate · testing ·
          crew) drive the browser-frame: /screenshots/<name>.png via a
          clip-path wipe (gated by prefers-reduced-motion).
      (b) LIB   — the two no-site packages (brain · bus) have no screenshot;
-         selecting one hides the browser-frame and renders a faux code-editor
-         card in the SAME pane.
+         selecting one renders a faux code-editor card in the SAME pane.
 
-   Every station carries data-idx 0..6 + data-mode/site|lib + data-preview/lib +
-   data-role/data-color used to tint the center; the five RING stations also
-   carry data-vx/data-vy (viewBox point). Exactly one station holds aria-current.
+   Every block carries data-idx 0..6 + data-mode/site|lib + data-preview|data-lib
+   + data-role/data-color to tint the pane; the stack blocks also carry
+   data-order (the bottom-up assemble sequence). Exactly one holds aria-current.
 
-   AUTO-PLAY: on load the loop plays itself — the active station advances around
-   the ring cycle (garden→estate→brain→testing→bus→back; crew is the enclosing
-   box and the interactive strip is off-ring, so neither joins the ring walk),
-   and the "current" pulse is DRIVEN along #ringPath (getPointAtLength) in
-   lock-step, arriving at each station exactly as it becomes active. Any click /
-   focus / arrow-key pins the loop (the affordance resumes it). Under
-   prefers-reduced-motion there is no auto-advance: the loop parks on garden
-   with a static pulse.
-
-   The old tree-folder toggles + scroll-walk are gone — the orbit fits one screen.
+   AUTO-PLAY: on load the stack ASSEMBLES itself — blocks light in data-order
+   (estate→bus→garden→testing→brain→crew), each built layer STAYS lit
+   (cumulative), then the capstone ("an operable coding agent") fires, holds a
+   beat, and the stack resets and rebuilds. Any click / focus / arrow-key hands
+   control to the visitor: the stack snaps fully assembled and the picked block
+   goes active. Under prefers-reduced-motion there is no cascade — the stack
+   parks fully assembled on the foundation (estate).
 
    FEATURED + shared helpers come from the data module.
    ────────────────────────────────────────────────────────────── */
@@ -32,9 +28,8 @@ import { FEATURED, esc, safeUrl } from './data.js';
 
 var PREFERS_REDUCED = window.matchMedia && window.matchMedia('(prefers-reduced-motion:reduce)').matches;
 
-/* ── LIBRARY snippets — the two NO-SITE products (garden/estate/testing/crew/
-   interactive are live sites → real screenshots). brain and bus are deliberately
-   distinct from each other: brain = memory/code-graph, bus = durable event log. */
+/* ── LIBRARY snippets — the two NO-SITE products (the rest are live sites →
+   real screenshots). brain = memory/code-graph, bus = durable event log. */
 var LIB_SNIPPETS = {
   'wicked-brain': {
     tagline: 'Memory + code-graph with provenance — knowledge the agent can search, challenge, correct, and trace back to its source.',
@@ -49,7 +44,7 @@ var LIB_SNIPPETS = {
     ]
   },
   'wicked-bus': {
-    tagline: 'The durable event fabric beneath it all — local-first, at-least-once, replayable. The nervous system the loop rides on.',
+    tagline: 'The durable event fabric beneath it all — local-first, at-least-once, replayable. The nervous system the whole stack rides on.',
     repo: 'https://github.com/mikeparcewski/wicked-bus',
     ext: 'js', glyph: 'JS', install: 'npm i',
     lines: [
@@ -114,46 +109,21 @@ function boot(){
   var centerRole=document.getElementById('centerRole');
   var readoutDesc=document.getElementById('readoutDesc');
   var readoutCta=document.getElementById('readoutCta');
-  /* every selectable "station": the inner ring nodes PLUS the crew frame legend
-     and the wicked-interactive strip (all carry data-idx + data-mode). */
-  var stations=Array.prototype.slice.call(document.querySelectorAll('#projects [data-idx][data-mode]'));
-  if(!stations.length)return;
-  var crewBox=document.getElementById('crewBox');
+  var stackRoot=document.getElementById('stackRoot');
+  var solutionCap=document.getElementById('solutionCap');
 
-  /* the AUTO-PLAY walk set = only the on-track ring nodes (they carry data-vx);
-     crew (the box) and interactive (the strip) are NOT on the ring, so excluded. */
-  var ringStations=stations.filter(function(s){return s.dataset.vx!==undefined;});
+  /* every selectable element: the stack blocks PLUS the interactive strip
+     (all carry data-idx + data-mode). */
+  var selectables=Array.prototype.slice.call(document.querySelectorAll('#projects [data-idx][data-mode]'));
+  if(!selectables.length)return;
 
-  /* ── PULSE: driven along #ringPath via getPointAtLength (no SMIL) ─────
-     The "current" pulse walks the auto-play selection station→station; it is
-     pinned/parked on interaction and under prefers-reduced-motion. */
-  var ringPathEl=document.getElementById('ringPath');
-  var pulseDot=document.querySelector('.orbit-pulse');
-  var pulseGlow=document.querySelector('.orbit-pulse-glow');
-  var pathLen=(ringPathEl&&ringPathEl.getTotalLength)?ringPathEl.getTotalLength():0;
-
-  function setPulseLen(L){
-    if(!ringPathEl||!pathLen)return;
-    L=((L%pathLen)+pathLen)%pathLen;
-    var p=ringPathEl.getPointAtLength(L);
-    if(pulseDot){pulseDot.setAttribute('cx',p.x);pulseDot.setAttribute('cy',p.y);}
-    if(pulseGlow){pulseGlow.setAttribute('cx',p.x);pulseGlow.setAttribute('cy',p.y);}
-  }
-  /* the path-length nearest a station's viewBox point (coarse sample is plenty) */
-  function nearestLen(vx,vy){
-    if(!ringPathEl||!pathLen)return 0;
-    var best=0,bd=Infinity,N=480,i,L,p,dx,dy,d;
-    for(i=0;i<=N;i++){
-      L=pathLen*i/N;p=ringPathEl.getPointAtLength(L);
-      dx=p.x-vx;dy=p.y-vy;d=dx*dx+dy*dy;
-      if(d<bd){bd=d;best=L;}
-    }
-    return best;
-  }
-  /* auto-play order = ring stations sorted along the track (garden→…→bus) */
-  var seq=ringStations.map(function(s){
-    return {el:s,len:nearestLen(parseFloat(s.dataset.vx),parseFloat(s.dataset.vy))};
-  }).sort(function(a,b){return a.len-b.len;});
+  /* the ASSEMBLE set = only the stack blocks (they carry data-order); the
+     interactive strip is a surface beside, so it is excluded from the walk. */
+  var blocks=Array.prototype.slice.call(document.querySelectorAll('#projects .block'));
+  /* build sequence, bottom-up (ascending data-order) */
+  var seq=blocks.slice().sort(function(a,b){
+    return (parseInt(a.dataset.order,10)||0)-(parseInt(b.dataset.order,10)||0);
+  });
 
   /* ── wipeSlot — two-layer clip-path inset wipe (reduced-motion gated) ── */
   function wipeSlot(el,project){
@@ -177,13 +147,13 @@ function boot(){
     });
   }
 
-  /* ── station chrome: exactly one aria-current + tint the center ── */
+  /* ── block chrome: exactly one aria-current + tint the preview ── */
   function applyStation(el){
     var role=el.getAttribute('data-role')||'';
     var color=el.getAttribute('data-color')||'var(--accent)';
     if(centerRole){centerRole.textContent=role;centerRole.style.color=color;}
     workspacePane.style.setProperty('--center-glow', color);
-    stations.forEach(function(s){
+    selectables.forEach(function(s){
       s.setAttribute('aria-current', s===el ? 'true':'false');
     });
   }
@@ -233,7 +203,7 @@ function boot(){
     }
   }
 
-  /* ── select a station → tint the center + drive the right preview mode ── */
+  /* ── select a block → tint the preview + drive the right mode ── */
   function selectStation(el, animate){
     applyStation(el);
     if(el.dataset.mode==='site'){
@@ -243,105 +213,93 @@ function boot(){
     }
   }
 
-  /* ── AUTO-PLAY: the loop plays itself until the visitor takes control ──
-     The active station advances around the ring cycle (garden→estate→brain→
-     testing→bus→back; crew is the box and interactive the strip — both off-ring),
-     dwelling ~DWELL ms each; the "current" pulse travels the
-     track in lock-step and ARRIVES at each station exactly as it becomes active.
-     Any click / focus / arrow-key pins the loop; the affordance resumes it. */
-  var DWELL=3400;
-  var autoplay=false, rafId=0, segStart=0, curIdx=0;
-  var toggle=document.getElementById('autoplayToggle');
-  var toggleText=toggle&&toggle.querySelector('.ap-text');
+  /* ── ENERGY RISES UP THE SPINE ─────────────────────────────────────
+     A pulse travels the rail from the foundation up into the capstone,
+     "pinging" each layer as it passes; the capstone glows when it arrives,
+     holds a beat, then the pulse restarts at the bottom. Blocks never dim —
+     the spine carries the motion. The preview pane is explore-driven (click /
+     focus a block). Parked under prefers-reduced-motion + on mobile. */
+  var pulse=document.getElementById('spinePulse');
+  var layerEls=Array.prototype.slice.call(document.querySelectorAll('#projects .layer'));
+  var RISE=4200, HOLD=1150;
+  var running=false, raf=0, t0=0, phase='rise';
+  var railTop=12, railBottom=0, layerStops=[];
 
   function easeInOut(t){return t<0.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;}
 
-  function setAffordance(playing){
-    /* crew's frame gets a gentle govern-purple "running" glow while auto-playing */
-    if(crewBox)crewBox.classList.toggle('is-running',playing);
-    if(!toggle)return;
-    toggle.classList.toggle('is-paused',!playing);
-    if(toggleText)toggleText.textContent=playing
-      ? 'auto-playing · click any station to drive'
-      : 'you’re driving · resume auto-play ↺';
-  }
-
-  function tick(now){
-    if(!autoplay)return;
-    var from=seq[curIdx].len, to=seq[(curIdx+1)%seq.length].len;
-    if(to<from)to+=pathLen;                 /* wrap the closing leg past the seam */
-    var t=Math.min((now-segStart)/DWELL,1);
-    setPulseLen(from+(to-from)*easeInOut(t));
-    if(t>=1){                                /* arrived → select the next station */
-      curIdx=(curIdx+1)%seq.length;
-      selectStation(seq[curIdx].el,true);
-      segStart=now;
+  /* measure rail extent + each layer's centre, relative to the stack box */
+  function measure(){
+    if(!stackRoot)return;
+    var sr=stackRoot.getBoundingClientRect();
+    railBottom=sr.height-10;
+    if(solutionCap){
+      var cr=solutionCap.getBoundingClientRect();
+      railTop=(cr.top-sr.top)+cr.height/2;   /* arrive at the capstone's centre */
     }
-    rafId=requestAnimationFrame(tick);
-  }
-  function startAuto(fromIdx){
-    if(PREFERS_REDUCED||!seq.length)return;
-    if(typeof fromIdx==='number')curIdx=fromIdx;
-    autoplay=true;setAffordance(true);
-    segStart=(window.performance&&performance.now)?performance.now():Date.now();
-    cancelAnimationFrame(rafId);rafId=requestAnimationFrame(tick);
-  }
-  function stopAuto(){
-    autoplay=false;cancelAnimationFrame(rafId);setAffordance(false);
-  }
-  /* pin the loop to a station (stops auto-play + snaps the pulse to it) */
-  function pin(el,animate){
-    stopAuto();
-    for(var k=0;k<seq.length;k++){if(seq[k].el===el){curIdx=k;setPulseLen(seq[k].len);break;}}
-    selectStation(el,animate);
+    layerStops=layerEls.map(function(el){
+      var r=el.getBoundingClientRect();
+      return {el:el, y:(r.top-sr.top)+r.height/2, done:false};
+    });
   }
 
-  /* ── boot: default selected = the first ring node (Steer / wicked-garden) ── */
+  function ping(el){
+    el.classList.add('is-pinged');
+    setTimeout(function(){el.classList.remove('is-pinged');},520);
+  }
+
+  function frame(now){
+    if(!running)return;
+    if(!t0)t0=now;
+    if(phase==='rise'){
+      var t=Math.min((now-t0)/RISE,1);
+      var y=railBottom+(railTop-railBottom)*easeInOut(t);
+      pulse.style.top=y+'px';
+      pulse.style.opacity='0.95';
+      layerStops.forEach(function(L){ if(!L.done && y<=L.y){ L.done=true; ping(L.el); } });
+      if(t>=1){ phase='hold'; t0=now; if(solutionCap)solutionCap.classList.add('is-built'); pulse.style.opacity='0'; }
+    }else{ /* hold at the capstone, then reset to the foundation */
+      if(now-t0>=HOLD){
+        phase='rise'; t0=now;
+        if(solutionCap)solutionCap.classList.remove('is-built');
+        layerStops.forEach(function(L){L.done=false;});
+      }
+    }
+    raf=requestAnimationFrame(frame);
+  }
+
+  function startRise(){
+    if(PREFERS_REDUCED||!pulse)return;
+    measure();
+    running=true; phase='rise'; t0=0;
+    cancelAnimationFrame(raf); raf=requestAnimationFrame(frame);
+  }
+
+  /* ── boot: default preview = the foundation block (estate); static matches ── */
   function initPreview(){
-    /* seq[0] is garden (smallest track length); stations[0] is NOT garden in DOM
-       order (crew's frame / the interactive bar also match), so target the ring
-       set explicitly. */
-    var first=(seq[0] && seq[0].el) || stations[0];
-    selectStation(first, false); /* no wipe on load — static HTML already matches */
+    selectStation(seq[0]||blocks[0], false); /* no wipe on load — static HTML matches */
   }
 
   function wireStations(){
-    stations.forEach(function(el){
-      /* left-click updates the preview + pins (href stays live for cmd/ctrl-click) */
+    selectables.forEach(function(el){
       el.addEventListener('click',function(e){
         if(e.metaKey||e.ctrlKey||e.shiftKey||e.button===1)return;
         e.preventDefault();
-        pin(el,true);
+        selectStation(el,true);              /* drive the preview; the pulse keeps rising */
       });
-      /* while autoplaying, focusing a station (tab/keyboard) also pins it so a
-         keyboard user can interrupt the loop; once stopped, Enter/click drives */
-      el.addEventListener('focus',function(){ if(autoplay)pin(el,true); });
+      el.addEventListener('focus',function(){ selectStation(el,false); });
     });
 
-    /* arrow-key walk around the ring nodes (pins). Only the on-track ring set. */
-    var ring=ringStations, orbit=document.querySelector('.orbit');
-    if(orbit && ring.length){
-      orbit.addEventListener('keydown',function(e){
-        var idx=ring.indexOf(document.activeElement);
+    /* arrow-key walk through the stack blocks (DOM order, top→bottom) */
+    if(stackRoot && blocks.length){
+      stackRoot.addEventListener('keydown',function(e){
+        var idx=blocks.indexOf(document.activeElement);
         if(idx<0)return;
         var next=-1;
-        if(e.key==='ArrowRight'||e.key==='ArrowDown')next=(idx+1)%ring.length;
-        else if(e.key==='ArrowLeft'||e.key==='ArrowUp')next=(idx-1+ring.length)%ring.length;
+        if(e.key==='ArrowRight'||e.key==='ArrowDown')next=(idx+1)%blocks.length;
+        else if(e.key==='ArrowLeft'||e.key==='ArrowUp')next=(idx-1+blocks.length)%blocks.length;
         else if(e.key==='Home')next=0;
-        else if(e.key==='End')next=ring.length-1;
-        if(next>=0){
-          e.preventDefault();
-          ring[next].focus();
-          pin(ring[next],true);
-        }
-      });
-    }
-
-    /* the affordance pauses / resumes the auto-play */
-    if(toggle){
-      toggle.addEventListener('click',function(){
-        if(autoplay)stopAuto();
-        else startAuto(curIdx);
+        else if(e.key==='End')next=blocks.length-1;
+        if(next>=0){ e.preventDefault(); blocks[next].focus(); selectStation(blocks[next],true); }
       });
     }
   }
@@ -350,9 +308,11 @@ function boot(){
   wireStations();
   var isMobile=window.matchMedia&&window.matchMedia('(max-width:880px)').matches;
   if(PREFERS_REDUCED||isMobile){
-    if(seq.length)setPulseLen(seq[0].len); /* park the current on garden (static) */
+    if(solutionCap)solutionCap.classList.add('is-built'); /* park assembled, no pulse */
   }else{
-    startAuto(0);                           /* garden → estate → … self-playing */
+    /* start after layout settles so the rail measurements are correct */
+    requestAnimationFrame(function(){ requestAnimationFrame(startRise); });
+    window.addEventListener('resize',function(){ if(running)measure(); });
   }
 }
 
