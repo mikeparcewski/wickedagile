@@ -1,26 +1,26 @@
 /* ──────────────────────────────────────────────────────────────
-   wickedagile — SHIPPED : THE LAYERED STACK (building blocks → a solution)
-   The seven-package catalog as a platform stack. Package BLOCKS sit in four
-   layers (infra → tools → learning → control plane); the reused preview pane
-   sits BESIDE them. Selecting a block drives the same DUAL-MODE preview pane:
+   wickedagile — SHIPPED : THE FOUR-PLANE STACK (planes → two front doors)
+   The platform as a composing stack: foundation (estate) → capability
+   (garden) → control (crew) → the EXPERIENCE capstone, two skins (studio ·
+   interactive). The reused preview pane sits BESIDE the stack. Selecting a
+   block drives the same DUAL-MODE preview pane:
 
-     (a) SITE  — the 5 DEPLOYED sites (interactive · garden · estate · testing ·
-         crew) drive the browser-frame: /screenshots/<name>.png via a
-         clip-path wipe (gated by prefers-reduced-motion).
-     (b) LIB   — the two no-site packages (brain · bus) have no screenshot;
-         selecting one renders a faux code-editor card in the SAME pane.
+     (a) SITE  — the 4 DEPLOYED sites (interactive · garden · estate · crew)
+         drive the browser-frame: /screenshots/<name>.png via a clip-path
+         wipe (gated by prefers-reduced-motion).
+     (b) LIB   — studio has no site of its own (it ships inside wicked-crew);
+         selecting it renders a faux code-editor card in the SAME pane.
 
-   Every block carries data-idx 0..6 + data-mode/site|lib + data-preview|data-lib
+   Every block carries data-idx 0..4 + data-mode/site|lib + data-preview|data-lib
    + data-role/data-color to tint the pane; the stack blocks also carry
    data-order (the bottom-up assemble sequence). Exactly one holds aria-current.
 
-   AUTO-PLAY: on load the stack ASSEMBLES itself — blocks light in data-order
-   (estate→bus→garden→testing→brain→crew), each built layer STAYS lit
-   (cumulative), then the capstone ("an operable coding agent") fires, holds a
-   beat, and the stack resets and rebuilds. Any click / focus / arrow-key hands
-   control to the visitor: the stack snaps fully assembled and the picked block
-   goes active. Under prefers-reduced-motion there is no cascade — the stack
-   parks fully assembled on the foundation (estate).
+   AUTO-PLAY: energy RISES up the spine — foundation → capability → control —
+   pinging each plane as it passes; the experience capstone (the two skins)
+   fires when it arrives, holds a beat, then the pulse restarts at the bottom.
+   Any click / focus / arrow-key hands the preview to the visitor. Under
+   prefers-reduced-motion there is no pulse — the stack parks fully assembled
+   on the foundation (estate).
 
    FEATURED + shared helpers come from the data module.
    ────────────────────────────────────────────────────────────── */
@@ -28,31 +28,20 @@ import { FEATURED, esc, safeUrl } from './data.js';
 
 var PREFERS_REDUCED = window.matchMedia && window.matchMedia('(prefers-reduced-motion:reduce)').matches;
 
-/* ── LIBRARY snippets — the two NO-SITE products (the rest are live sites →
-   real screenshots). brain = memory/code-graph, bus = durable event log. */
+/* ── LIBRARY snippets — products with no site of their own. studio = the
+   coder skin: a pure client of crew's public API, shipped inside wicked-crew. */
 var LIB_SNIPPETS = {
-  'wicked-brain': {
-    tagline: 'Memory + code-graph with provenance — knowledge the agent can search, challenge, correct, and trace back to its source.',
-    repo: 'https://github.com/mikeparcewski/wicked-brain',
-    ext: 'js', glyph: 'JS', install: 'npm i',
+  'wicked-studio': {
+    name: 'studio',
+    tagline: "The coder skin — a run board over crew's API: submit intent, watch phases, answer gates, review evidence. Ships inside wicked-crew.",
+    repo: 'https://github.com/mikeparcewski/wicked-crew/tree/main/packages/studio',
+    ext: 'ts', glyph: 'TS', cta: 'inside wicked-crew ↗',
     lines: [
-      "// memory + code-graph with provenance. markdown + SQLite FTS5 — no vector db.",
-      "import { brain } from 'wicked-brain'",
-      "await brain.remember('chose SQLite: zero-infra, ACID, crash-safe')",
-      "const why = await brain.recall('why sqlite?')",
-      "// → cited · [[backlinked]] · traceable to the commit that decided it"
-    ]
-  },
-  'wicked-bus': {
-    tagline: 'The durable event fabric beneath it all — local-first, at-least-once, replayable. The nervous system the whole stack rides on.',
-    repo: 'https://github.com/mikeparcewski/wicked-bus',
-    ext: 'js', glyph: 'JS', install: 'npm i',
-    lines: [
-      "// durable event log: at-least-once, causality-traced, replayable. local-first.",
-      "import { bus } from 'wicked-bus'",
-      "bus.emit('wicked.qe.verdict.passed', { run: 42 })",
-      "// log ▸ 12:04:07 delivered ▸ 12:04:07 acked ▸ 1 subscriber",
-      "bus.subscribe('wicked.qe.*', handle)  // dead-letter + operator replay"
+      "// studio — the coder-facing skin. ships inside wicked-crew.",
+      "// a pure client of crew's public API + WS — no engine imports, no side door.",
+      "const run = await api.post('/api/v1/runs', { intent })",
+      "ws.on('gate.opened', (gate) => askHuman(gate))  // approvals surface here",
+      "// phases, verdicts, and evidence stream onto the board as the run works"
     ]
   }
 };
@@ -187,7 +176,7 @@ function boot(){
 
     if(codeFile)codeFile.textContent=libKey+'.'+(snip.ext||'js');
     if(ccGlyph)ccGlyph.textContent=snip.glyph||'JS';
-    if(crumbName)crumbName.textContent=libKey;
+    if(crumbName)crumbName.textContent=snip.name||libKey;
     if(readoutDesc)readoutDesc.textContent=snip.tagline;
     if(readoutCta){readoutCta.href=safeUrl(snip.repo);readoutCta.textContent=snip.cta||((snip.install||'npm i')+' '+libKey+' ↗');}
 

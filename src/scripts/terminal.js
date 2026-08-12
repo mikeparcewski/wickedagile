@@ -19,7 +19,7 @@ function boot(){
 
   /* TERMINAL COPY BANKS */
   var ART_I=['surfacing the latest thinking from the field...','here\'s what\'s been keeping me up at night...','recent dispatches from production.','field notes. unfiltered.','the good stuff. no padding.','things that needed to be written down.','dispatches from the build.','pulled from Medium. the real stuff.'];
-  var PRJ_I=['seven packages. one loop.','the tools you keep shipping for the problem you keep seeing.','the stack, exposed.','local-first. agent-native. actually useful.','seven packages. one thesis.','tools that solve the org problem, not just the model problem.','the repo state. pulled fresh.','the wicked-* family. current.'];
+  var PRJ_I=['four planes. one platform.','the infrastructure your coding agents are missing.','two skins, one control plane, one catalog, one record.','local-first. agent-native. shipped.','the platform, exposed.','not seven scattered tools — four planes.','intent in. verified work out.','the wicked platform. current.'];
   var ABT_I=['the human in the loop.','brief history. no padding.','the career, summarized.','who wrote the tools.','the arc.','this is mike.','thirty years, five chapters.','the backstory.'];
 
   /* TERMINAL */
@@ -56,16 +56,37 @@ function boot(){
     await typeCmd('/');showMenu('projects');await delay(920);hideMenu();
     await typeCmd('projects');await delay(140);commitCmd('projects');await delay(160);
     await typeOut('\n'+randFrom(PRJ_I)+'\n\n',17);
+    /* the FOUR PLANES — curated (the story is the architecture, not the repo
+       list); live star counts are merged in only if the GitHub fetch wins the
+       3.5s race below — on a slow fetch the readout simply renders without
+       counts (no late merge; the typing rhythm never waits on the network). */
     var repos=await Promise.race([reposPromise,delay(3500).then(function(){return null})]);
-    var FB=[{name:'wicked-garden',description:'Steering before execution — reads work-shape + risk, applies the right rigor'},{name:'wicked-estate',description:'Your live technical environment, queryable — reqs↔impl, blast-radius, infra + policy'},{name:'wicked-brain',description:'Memory + code-graph with provenance — search, challenge, correct, trace to source'},{name:'wicked-testing',description:'No agent grades its own homework — the runner and the judge are walled off'},{name:'wicked-crew',description:'The control room for governed agent delivery — drive, gate, audit; human in command'},{name:'wicked-bus',description:'The durable nervous system beneath it all — local-first, at-least-once, replayable'},{name:'wicked-interactive',description:'A creative surface on the same substrate — describe it, watch it build, ship it'}];
-    var list=(repos&&repos.length)?repos:FB;
+    var STARS={};(repos||[]).forEach(function(r){STARS[r.name]=r.stargazers_count||0});
+    var PLANES=[
+      {name:'EXPERIENCE',cls:'t-o',note:'two front doors',items:[
+        {label:'wicked-interactive',repo:'wicked-interactive',desc:'creator skin — describe it, watch it build, ship HTML/PDF/decks/video'},
+        {label:'studio',suffix:' · ships inside wicked-crew',desc:'coder skin — submit intent, watch the run, answer gates'}]},
+      {name:'CONTROL',cls:'t-v',note:'intent in · verified work out',items:[
+        {label:'wicked-crew',repo:'wicked-crew',desc:'runs your coding agents as governed workers — evaluator ≠ creator, evidence-gated'}]},
+      {name:'CAPABILITY',cls:'t-g',note:'the catalog',items:[
+        {label:'wicked-garden',repo:'wicked-garden',desc:'skills + tools agents act through — councils, QE fleet, playbooks. bring your own pack'}]},
+      {name:'FOUNDATION',cls:'t-c',note:'the system of record',items:[
+        {label:'wicked-estate',repo:'wicked-estate',desc:'code graph (75 languages) + memory + knowledge in one binary — MCP'}]}
+    ];
     commitLine('<span class="t-d">'+esc(SEP)+'</span>');appendTxt('\n');
-    for(var r=0;r<list.length;r++){
-      var repo=list[r],stars=repo.stargazers_count?'  <span class="t-d">★'+repo.stargazers_count+'</span>':'';await delay(42);
-      commitLine('  <span class="t-g t-b">'+esc(repo.name)+'</span>'+stars);
-      if(repo.description)commitLine('  <span class="t-d">'+esc(repo.description)+'</span>');appendTxt('\n');
+    for(var pi=0;pi<PLANES.length;pi++){
+      var pl=PLANES[pi],bar='─'.repeat(Math.max(0,24-pl.name.length));await delay(60);
+      commitLine('<span class="'+pl.cls+' t-b">◆ '+esc(pl.name)+' '+bar+'</span> <span class="t-d">'+esc(pl.note)+'</span>');
+      for(var r=0;r<pl.items.length;r++){
+        var it2=pl.items[r],stars=(it2.repo&&STARS[it2.repo])?'  <span class="t-d">★'+STARS[it2.repo]+'</span>':'';await delay(42);
+        commitLine('  <span class="'+pl.cls+' t-b">'+esc(it2.label)+'</span><span class="t-d">'+esc(it2.suffix||'')+'</span>'+stars);
+        commitLine('  <span class="t-d">'+esc(it2.desc)+'</span>');
+      }
+      appendTxt('\n');
     }
-    commitLine('<span class="t-d">'+esc(SEP)+'</span>');appendTxt('\nall → ');commitLine('<a href="https://github.com/mikeparcewski" target="_blank" rel="noopener">github.com/mikeparcewski</a>');appendTxt('\n');await delay(1000);
+    commitLine('<span class="t-d">'+esc(SEP)+'</span>');
+    commitLine('<span class="t-d">two skins · one control plane · one catalog · one record</span>');
+    appendTxt('all → ');commitLine('<a href="https://github.com/mikeparcewski" target="_blank" rel="noopener">github.com/mikeparcewski</a>');appendTxt('\n');await delay(1000);
     await typeCmd('/');showMenu('about');await delay(920);hideMenu();
     await typeCmd('about');await delay(140);commitCmd('about');await delay(160);
     await typeOut('\n'+randFrom(ABT_I)+'\n\n',17);
@@ -73,7 +94,7 @@ function boot(){
     commitLine('<span class="t-c">│</span>  <span class="t-b">mike parcewski</span>  <span class="t-d">principal architect · accenture</span>  <span class="t-c">│</span>');
     commitLine('<span class="t-c">└────────────────────────────────────────────┘</span>');
     appendTxt('\n');await delay(280);
-    var ERAS=[['EARLY YEARS','Commercial internet. Travel tech. Expedia.\nLucky to be in the room when it mattered.'],['SCALE','Financial services. UBS. Singapore Exchange.\nThe tolerance for failure got very small.'],['ARCHITECTURE','Shaping how orgs build, not just what they build.\nWork that survives contact with reality.'],['AI GAP','The gap between demo and production at a global\ninstitution. Org problem. Not a model problem.'],['NOW','Seven packages for the problem that was always there.\nAgents just made it obvious.']];
+    var ERAS=[['EARLY YEARS','Commercial internet. Travel tech. Expedia.\nLucky to be in the room when it mattered.'],['SCALE','Financial services. UBS. Singapore Exchange.\nThe tolerance for failure got very small.'],['ARCHITECTURE','Shaping how orgs build, not just what they build.\nWork that survives contact with reality.'],['AI GAP','The gap between demo and production at a global\ninstitution. Org problem. Not a model problem.'],['NOW','A four-plane platform for the problem that was always\nthere. Agents just made it obvious.']];
     for(var k=0;k<ERAS.length;k++){
       var bar='─'.repeat(Math.max(0,40-ERAS[k][0].length-2));
       commitLine('<span class="t-y t-b">◆ '+esc(ERAS[k][0])+' '+bar+'</span>');

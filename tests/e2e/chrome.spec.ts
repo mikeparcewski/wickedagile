@@ -36,7 +36,7 @@ test.describe('universal chrome', () => {
       .toBe('light');
   });
 
-  test('ecosystem dropdown opens on click and lists the family', async ({ page }) => {
+  test('ecosystem dropdown opens on click and lists the four planes', async ({ page }) => {
     const btn = page.locator('#projectsBtn');
     const menu = page.locator('#projectsMenu');
 
@@ -47,11 +47,25 @@ test.describe('universal chrome', () => {
     await expect(menu).toBeVisible();
     await expect(btn).toHaveAttribute('aria-expanded', 'true');
 
-    // The seven-item family, crew featured on top.
-    await expect(menu.locator('.dropdown-item')).toHaveCount(7);
-    await expect(menu.locator('.dropdown-item--crew')).toContainText('crew');
+    // Four plane groups holding five product rows (interactive + studio under
+    // Experience; crew, garden, estate one each). Retired products are gone.
+    await expect(menu.locator('.dropdown-plane')).toHaveCount(4);
+    await expect(menu.locator('.dropdown-item')).toHaveCount(5);
+    // .dp-head renders text-transform:uppercase, so match case-insensitively.
+    const planeNames = await menu.locator('.dp-head').allInnerTexts();
+    expect(planeNames.join(' ')).toMatch(/experience[\s\S]*control[\s\S]*capability[\s\S]*foundation/i);
+    await expect(menu.locator('a[href="https://wi.wickedagile.com"]')).toBeVisible();
     await expect(menu.locator('a[href="https://wc.wickedagile.com"]')).toBeVisible();
-    await expect(menu.locator('a[href="https://github.com/mikeparcewski/wicked-bus"]')).toBeVisible();
+    await expect(menu.locator('a[href="https://wg.wickedagile.com"]')).toBeVisible();
+    await expect(menu.locator('a[href="https://we.wickedagile.com"]')).toBeVisible();
+    // studio rides Experience as crew's coder skin (repo link into crew).
+    await expect(
+      menu.locator('a[href="https://github.com/mikeparcewski/wicked-crew/tree/main/packages/studio"]'),
+    ).toBeVisible();
+    // Retired/internal packages have no top-level entry.
+    await expect(menu.locator('a[href*="wicked-bus"]')).toHaveCount(0);
+    await expect(menu.locator('a[href*="wicked-brain"]')).toHaveCount(0);
+    await expect(menu.locator('a[href*="wt.wickedagile.com"]')).toHaveCount(0);
 
     // Escape closes it again.
     await page.keyboard.press('Escape');

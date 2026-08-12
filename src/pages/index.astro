@@ -12,6 +12,7 @@ import Hero from '../components/Hero.astro';
 import Articles from '../components/Articles.astro';
 import Shipped from '../components/Shipped.astro';
 import About from '../components/About.astro';
+import Extend from '../components/Extend.astro';
 import Footer from 'wicked-web/components/Footer.astro';
 import { getArticles } from '../lib/articles.mjs';
 
@@ -21,13 +22,17 @@ const articles = await getArticles();
 const articlesJson = JSON.stringify(articles).replace(/</g, '\\u003c');
 ---
 
-<Base description="One architect's body of work — seven local-first, AI-native tools that make your coding agent operable.">
+<Base
+  title="wickedagile — infrastructure for coding agents"
+  description="Give your coding agents the infrastructure they're missing — a system of record, a catalog they act through, a control plane that verifies, two front doors. Local-first, zero-infra."
+>
   <script is:inline set:html={`window.__ARTICLES__=${articlesJson};`}></script>
   <Topbar repo="https://github.com/mikeparcewski" />
   <Hero />
   <Articles articles={articles} />
   <Shipped />
   <About />
+  <Extend />
   <Footer repo="https://github.com/mikeparcewski" />
   <script>
     // Wheel streamliner — agile-specific (its section classes match the

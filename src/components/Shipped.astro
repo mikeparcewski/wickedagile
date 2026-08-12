@@ -1,150 +1,175 @@
 ---
 /**
- * Shipped.astro — "experiments." · the family as a LAYERED PLATFORM STACK.
+ * Shipped.astro — "the platform." · the family as the FOUR-PLANE STACK.
  *
- * NOT a loop. The seven packages are building blocks that COMPOSE UPWARD into a
- * solution: infrastructure at the foundation → tools → learning → the control
- * plane on top, which together make one operable, governed coding agent (the
- * capstone). wicked-interactive is a SURFACE beside the stack — a different
- * collaboration mode (real-time, creative), not a layer in the governed stack.
+ * Two skins, one control plane, one catalog, one record. The planes COMPOSE
+ * UPWARD: foundation (estate, the system of record) → capability (garden, the
+ * catalog) → control (crew, verified work) → the EXPERIENCE capstone: two
+ * front doors (studio, the coder skin inside crew · interactive, the creator
+ * skin) on one project model. The CONTRACT between each pair of planes is
+ * named on the seam (.stack-riser).
  *
- * Left column = the stack (capstone + four layers, foundation at the bottom).
- * Right column = the REUSED preview pane (browser-frame screenshot for the five
- * live sites; a faux code-card for the two no-site libs, brain + bus). Selecting
- * any block drives that pane (showSite / showLib) via data-idx + data-mode +
- * data-preview/data-lib + data-role/data-color — the same contract as before.
+ * Left column = the stack (three plane layers + the experience capstone).
+ * Right column = the REUSED preview pane (browser-frame screenshot for the
+ * four live sites; a faux code-card for studio, which ships inside crew).
+ * Selecting any block drives that pane (showSite / showLib) via data-idx +
+ * data-mode + data-preview/data-lib + data-role/data-color — the same
+ * contract as before.
  *
- * AUTO-PLAY (shipped.js): the stack ASSEMBLES bottom-up — each block lights in
- * data-order (estate→bus→garden→testing→brain→crew), the built layers stay lit
- * (cumulative), then the capstone fires ("solution assembled"), a beat, and it
- * resets and rebuilds. Any click / focus / arrow-key hands control to the
- * visitor (all blocks snap to "built", the picked one active). Parks fully-built
- * under prefers-reduced-motion. Below ~880px it falls back to a stacked,
- * layer-labelled list (.shipped-mobile).
+ * AUTO-PLAY (shipped.js): energy RISES up the spine — foundation → capability
+ * → control — pinging each plane as it passes, then the experience capstone
+ * fires (two skins light up), holds a beat, and the pulse restarts at the
+ * bottom. Any click / focus / arrow-key hands the preview to the visitor.
+ * Parks fully-built under prefers-reduced-motion. Below ~880px it falls back
+ * to a stacked, plane-labelled list (.shipped-mobile).
  *
- * NOTE: wicked-testing sits in the TOOLS layer with wicked-garden — it's a test
- * harness crew uses, not part of the control plane. estate + bus = infra;
- * garden + testing = tools; brain = learning; crew = control plane.
+ * Plane hues mirror wicked-web's tokens (--plane-*): experience amber ·
+ * control violet · capability green · foundation blue. Literals here because
+ * shipped.js pipes data-color into an inline --center-glow.
+ *
+ * Retired/absorbed products get no block: testing dissolved into garden
+ * (the qe fleet) + crew (the gate); brain is retiring into estate; bus/vault/
+ * ledger are internal to the foundation; wicked-core is the engine inside crew.
  */
 
-// ── the SOLUTION capstone (the outcome, not a package — non-selectable) ──────
-const solution = { label: 'an operable coding agent', sub: 'intent in · verified work out' };
-
-// ── the STACK: four layers, TOP → BOTTOM (foundation renders last/lowest). ───
-// Each block keeps its product's data-* preview contract (idx/mode/preview|lib/
-// role/color) unchanged, plus data-order = the bottom-up assemble sequence.
-const layers = [
-  { key: 'control', label: 'Control plane', hue: '#d2a8ff', blocks: [
-    { name: 'wicked-crew', role: 'Drive · gate · audit', order: 5, idx: 4, mode: 'site', preview: '4', color: '#d2a8ff', tint: '#e2c5ff', href: 'https://wc.wickedagile.com' },
-  ]},
-  { key: 'learning', label: 'Learning', hue: '#79c0ff', blocks: [
-    { name: 'wicked-brain', role: 'Domain · decisions', order: 4, idx: 2, mode: 'lib', lib: 'wicked-brain', color: '#79c0ff', tint: '#a5d6ff', href: 'https://github.com/mikeparcewski/wicked-brain' },
-  ]},
-  { key: 'tools', label: 'Tools', hue: '#ffda19', blocks: [
-    { name: 'wicked-garden',  role: 'Steer · rigor',   order: 2, idx: 0, mode: 'site', preview: '1', color: '#ffda19', tint: '#ffe45c', href: 'https://wg.wickedagile.com' },
-    { name: 'wicked-testing', role: 'Test harness',    order: 3, idx: 3, mode: 'site', preview: '3', color: '#56d364', tint: '#7ee787', href: 'https://wt.wickedagile.com' },
-  ]},
-  { key: 'infra', label: 'Infrastructure', hue: '#9aa7b3', blocks: [
-    { name: 'wicked-estate', role: 'Code graph',   order: 0, idx: 1, mode: 'site', preview: '2', color: '#79c0ff', tint: '#a5d6ff', href: 'https://we.wickedagile.com' },
-    { name: 'wicked-bus',    role: 'Event fabric', order: 1, idx: 5, mode: 'lib', lib: 'wicked-bus', color: '#9aa7b3', tint: '#b6c2ce', href: 'https://github.com/mikeparcewski/wicked-bus' },
-  ]},
-];
-
-// wicked-interactive — a SURFACE beside the stack (different collaboration mode).
-const surface = {
-  key: 'wicked-interactive', role: 'Surface', color: '#f0a868',
-  idx: 6, mode: 'site', preview: '0', href: 'https://wi.wickedagile.com',
+// ── the EXPERIENCE capstone: two skins, one project model ────────────────────
+const capstone = {
+  label: 'Experience — two front doors',
+  sub: 'two skins · one project model',
+  hue: '#f0a868',
+  blocks: [
+    { name: 'studio', role: 'coder skin', order: 3, idx: 0, mode: 'lib', lib: 'wicked-studio', color: '#f0a868', tint: '#f6bd8a', href: 'https://github.com/mikeparcewski/wicked-crew/tree/main/packages/studio' },
+    { name: 'wicked-interactive', role: 'creator skin', order: 4, idx: 1, mode: 'site', preview: '0', color: '#f0a868', tint: '#f6bd8a', href: 'https://wi.wickedagile.com' },
+  ],
 };
 
-// ── MOBILE fallback data (article-style): the seven packages, layer-grouped. ──
+// ── the PLANES, TOP → BOTTOM (foundation renders last/lowest). Each block
+// keeps the data-* preview contract (idx/mode/preview|lib/role/color) plus
+// data-order = the bottom-up assemble sequence. `contract` = what crosses the
+// seam ABOVE this plane (rendered as the riser between them).
+const layers = [
+  { key: 'control', label: 'Control', hue: '#d2a8ff',
+    contract: 'submit intent · watch the run · answer gates',
+    blocks: [
+      { name: 'wicked-crew', role: 'Drive · gate · audit', order: 2, idx: 2, mode: 'site', preview: '3', color: '#d2a8ff', tint: '#e2c5ff', href: 'https://wc.wickedagile.com' },
+    ]},
+  { key: 'capability', label: 'Capability', hue: '#56d364',
+    contract: 'invokes skills as governed workers — evaluator ≠ creator',
+    blocks: [
+      { name: 'wicked-garden', role: 'The catalog', order: 1, idx: 3, mode: 'site', preview: '1', color: '#56d364', tint: '#7ee787', href: 'https://wg.wickedagile.com' },
+    ]},
+  { key: 'foundation', label: 'Foundation', hue: '#79c0ff',
+    contract: 'reads & writes the record — never around it',
+    blocks: [
+      { name: 'wicked-estate', role: 'System of record', order: 0, idx: 4, mode: 'site', preview: '2', color: '#79c0ff', tint: '#a5d6ff', href: 'https://we.wickedagile.com' },
+    ]},
+];
+
+// ── MOBILE fallback data (article-style): the planes, top-down. ──────────────
 const packages = [
-  { name: 'wicked-crew', role: 'Control plane', color: '#d2a8ff', lang: 'JS', site: 'wc.wickedagile.com', href: 'https://wc.wickedagile.com', shot: '/screenshots/wicked-crew.png', desc: 'The control room for governed agent delivery — drive, gate, audit; the human stays in command. The harness for your agent harnesses.' },
-  { name: 'wicked-brain', role: 'Learning', color: '#79c0ff', lang: 'JS', href: 'https://github.com/mikeparcewski/wicked-brain', desc: 'The learning layer — captures domain, requirements, decisions and learnings with provenance; search, challenge, correct, trace to source. What learns into estate, distinct from its code graph.' },
-  { name: 'wicked-garden', role: 'Tools', color: '#ffda19', lang: 'JS', site: 'wg.wickedagile.com', href: 'https://wg.wickedagile.com', shot: '/screenshots/wicked-garden.png', desc: "Steering before execution — reads each prompt's work-shape + risk and applies the right rigor, plus the capabilities a planner-executor can't do alone." },
-  { name: 'wicked-testing', role: 'Tools', color: '#56d364', lang: 'JS', site: 'wt.wickedagile.com', href: 'https://wt.wickedagile.com', shot: '/screenshots/wicked-testing.png', desc: 'A test harness crew uses — no agent grades its own homework: an enforced wall between the agent that runs the tests and the one that judges them.' },
-  { name: 'wicked-estate', role: 'Infrastructure', color: '#79c0ff', lang: 'RS', site: 'we.wickedagile.com', href: 'https://we.wickedagile.com', shot: '/screenshots/wicked-estate.png', desc: 'Your live technical environment, queryable — requirements↔implementation, blast-radius, infra + policy relationships, operational history.' },
-  { name: 'wicked-bus', role: 'Infrastructure', color: '#9aa7b3', lang: 'JS', href: 'https://github.com/mikeparcewski/wicked-bus', desc: 'The durable nervous system beneath it all — local-first, at-least-once, replayable. The fabric the whole stack rides on.' },
-  { name: 'wicked-interactive', role: 'Surface', color: '#f0a868', lang: 'JS', site: 'wi.wickedagile.com', href: 'https://wi.wickedagile.com', shot: '/screenshots/wicked-interactive.png', desc: "A surface beside — composes the family's building blocks into HTML/PDF/decks. Describe it, watch it build, point to refine." },
+  { name: 'wicked-crew', role: 'Control', color: '#d2a8ff', lang: 'JS', site: 'wc.wickedagile.com', href: 'https://wc.wickedagile.com', shot: '/screenshots/wicked-crew.png', desc: 'The control plane — intent in, verified work out. Runs your coding agents as governed workers: evaluator ≠ creator, "done" re-derived from evidence, the human in command.' },
+  { name: 'wicked-interactive', role: 'Experience', color: '#f0a868', lang: 'TS', site: 'wi.wickedagile.com', href: 'https://wi.wickedagile.com', shot: '/screenshots/wicked-interactive.png', desc: 'The creator skin — describe it, watch it build in-browser, point at what to change. Ships HTML, PDF, decks, video.' },
+  { name: 'studio', role: 'Experience', color: '#f0a868', lang: 'TS', href: 'https://github.com/mikeparcewski/wicked-crew/tree/main/packages/studio', desc: 'The coder skin — the run board: submit intent, watch phases, answer gates, review evidence. Ships inside wicked-crew.' },
+  { name: 'wicked-garden', role: 'Capability', color: '#56d364', lang: 'JS', site: 'wg.wickedagile.com', href: 'https://wg.wickedagile.com', shot: '/screenshots/wicked-garden.png', desc: 'The catalog your agents act through — multi-model councils, graph-aware refactors, repo playbooks, the QE specialist fleet. Open to your own packs.' },
+  { name: 'wicked-estate', role: 'Foundation', color: '#79c0ff', lang: 'RS', site: 'we.wickedagile.com', href: 'https://we.wickedagile.com', shot: '/screenshots/wicked-estate.png', desc: 'The system of record — a 75-language code graph, memory, and knowledge in one binary (MCP). Zero-infra, local-first; a team profile is coming.' },
 ];
 const crewPkg = packages.find((p) => p.name === 'wicked-crew');
 const restPkgs = packages.filter((p) => p.name !== 'wicked-crew');
 ---
 
 <!-- ════════════════════════════════════════════════════════════════
-     SHIPPED — "experiments." · a LAYERED PLATFORM STACK (not a loop).
-     Building blocks compose UPWARD — infra → tools → learning → control plane
-     → one operable coding agent (the capstone). interactive is a surface beside.
+     SHIPPED — "the platform." · the FOUR-PLANE STACK.
+     Planes compose UPWARD — foundation → capability → control → the experience
+     capstone: two front doors (studio · interactive) on one project model.
      ════════════════════════════════════════════════════════════════ -->
 <section class="zoneB-section snap-section" id="projects">
   <div class="build-shell">
     <!-- compact header -->
     <div class="orbit-head">
-      <span class="zone-kicker">WORKSPACE · 7 PACKAGES · 5 DEPLOYED · ONE STACK</span>
-      <h2 class="zone-title">experiments.</h2>
-      <p class="orbit-caption">Not a loop — <b>building blocks</b>. Local-first pieces that compose upward, infrastructure to control plane, into one operable coding agent.</p>
+      <span class="zone-kicker">ONE PLATFORM · FOUR PLANES · TWO SKINS</span>
+      <h2 class="zone-title">the platform.</h2>
+      <p class="orbit-caption">The infrastructure your coding agents are missing: <b>a record</b> of what's true, <b>a catalog</b> to act through, <b>a control plane</b> that verifies the work, and <b>two front doors</b> on top. Local-first, zero-infra.</p>
     </div>
 
     <div class="build-grid">
-      <!-- ── LEFT: the layered stack ─────────────────────────────────── -->
+      <!-- ── LEFT: the four-plane stack ──────────────────────────────── -->
       <div class="stack-col">
         <div class="stack" id="stackRoot" role="group"
-             aria-label="The wicked platform stack: infrastructure (wicked-estate, wicked-bus) at the foundation, then tools (wicked-garden, wicked-testing), learning (wicked-brain), and the control plane (wicked-crew) on top — composing into one operable coding agent.">
+             aria-label="The wicked platform, four planes: the foundation (wicked-estate, the system of record), the capability catalog (wicked-garden), the control plane (wicked-crew), and the experience plane on top — two skins, studio and wicked-interactive, on one project model.">
 
           <!-- the rising "energy" pulse (travels the spine, driven by shipped.js) -->
           <span class="spine-pulse" id="spinePulse" aria-hidden="true"></span>
 
-          <!-- capstone: the SOLUTION (outcome, not a package) -->
-          <div class="solution-cap" id="solutionCap">
-            <span class="cap-mark" aria-hidden="true">= </span>
-            <span class="cap-text">
-              <span class="cap-label">{solution.label}</span>
-              <span class="cap-sub">{solution.sub}</span>
-            </span>
-          </div>
-          <div class="stack-riser" aria-hidden="true"><span class="riser-arrow">▲</span><span class="riser-word">composes into</span></div>
-
-          <!-- the four layers, top → bottom (foundation lowest) -->
-          {layers.map((layer) => (
-            <div class:list={["layer", `layer--${layer.key}`]} style={`--hue:${layer.hue}`}>
-              <span class="layer-label">{layer.label}</span>
-              <div class="layer-blocks">
-                {layer.blocks.map((b) => (
-                  <a
-                    class="block"
-                    href={b.href}
-                    target={b.mode === 'site' ? '_self' : '_blank'}
-                    rel="noopener"
-                    style={`--role:${b.color};--role-tint:${b.tint}`}
-                    data-idx={b.idx}
-                    data-mode={b.mode}
-                    data-preview={b.preview}
-                    data-lib={b.mode === 'lib' ? b.lib : undefined}
-                    data-role={b.role}
-                    data-color={b.color}
-                    data-order={b.order}
-                    aria-label={`${b.name} — ${b.role}`}
-                  >
-                    <span class="blk-dot" aria-hidden="true"></span>
-                    <span class="blk-name">{b.name}</span>
-                    <span class="blk-role">{b.role}</span>
-                  </a>
-                ))}
-              </div>
+          <!-- capstone: the EXPERIENCE plane — two skins, one project model -->
+          <div class="solution-cap" id="solutionCap" style={`--hue:${capstone.hue}`}>
+            <div class="cap-head">
+              <span class="cap-mark" aria-hidden="true">= </span>
+              <span class="cap-text">
+                <span class="cap-label">{capstone.label}</span>
+                <span class="cap-sub">{capstone.sub}</span>
+              </span>
             </div>
+            <div class="cap-blocks">
+              {capstone.blocks.map((b) => (
+                <a
+                  class="block"
+                  href={b.href}
+                  target={b.mode === 'site' ? '_self' : '_blank'}
+                  rel="noopener"
+                  style={`--role:${b.color};--role-tint:${b.tint}`}
+                  data-idx={b.idx}
+                  data-mode={b.mode}
+                  data-preview={b.preview}
+                  data-lib={b.mode === 'lib' ? b.lib : undefined}
+                  data-role={b.role}
+                  data-color={b.color}
+                  data-order={b.order}
+                  aria-label={`${b.name} — ${b.role}`}
+                >
+                  <span class="blk-dot" aria-hidden="true"></span>
+                  <span class="blk-name">{b.name}</span>
+                  <span class="blk-role">{b.role}</span>
+                </a>
+              ))}
+            </div>
+          </div>
+
+          <!-- the three planes below, top → bottom (foundation lowest); the
+               riser between planes names the CONTRACT that crosses the seam -->
+          {layers.map((layer) => (
+            <>
+              <div class="stack-riser" aria-hidden="true"><span class="riser-arrow">▲</span><span class="riser-word">{layer.contract}</span></div>
+              <div class:list={["layer", `layer--${layer.key}`]} style={`--hue:${layer.hue}`}>
+                <span class="layer-label">{layer.label}</span>
+                <div class="layer-blocks">
+                  {layer.blocks.map((b) => (
+                    <a
+                      class="block"
+                      href={b.href}
+                      target={b.mode === 'site' ? '_self' : '_blank'}
+                      rel="noopener"
+                      style={`--role:${b.color};--role-tint:${b.tint}`}
+                      data-idx={b.idx}
+                      data-mode={b.mode}
+                      data-preview={b.preview}
+                      data-lib={b.mode === 'lib' ? b.lib : undefined}
+                      data-role={b.role}
+                      data-color={b.color}
+                      data-order={b.order}
+                      aria-label={`${b.name} — ${b.role}`}
+                    >
+                      <span class="blk-dot" aria-hidden="true"></span>
+                      <span class="blk-name">{b.name}</span>
+                      <span class="blk-role">{b.role}</span>
+                    </a>
+                  ))}
+                </div>
+              </div>
+            </>
           ))}
         </div>
 
-        <!-- wicked-interactive — a surface BESIDE the stack (creative mode). -->
-        <a class="surface-strip" href={surface.href} target="_self" rel="noopener"
-           data-idx={surface.idx} data-mode={surface.mode} data-preview={surface.preview}
-           data-role={surface.role} data-color={surface.color}
-           aria-label="wicked-interactive — a surface beside the stack: describe it, watch it build, point to refine (click to preview)">
-          <span class="ss-dot" aria-hidden="true"></span>
-          <span class="ss-label"><b>wicked-interactive</b> <span class="ss-sep" aria-hidden="true">·</span> a surface beside — describe it, watch it build, point to refine</span>
-          <span class="ss-tag">try it ↗</span>
-        </a>
-
-        <p class="stack-hint">The spine carries the energy up · click any block to preview it</p>
+        <p class="stack-hint">Energy rises foundation → skins · click a block to preview · arrow keys walk the stack</p>
       </div>
 
       <!-- ── RIGHT: the REUSED preview pane ───────────────────────────── -->
@@ -169,11 +194,12 @@ const restPkgs = packages.filter((p) => p.name !== 'wicked-crew');
               </div>
             </div>
 
-            <!-- MODE (b): LIBRARY — faux code-editor card (hidden at init) -->
+            <!-- MODE (b): LIBRARY — faux code-editor card (hidden at init;
+                 studio, the coder skin, renders here) -->
             <div class="code-card" id="codeCard" aria-hidden="true" hidden>
               <div class="code-card-chrome">
-                <span class="cc-glyph" aria-hidden="true">JS</span>
-                <span class="cc-file" id="codeFile">wicked-bus.js</span>
+                <span class="cc-glyph" aria-hidden="true">TS</span>
+                <span class="cc-file" id="codeFile">wicked-studio.ts</span>
                 <span class="cc-badge">read-only</span>
               </div>
               <div class="code-card-body">
@@ -190,11 +216,11 @@ const restPkgs = packages.filter((p) => p.name !== 'wicked-crew');
       </div>
     </div>{/* .build-grid */}
 
-    <!-- MOBILE (≤880): the flagship, then the rest as a layer-labelled list. -->
-    <div class="shipped-mobile" aria-label="the wicked family — the flagship and the building blocks it composes">
+    <!-- MOBILE (≤880): the control plane, then the rest as a plane-labelled list. -->
+    <div class="shipped-mobile" aria-label="the wicked platform — four planes, plane by plane">
       <a class="expm-feat" href={crewPkg.href} target="_self" rel="noopener" style={`--role:${crewPkg.color}`}>
         <div class="expm-feat-shot" style={crewPkg.shot ? `background-image:url('${crewPkg.shot}')` : ''}>
-          <span class="expm-feat-tag">Control plane · the flagship</span>
+          <span class="expm-feat-tag">Control · the plane that verifies</span>
         </div>
         <div class="expm-feat-body">
           <h3 class="expm-feat-name">wicked-crew</h3>
@@ -271,10 +297,10 @@ const restPkgs = packages.filter((p) => p.name !== 'wicked-crew');
   position:relative;display:flex;flex-direction:column;gap:clamp(5px,.8vh,9px);
   padding-left:26px /* rail gutter: energy rises up the spine into the capstone */
 }
-/* the spine rail (energy travels UP it, foundation → capstone) */
+/* the spine rail (energy travels UP it, foundation blue → experience amber) */
 .stack::before{
   content:'';position:absolute;left:11px;top:10px;bottom:10px;width:2px;z-index:0;
-  background:linear-gradient(to top,color-mix(in oklab,#9aa7b3 42%,transparent),color-mix(in oklab,var(--accent) 60%,transparent));
+  background:linear-gradient(to top,color-mix(in oklab,#79c0ff 45%,transparent),color-mix(in oklab,#f0a868 62%,transparent));
   opacity:.32;border-radius:2px
 }
 /* the travelling energy pulse — JS animates its `top`; hidden at rest */
@@ -285,33 +311,37 @@ const restPkgs = packages.filter((p) => p.name !== 'wicked-crew');
   box-shadow:0 0 16px 4px color-mix(in oklab,var(--accent) 55%,transparent),0 0 34px 8px color-mix(in oklab,var(--accent) 22%,transparent)
 }
 
-/* capstone — the solution (filled accent; the culmination, not a package) */
+/* capstone — the EXPERIENCE plane (tinted in its plane hue via --hue): the two
+   skins live INSIDE it, selectable like any other block */
 .solution-cap{
-  position:relative;z-index:1;display:flex;align-items:center;gap:10px;
-  padding:11px 16px;border-radius:12px;
-  border:1px solid color-mix(in oklab,var(--accent) 55%,var(--hairline));
-  background:linear-gradient(color-mix(in oklab,var(--accent) 16%,transparent),color-mix(in oklab,var(--accent) 5%,transparent));
-  box-shadow:0 0 0 1px color-mix(in oklab,var(--accent) 14%,transparent),0 14px 40px -22px rgba(0,0,0,.7);
+  position:relative;z-index:1;display:flex;flex-direction:column;gap:9px;
+  padding:11px 16px 12px;border-radius:12px;
+  border:1px solid color-mix(in oklab,var(--hue,var(--accent)) 55%,var(--hairline));
+  background:linear-gradient(color-mix(in oklab,var(--hue,var(--accent)) 14%,transparent),color-mix(in oklab,var(--hue,var(--accent)) 4%,transparent));
+  box-shadow:0 0 0 1px color-mix(in oklab,var(--hue,var(--accent)) 12%,transparent),0 14px 40px -22px rgba(0,0,0,.7);
   transition:box-shadow .4s var(--ease),border-color .4s var(--ease),background .4s var(--ease)
 }
-.solution-cap .cap-mark{font-family:var(--font-mono);font-weight:900;font-size:1.05rem;color:var(--accent);flex-shrink:0;line-height:1}
+.solution-cap .cap-head{display:flex;align-items:center;gap:10px}
+.solution-cap .cap-mark{font-family:var(--font-mono);font-weight:900;font-size:1.05rem;color:var(--hue,var(--accent));flex-shrink:0;line-height:1}
 .solution-cap .cap-text{display:flex;flex-direction:column;gap:1px;min-width:0}
 .solution-cap .cap-label{font-family:var(--font-mono);font-size:.9rem;font-weight:700;color:var(--ink);letter-spacing:.01em}
 .solution-cap .cap-sub{font-family:var(--font-mono);font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
-/* fires when the stack finishes assembling (auto-play) or on any interaction */
+.solution-cap .cap-blocks{display:flex;flex-wrap:wrap;gap:8px}
+/* fires when the pulse reaches the top (auto-play) or on any interaction */
 .solution-cap.is-built{
-  border-color:var(--accent);
-  background:linear-gradient(color-mix(in oklab,var(--accent) 26%,transparent),color-mix(in oklab,var(--accent) 9%,transparent));
-  box-shadow:0 0 0 1px color-mix(in oklab,var(--accent) 42%,transparent),0 0 46px -10px var(--accent),0 14px 40px -22px rgba(0,0,0,.7)
+  border-color:var(--hue,var(--accent));
+  background:linear-gradient(color-mix(in oklab,var(--hue,var(--accent)) 24%,transparent),color-mix(in oklab,var(--hue,var(--accent)) 8%,transparent));
+  box-shadow:0 0 0 1px color-mix(in oklab,var(--hue,var(--accent)) 40%,transparent),0 0 46px -10px var(--hue,var(--accent)),0 14px 40px -22px rgba(0,0,0,.7)
 }
 
-/* the upward-composition connector under the capstone */
+/* the CONTRACT seam between two planes — what crosses it, named */
 .stack-riser{
   position:relative;z-index:1;display:flex;align-items:center;gap:8px;
   padding-left:6px;margin:-1px 0 1px;
-  font-family:var(--font-mono);font-size:.52rem;letter-spacing:.16em;text-transform:uppercase;color:var(--faint)
+  font-family:var(--font-mono);font-size:.55rem;letter-spacing:.07em;text-transform:uppercase;color:var(--faint);line-height:1.35
 }
-.stack-riser .riser-arrow{color:color-mix(in oklab,var(--accent) 70%,var(--faint));font-size:.7rem;line-height:1}
+.stack-riser .riser-arrow{color:color-mix(in oklab,var(--accent) 70%,var(--faint));font-size:.7rem;line-height:1;flex-shrink:0}
+.stack-riser .riser-word{min-width:0}
 
 /* ── LAYERS ────────────────────────────────────────────────────── */
 .layer{
@@ -365,26 +395,6 @@ const restPkgs = packages.filter((p) => p.name !== 'wicked-crew');
 }
 .block[aria-current="true"] .blk-dot{box-shadow:0 0 14px 0 var(--role)}
 .block[aria-current="true"] .blk-role{color:var(--role-tint)}
-
-/* ── wicked-interactive — a surface BESIDE the stack ───────────────── */
-.surface-strip{
-  display:flex;align-items:center;gap:10px;width:100%;
-  font-family:var(--font-mono);font-size:.62rem;text-decoration:none;color:var(--muted);
-  border:1px dashed color-mix(in oklab,#f0a868 45%,var(--hairline));border-radius:9px;
-  padding:8px 15px;background:linear-gradient(color-mix(in oklab,#f0a868 7%,transparent),transparent);
-  transition:border-color .18s var(--ease),box-shadow .22s var(--ease),background .18s
-}
-.surface-strip .ss-dot{width:8px;height:8px;border-radius:50%;background:#f0a868;box-shadow:0 0 8px -1px #f0a868;flex-shrink:0}
-.surface-strip .ss-label{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.surface-strip .ss-label b{color:#f6bd8a;font-weight:700}
-.surface-strip .ss-sep{opacity:.5;margin:0 2px}
-.surface-strip .ss-tag{font-size:.55rem;letter-spacing:.06em;text-transform:uppercase;font-weight:700;color:#f0a868;flex-shrink:0}
-.surface-strip:hover{border-color:#f0a868;background:linear-gradient(color-mix(in oklab,#f0a868 12%,transparent),transparent)}
-.surface-strip:focus-visible{outline:none;border-color:#f0a868;box-shadow:0 0 0 2px color-mix(in oklab,#f0a868 55%,transparent)}
-.surface-strip[aria-current="true"]{
-  border-style:solid;border-color:#f0a868;
-  box-shadow:0 0 0 1px color-mix(in oklab,#f0a868 40%,transparent),0 0 28px -8px #f0a868
-}
 
 /* ── RIGHT: the reused preview pane ───────────────────────────────── */
 .preview-col{min-width:0;display:flex;height:min(58vh,342px)}

@@ -59,19 +59,22 @@ Every section is implemented and content-complete:
   `/projects`, `/about`; disabled on mobile).
 - `src/components/Articles.astro` — the "yes, and…" dispatch feed, baked from
   the Medium RSS at build time (`src/lib/articles.mjs`).
-- `src/components/Shipped.astro` — the "shipped." split-editor IDE, reframed
-  around the **canonical wicked loop**. The thesis leads ("you cannot stabilize
-  the harness") over a compact loop-rail (intent → Steer → Equip → (harness) →
-  Verify·Govern → record, under human authority, on the wicked-bus fabric, with
-  wicked-interactive a surface beside it), and a file-tree of the **seven
-  packages grouped by their loop role** (steer / equip / verify / govern /
-  fabric / surface) drives a dual-mode preview: browser-frame screenshots for the
-  3 deployed sites, faux code-editor cards for the four libraries. Consolidated
-  packages (studio → wicked-crew, vault → wicked-testing, signals archived, loom
-  → wicked-garden) are not shown as standalone products.
+- `src/components/Shipped.astro` — "the platform.": the **four-plane stack**
+  (two skins, one control plane, one catalog, one record). Foundation
+  (wicked-estate) → Capability (wicked-garden) → Control (wicked-crew) → the
+  Experience capstone holding both skins (studio · wicked-interactive), with
+  the contract named on every seam. A spine pulse rises foundation → skins;
+  every block drives a dual-mode preview (browser-frame screenshots for the 4
+  live sites, a faux code-editor card for studio, which ships inside crew).
+  Retired/absorbed packages (testing → garden + crew, brain → estate,
+  bus/vault/ledger internal, core inside crew) are not shown as standalone
+  products.
 - `src/components/About.astro` — the multi-chapter career rail (~30 years, five
   chapters).
+- `src/components/Extend.astro` — the "build on it." coda: the extension pitch
+  (plugin packaging, runtime discovery, the `{vendor}-{domain}-{role}` naming
+  contract, vault-written evidence).
 
 The shared chrome — tokens, fonts, theme system, topbar/nav, footer, and the
-`SameGarden` cross-promo grid — comes from the `wicked-web` package, and this
+`SameGarden` four-plane map — comes from the `wicked-web` package, and this
 site is the canonical source those tokens are defined against.
