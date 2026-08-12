@@ -31,7 +31,8 @@ test.describe('editorial identity', () => {
   });
 
   test('sections run hero → stack → articles → about', async ({ page }) => {
-    // DOM order is the scroll order (every section is a <body> child).
+    // DOM order is the scroll order — rank each section by position among
+    // all <section> elements in the page (querySelectorAll, not direct children).
     const order = await page.evaluate(() =>
       ['#terminal-section', '#projects', '#content', '#about'].map((sel) => {
         const el = document.querySelector(sel);
