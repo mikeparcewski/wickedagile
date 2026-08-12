@@ -58,10 +58,8 @@ test.describe('universal chrome', () => {
     await expect(menu.locator('a[href="https://wc.wickedagile.com"]')).toBeVisible();
     await expect(menu.locator('a[href="https://wg.wickedagile.com"]')).toBeVisible();
     await expect(menu.locator('a[href="https://we.wickedagile.com"]')).toBeVisible();
-    // studio rides Experience as crew's coder skin (repo link into crew).
-    await expect(
-      menu.locator('a[href="https://github.com/mikeparcewski/wicked-crew/tree/main/packages/studio"]'),
-    ).toBeVisible();
+    // studio rides Experience as a first-class product with its own site.
+    await expect(menu.locator('a[href="https://ws.wickedagile.com"]')).toBeVisible();
     // Retired/internal packages have no top-level entry.
     await expect(menu.locator('a[href*="wicked-bus"]')).toHaveCount(0);
     await expect(menu.locator('a[href*="wicked-brain"]')).toHaveCount(0);

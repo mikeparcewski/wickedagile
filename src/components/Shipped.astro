@@ -5,13 +5,14 @@
  * Two skins, one control plane, one catalog, one record. The planes COMPOSE
  * UPWARD: foundation (estate, the system of record) → capability (garden, the
  * catalog) → control (crew, verified work) → the EXPERIENCE capstone: two
- * front doors (studio, the coder skin inside crew · interactive, the creator
+ * front doors (studio, the coder skin · interactive, the creator
  * skin) on one project model. The CONTRACT between each pair of planes is
  * named on the seam (.stack-riser).
  *
  * Left column = the stack (three plane layers + the experience capstone).
  * Right column = the REUSED preview pane (browser-frame screenshot for the
- * four live sites; a faux code-card for studio, which ships inside crew).
+ * four live sites; a faux code-card for studio — now its own product with a
+ * site at ws.wickedagile.com, kept as the code card here until its DNS lands).
  * Selecting any block drives that pane (showSite / showLib) via data-idx +
  * data-mode + data-preview/data-lib + data-role/data-color — the same
  * contract as before.
@@ -38,7 +39,7 @@ const capstone = {
   sub: 'two skins · one project model',
   hue: '#f0a868',
   blocks: [
-    { name: 'studio', role: 'coder skin', order: 3, idx: 0, mode: 'lib', lib: 'wicked-studio', color: '#f0a868', tint: '#f6bd8a', href: 'https://github.com/mikeparcewski/wicked-crew/tree/main/packages/studio' },
+    { name: 'studio', role: 'coder skin', order: 3, idx: 0, mode: 'lib', lib: 'wicked-studio', color: '#f0a868', tint: '#f6bd8a', href: 'https://github.com/mikeparcewski/wicked-studio' },
     { name: 'wicked-interactive', role: 'creator skin', order: 4, idx: 1, mode: 'site', preview: '0', color: '#f0a868', tint: '#f6bd8a', href: 'https://wi.wickedagile.com' },
   ],
 };
@@ -69,7 +70,7 @@ const layers = [
 const packages = [
   { name: 'wicked-crew', role: 'Control', color: '#d2a8ff', lang: 'JS', site: 'wc.wickedagile.com', href: 'https://wc.wickedagile.com', shot: '/screenshots/wicked-crew.png', desc: 'The control plane — intent in, verified work out. Runs your coding agents as governed workers: evaluator ≠ creator, "done" re-derived from evidence, the human in command.' },
   { name: 'wicked-interactive', role: 'Experience', color: '#f0a868', lang: 'TS', site: 'wi.wickedagile.com', href: 'https://wi.wickedagile.com', shot: '/screenshots/wicked-interactive.png', desc: 'The creator skin — describe it, watch it build in-browser, point at what to change. Ships HTML, PDF, decks, video.' },
-  { name: 'studio', role: 'Experience', color: '#f0a868', lang: 'TS', href: 'https://github.com/mikeparcewski/wicked-crew/tree/main/packages/studio', desc: 'The coder skin — the run board: submit intent, watch phases, answer gates, review evidence. Ships inside wicked-crew.' },
+  { name: 'studio', role: 'Experience', color: '#f0a868', lang: 'TS', href: 'https://github.com/mikeparcewski/wicked-studio', desc: 'The coder skin — the run board: submit intent, watch phases, answer gates, review evidence. Its own product; crew still bundles it.' },
   { name: 'wicked-garden', role: 'Capability', color: '#56d364', lang: 'JS', site: 'wg.wickedagile.com', href: 'https://wg.wickedagile.com', shot: '/screenshots/wicked-garden.png', desc: 'The catalog your agents act through — multi-model councils, graph-aware refactors, repo playbooks, the QE specialist fleet. Open to your own packs.' },
   { name: 'wicked-estate', role: 'Foundation', color: '#79c0ff', lang: 'RS', site: 'we.wickedagile.com', href: 'https://we.wickedagile.com', shot: '/screenshots/wicked-estate.png', desc: 'The system of record — a 75-language code graph, memory, and knowledge in one binary (MCP). Zero-infra, local-first; a team profile is coming.' },
 ];
