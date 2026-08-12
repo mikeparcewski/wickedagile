@@ -17,14 +17,13 @@ test.describe('reduced motion', () => {
 
     await page.goto('/', { waitUntil: 'domcontentloaded' });
 
-    // Key sections all render.
+    // Key sections all render (page order: hero → stack → articles → about).
     await expect(page.locator('.topbar')).toBeVisible();
     await expect(page.locator('#terminal-section')).toBeVisible();
-    await expect(page.locator('#content')).toBeVisible();
     await expect(page.locator('#projects')).toBeVisible();
+    await expect(page.locator('#content')).toBeVisible();
     await expect(page.locator('#about')).toBeVisible();
     await expect(page.locator('#chapter-0')).toBeVisible();
-    await expect(page.locator('#extend')).toBeVisible();
     await expect(page.locator('footer.footer')).toBeVisible();
 
     // Shipped parks fully assembled under reduced motion — no pulse cascade.

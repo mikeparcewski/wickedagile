@@ -1,13 +1,18 @@
 ---
 /**
- * Shipped.astro — "the platform." · the family as the FOUR-PLANE STACK.
+ * Shipped.astro — "the platform." · the things I build, as the FOUR-PLANE STACK.
  *
- * Two skins, one control plane, one catalog, one record. The planes COMPOSE
- * UPWARD: foundation (estate, the system of record) → capability (garden, the
- * catalog) → control (crew, verified work) → the EXPERIENCE capstone: two
- * front doors (studio, the coder skin · interactive, the creator
- * skin) on one project model. The CONTRACT between each pair of planes is
- * named on the seam (.stack-riser).
+ * VOICE: builder's showcase, not vendor pitch — this is the "what I've been
+ * building" chapter of a personal apex site. The storyboard is truthful
+ * architecture: two skins, one control plane, one catalog, one record. The
+ * planes COMPOSE UPWARD: foundation (estate, the system of record) →
+ * capability (garden, the catalog) → control (crew, verified work) → the
+ * EXPERIENCE capstone: two front doors (studio, the coder skin · interactive,
+ * the creator skin) on one project model. The CONTRACT between each pair of
+ * planes is named on the seam (.stack-riser). The full product stories live
+ * on the per-plane deep-dive sites each block links to. The old "build on it."
+ * extension coda is folded into ONE outro line (.stack-outro) pointing at
+ * garden's #extend.
  *
  * Left column = the stack (three plane layers + the experience capstone).
  * Right column = the REUSED preview pane (browser-frame screenshot for the
@@ -87,9 +92,9 @@ const restPkgs = packages.filter((p) => p.name !== 'wicked-crew');
   <div class="build-shell">
     <!-- compact header -->
     <div class="orbit-head">
-      <span class="zone-kicker">ONE PLATFORM · FOUR PLANES · TWO SKINS</span>
+      <span class="zone-kicker">WHAT I'VE BEEN BUILDING · FOUR PLANES · TWO SKINS</span>
       <h2 class="zone-title">the platform.</h2>
-      <p class="orbit-caption">The infrastructure your coding agents are missing: <b>a record</b> of what's true, <b>a catalog</b> to act through, <b>a control plane</b> that verifies the work, and <b>two front doors</b> on top. Local-first, zero-infra.</p>
+      <p class="orbit-caption">What I've been building: the wicked platform — <b>a record</b> of what's true, <b>a catalog</b> agents act through, <b>a control plane</b> that verifies the work, and <b>two front doors</b> on top. Local-first, zero-infra; every block links out to its own site for the full story.</p>
     </div>
 
     <div class="build-grid">
@@ -243,6 +248,10 @@ const restPkgs = packages.filter((p) => p.name !== 'wicked-crew');
         </a>
       ))}
     </div>
+
+    <!-- OUTRO — the folded-in extension coda (one line, links to garden's
+         extend story). Replaces the retired full-band Extend section. -->
+    <p class="stack-outro">Built to be built on — the catalog is open to your own packs. <a href="https://wg.wickedagile.com/#extend">extend it in the garden →</a></p>
   </div>
 </section>
 
@@ -513,6 +522,19 @@ const restPkgs = packages.filter((p) => p.name !== 'wicked-crew');
   margin:4px 0 0;font-family:var(--font-mono);font-size:.55rem;letter-spacing:.09em;
   text-transform:uppercase;color:var(--faint);text-align:left
 }
+
+/* ── STACK OUTRO (the one-line extension coda under the grid) ─────── */
+.stack-outro{
+  margin:0;font-family:var(--font-mono);font-size:.66rem;letter-spacing:.03em;
+  color:var(--muted);text-align:center;line-height:1.5
+}
+.stack-outro a{
+  color:var(--accent);text-decoration:none;font-weight:700;white-space:nowrap;
+  border-bottom:1px solid color-mix(in oklab,var(--accent) 40%,transparent);
+  padding-bottom:1px;transition:opacity .15s
+}
+.stack-outro a:hover{opacity:.78}
+.stack-outro a:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:2px}
 
 /* ── REDUCED MOTION — no rising pulse; the stack sits assembled ──────── */
 @media(prefers-reduced-motion:reduce){

@@ -9,11 +9,14 @@ __      _(_) ___| | _____  __| | __ _  __ _(_) | ___
 
 # wickedagile.com
 
-The umbrella landing page for the **wicked-\*** family of local-first, AI-native
-developer tools — and the **canonical style source** for the family. The design
-tokens, fonts, theme system, topbar, footer, and hero terminal defined here are
-the reference the sibling sites (wicked-garden, wicked-interactive, wicked-estate, …)
-are meant to match.
+The owner's **personal apex** — one architect's body of work: the things he
+builds (the **wicked-\*** platform, four planes) and the things he publishes
+(the dispatch feed), finishing with a little about him. The product *selling*
+lives on the per-product deep-dive sites (wc/we/wg/wi/ws); this page shows the
+work and links out. It is also the **canonical style source** for the family:
+the design tokens, fonts, theme system, topbar, footer, and hero terminal
+defined here are the reference the sibling sites (wicked-garden,
+wicked-interactive, wicked-estate, …) are meant to match.
 
 ## Tech
 
@@ -53,27 +56,27 @@ is set via `public/CNAME` (`wickedagile.com`), so the Astro `site` is
 
 ## Sections
 
-Every section is implemented and content-complete:
+Every section is implemented and content-complete, in page order:
 
-- `src/components/Hero.astro` — the live auto-typing terminal (`/articles`,
-  `/projects`, `/about`; disabled on mobile).
+- `src/components/Hero.astro` — the builder/writer hero ("The best code tells
+  a story. The best stories have architecture.") with the live auto-typing
+  terminal (`/articles`, `/projects`, `/about`; disabled on mobile).
+- `src/components/Shipped.astro` — "the platform.": what I've been building,
+  as the **four-plane stack** (two skins, one control plane, one catalog, one
+  record). Foundation (wicked-estate) → Capability (wicked-garden) → Control
+  (wicked-crew) → the Experience capstone holding both skins (studio ·
+  wicked-interactive), with the contract named on every seam. A spine pulse
+  rises foundation → skins; every block drives a dual-mode preview
+  (browser-frame screenshots for the 4 live sites, a faux code-editor card for
+  studio, which ships inside crew) and links out to the plane's own deep-dive
+  site. The retired "build on it." Extend band survives as one outro line
+  linking to garden's `#extend`. Retired/absorbed packages (testing → garden +
+  crew, brain → estate, bus/vault/ledger internal, core inside crew) are not
+  shown as standalone products.
 - `src/components/Articles.astro` — the "yes, and…" dispatch feed, baked from
   the Medium RSS at build time (`src/lib/articles.mjs`).
-- `src/components/Shipped.astro` — "the platform.": the **four-plane stack**
-  (two skins, one control plane, one catalog, one record). Foundation
-  (wicked-estate) → Capability (wicked-garden) → Control (wicked-crew) → the
-  Experience capstone holding both skins (studio · wicked-interactive), with
-  the contract named on every seam. A spine pulse rises foundation → skins;
-  every block drives a dual-mode preview (browser-frame screenshots for the 4
-  live sites, a faux code-editor card for studio, which ships inside crew).
-  Retired/absorbed packages (testing → garden + crew, brain → estate,
-  bus/vault/ledger internal, core inside crew) are not shown as standalone
-  products.
-- `src/components/About.astro` — the multi-chapter career rail (~30 years, five
-  chapters).
-- `src/components/Extend.astro` — the "build on it." coda: the extension pitch
-  (plugin packaging, runtime discovery, the `{vendor}-{domain}-{role}` naming
-  contract, vault-written evidence).
+- `src/components/About.astro` — the closer: the multi-chapter career rail
+  (~30 years, five chapters).
 
 The shared chrome — tokens, fonts, theme system, topbar/nav, footer, and the
 `SameGarden` four-plane map — comes from the `wicked-web` package, and this

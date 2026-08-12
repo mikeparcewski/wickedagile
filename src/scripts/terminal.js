@@ -19,7 +19,7 @@ function boot(){
 
   /* TERMINAL COPY BANKS */
   var ART_I=['surfacing the latest thinking from the field...','here\'s what\'s been keeping me up at night...','recent dispatches from production.','field notes. unfiltered.','the good stuff. no padding.','things that needed to be written down.','dispatches from the build.','pulled from Medium. the real stuff.'];
-  var PRJ_I=['four planes. one platform.','the infrastructure your coding agents are missing.','two skins, one control plane, one catalog, one record.','local-first. agent-native. shipped.','the platform, exposed.','not seven scattered tools — four planes.','intent in. verified work out.','the wicked platform. current.'];
+  var PRJ_I=['four planes. one platform.','what i\'ve been building.','two skins, one control plane, one catalog, one record.','local-first. agent-native. shipped.','the workshop, exposed.','not seven scattered tools — four planes.','intent in. verified work out.','the wicked platform. current.'];
   var ABT_I=['the human in the loop.','brief history. no padding.','the career, summarized.','who wrote the tools.','the arc.','this is mike.','thirty years, five chapters.','the backstory.'];
 
   /* TERMINAL */
