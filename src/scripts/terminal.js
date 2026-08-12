@@ -57,8 +57,9 @@ function boot(){
     await typeCmd('projects');await delay(140);commitCmd('projects');await delay(160);
     await typeOut('\n'+randFrom(PRJ_I)+'\n\n',17);
     /* the FOUR PLANES — curated (the story is the architecture, not the repo
-       list); live star counts from the GitHub fetch are merged in when they
-       arrive so the readout still breathes with real data. */
+       list); live star counts are merged in only if the GitHub fetch wins the
+       3.5s race below — on a slow fetch the readout simply renders without
+       counts (no late merge; the typing rhythm never waits on the network). */
     var repos=await Promise.race([reposPromise,delay(3500).then(function(){return null})]);
     var STARS={};(repos||[]).forEach(function(r){STARS[r.name]=r.stargazers_count||0});
     var PLANES=[
