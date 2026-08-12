@@ -30,10 +30,11 @@ test.describe('mobile fallbacks', () => {
     await mobile.scrollIntoViewIfNeeded();
     await expect(mobile).toBeVisible();
 
-    // Flagship card + the six remaining packages as rows.
+    // Control-plane card + the four remaining plane products as rows
+    // (interactive + studio under Experience, garden, estate).
     await expect(mobile.locator('.expm-feat')).toBeVisible();
     await expect(mobile.locator('.expm-feat-name')).toHaveText('wicked-crew');
-    await expect(mobile.locator('.expm-row')).toHaveCount(6);
+    await expect(mobile.locator('.expm-row')).toHaveCount(4);
     await expect(mobile.locator('.expm-row').first()).toBeVisible();
 
     // Hero: phones kill the auto-typing terminal entirely (≤600px).

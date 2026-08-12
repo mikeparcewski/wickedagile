@@ -29,20 +29,21 @@ export var reposPromise=fetch('https://api.github.com/users/mikeparcewski/repos?
   .catch(function(){return null});
 
 /* ── FEATURED ─────────────────────────────────────────────────── */
-/* The DEPLOYED sites shown in the loop's center preview (browser-frame mode).
-   Screenshots resolve from the public/ root → '/screenshots/<name>.png'.
-   Consumed by shipped.js via each station's data-preview index. Five live
-   sites now: interactive · garden · estate · testing · crew. Each carries its
-   OWN real screenshot + a specific tagline so no preview reads as a template. */
+/* The DEPLOYED sites shown in the platform's center preview (browser-frame
+   mode). Screenshots resolve from the public/ root → '/screenshots/<name>.png'.
+   Consumed by shipped.js via each station's data-preview index. Four live
+   sites — one per plane product: interactive (experience) · garden
+   (capability) · estate (foundation) · crew (control). Each carries its OWN
+   real screenshot + a plane-specific tagline so no preview reads as a
+   template. (studio, the coder skin, ships inside crew — it previews as a
+   code card, not a site.) */
 export var FEATURED=[
   {name:'wicked-interactive',url:'https://wi.wickedagile.com',screenshot:'/screenshots/wicked-interactive.png',
-   desc:'A different way to work with agents — real-time, human-in-the-creative-loop: describe it, watch it build, point to refine. A foil to the governed loop.'},
+   desc:'The creator skin — describe it, watch it build in-browser, point at what to change. Ships HTML, PDF, decks, video. No code, no design tickets.'},
   {name:'wicked-garden',url:'https://wg.wickedagile.com',screenshot:'/screenshots/wicked-garden.png',
-   desc:'Steering before execution — reads each prompt\'s work-shape + risk and applies the right rigor, plus the capabilities a planner-executor can\'t do alone.'},
+   desc:'The catalog your agents act through — multi-model councils, graph-aware refactors, repo playbooks, the QE specialist fleet. Open to your own packs.'},
   {name:'wicked-estate',url:'https://we.wickedagile.com',screenshot:'/screenshots/wicked-estate.png',
-   desc:'Your live technical environment, queryable — requirements↔implementation, blast-radius, infra + policy relationships, operational history.'},
-  {name:'wicked-testing',url:'https://wt.wickedagile.com',screenshot:'/screenshots/wicked-testing.png',
-   desc:'No agent grades its own homework — an enforced wall between the agent that runs the tests and the one that judges them.'},
+   desc:'The system of record — a 75-language code graph, memory, and knowledge in one binary (MCP), including the injected edges grep never sees.'},
   {name:'wicked-crew',url:'https://wc.wickedagile.com',screenshot:'/screenshots/wicked-crew.png',
-   desc:'The control room for governed agent delivery — drive, gate, and audit; the human stays in command. The harness for your agent harnesses.'},
+   desc:'The control plane — intent in, verified work out. Evaluator ≠ creator, deny dominates, "done" re-derived from evidence. The human stays in command.'},
 ];

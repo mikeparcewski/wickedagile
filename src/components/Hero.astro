@@ -12,13 +12,13 @@
 <section class="snap-section" id="terminal-section">
   <div class="terminal-section">
     <!-- Row 1: full-width title -->
-    <h1 class="hero-title">The best code tells a story. The best stories have <span>architecture.</span></h1>
+    <h1 class="hero-title">Give your coding agents the infrastructure they're <span>missing.</span></h1>
     <!-- Row 2: 50/50 text + terminal -->
     <div class="hero-row">
       <div class="hero-text-side">
-        <p class="hero-text">Most people don't build both.<br>Nobody told them they could.</p>
+        <p class="hero-text">A record of what's true. A catalog to act through. A control plane that verifies. Two front doors.</p>
         <div class="hero-ctas">
-          <a class="btn-primary" href="#projects">the work →</a>
+          <a class="btn-primary" href="#projects">the platform →</a>
           <a class="btn-ghost" href="#content">the writing →</a>
         </div>
       </div>
@@ -67,8 +67,10 @@
 .hero-row{display:grid;grid-template-columns:1fr 2fr;gap:44px;align-items:center}
 .hero-text-side{display:flex;flex-direction:column;gap:22px}
 .hero-text{
-  font-size:clamp(1.35rem,5.2vw,2.5rem);color:var(--muted);
-  line-height:1.24;font-weight:400;letter-spacing:-.02em
+  /* four short declarative sentences — sized down from the old two-liner so
+     the sub reads as a stanza beside the terminal, not a second headline */
+  font-size:clamp(1.2rem,3.4vw,1.8rem);color:var(--muted);
+  line-height:1.32;font-weight:400;letter-spacing:-.02em;max-width:24ch
 }
 .hero-kicker{
   font-family:var(--font-mono);font-size:.62rem;letter-spacing:.28em;
@@ -103,7 +105,7 @@
 .term-body::-webkit-scrollbar-thumb{background:rgba(255,255,255,.08);border-radius:2px}
 .term-output{white-space:pre-wrap;word-break:break-word;flex:1}
 .term-output a{color:#79c0ff;text-decoration:underline}
-.t-y{color:#ffda19}.t-g{color:#56d364}.t-c{color:#79c0ff}.t-b{font-weight:700}.t-d{opacity:.38}
+.t-y{color:#ffda19}.t-g{color:#56d364}.t-c{color:#79c0ff}.t-o{color:#f0a868}.t-v{color:#d2a8ff}.t-b{font-weight:700}.t-d{opacity:.38}
 .term-prompt-line{display:flex;align-items:center;padding-top:2px;flex-shrink:0}
 .term-prompt-char{color:#56d364;margin-right:6px;user-select:none;flex-shrink:0}
 .term-cursor-text{color:#c9d1d9}

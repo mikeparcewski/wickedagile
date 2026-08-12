@@ -24,6 +24,7 @@ test.describe('reduced motion', () => {
     await expect(page.locator('#projects')).toBeVisible();
     await expect(page.locator('#about')).toBeVisible();
     await expect(page.locator('#chapter-0')).toBeVisible();
+    await expect(page.locator('#extend')).toBeVisible();
     await expect(page.locator('footer.footer')).toBeVisible();
 
     // Shipped parks fully assembled under reduced motion — no pulse cascade.
