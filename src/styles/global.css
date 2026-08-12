@@ -10,7 +10,7 @@
    ────────────────────────────────────────────────────────────────────────── */
 /* ── FAMILY SCROLL-LOCK ───────────────────────────────────────────────────
    Hard, one-section-per-notch snap between the full-screen chapters (hero,
-   articles, shipped IDE, about, footer). The scroll CONTAINER is <html> (the
+   shipped stack, articles, about, footer). The scroll CONTAINER is <html> (the
    document scrolls); every top-level section is a <body> child and owns its
    own snap point. Unlayered so it beats the shared tokens.css @layer base
    default (scroll-snap-type:y proximity). Mobile fallback = none: mandatory

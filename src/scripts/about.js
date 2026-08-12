@@ -108,9 +108,8 @@ function buildAbout(){
      before the first chapter arrives. Geometric check on scroll is reliable
      where "any chapter intersecting" is not (a tall last chapter lingers). */
   var firstChapter = chapters[0];
-  /* what follows the chapters on this page — the extend band when present
-     (querySelector returns the first match in DOM order), else the footer */
-  var afterAbout = document.querySelector('.extend-band, .footer');
+  /* what follows the chapters on this page — about is the closer, footer is next */
+  var afterAbout = document.querySelector('.footer');
   function syncMastVisibility(){
     if(!masthead || !firstChapter) return;
     var vh = window.innerHeight;
