@@ -31,6 +31,9 @@ test.describe('about progress rail', () => {
   });
 
   test('rail state tracks scroll position through the chapters', async ({ page }) => {
+    // Three scrollToChapter calls may each retry for up to 20s on a slow
+    // runner — give the test headroom beyond the 30s global default.
+    test.setTimeout(90_000);
     const fill = page.locator('#railFill');
     const fillHeight = () => fill.evaluate((el) => (el as HTMLElement).style.height);
 
