@@ -93,15 +93,15 @@ const restPkgs = packages.filter((p) => p.name !== 'wicked-crew');
     <!-- compact header -->
     <div class="orbit-head">
       <span class="zone-kicker">WHAT I'VE BEEN BUILDING · FOUR PLANES · TWO SKINS</span>
-      <h2 class="zone-title">the platform.</h2>
-      <p class="orbit-caption">What I've been building: the wicked platform — <b>a record</b> of what's true, <b>a catalog</b> agents act through, <b>a control plane</b> that verifies the work, and <b>two front doors</b> on top. Local-first, zero-infra; every block links out to its own site for the full story.</p>
+      <h2 class="zone-title">the experiment.</h2>
+      <p class="orbit-caption">What I've been building: the wicked experiment — <b>a record</b> of what's true, <b>a catalog</b> agents act through, <b>a control plane</b> that verifies the work, and <b>two front doors</b> on top. Local-first, zero-infra; every block links out to its own site for the full story.</p>
     </div>
 
     <div class="build-grid">
       <!-- ── LEFT: the four-plane stack ──────────────────────────────── -->
       <div class="stack-col">
         <div class="stack" id="stackRoot" role="group"
-             aria-label="The wicked platform, four planes: the foundation (wicked-estate, the system of record), the capability catalog (wicked-garden), the control plane (wicked-crew), and the experience plane on top — two skins, studio and wicked-interactive, on one project model.">
+             aria-label="The wicked experiment, four planes: the foundation (wicked-estate, the system of record), the capability catalog (wicked-garden), the control plane (wicked-crew), and the experience plane on top — two skins, studio and wicked-interactive, on one project model.">
 
           <!-- the rising "energy" pulse (travels the spine, driven by shipped.js) -->
           <span class="spine-pulse" id="spinePulse" aria-hidden="true"></span>
@@ -223,7 +223,7 @@ const restPkgs = packages.filter((p) => p.name !== 'wicked-crew');
     </div>{/* .build-grid */}
 
     <!-- MOBILE (≤880): the control plane, then the rest as a plane-labelled list. -->
-    <div class="shipped-mobile" aria-label="the wicked platform — four planes, plane by plane">
+    <div class="shipped-mobile" aria-label="the wicked experiment — four planes, plane by plane">
       <a class="expm-feat" href={crewPkg.href} target="_self" rel="noopener" style={`--role:${crewPkg.color}`}>
         <div class="expm-feat-shot" style={crewPkg.shot ? `background-image:url('${crewPkg.shot}')` : ''}>
           <span class="expm-feat-tag">Control · the plane that verifies</span>
@@ -269,17 +269,20 @@ const restPkgs = packages.filter((p) => p.name !== 'wicked-crew');
   min-height:100svh;
   scroll-margin-top:var(--topbar-h);
   display:flex;flex-direction:column;justify-content:center;align-items:center;
-  padding:18px 24px 14px;
+  /* For visual centering in the visible area below the fixed topbar, the rule
+     is: padding-bottom = padding-top + topbar-height. This counteracts the
+     topbar offset so justify-content:center lands at the visual midpoint. */
+  padding:clamp(12px,1.8vh,20px) 24px calc(var(--topbar-h) + clamp(12px,1.8vh,20px));
   overflow:hidden; /* the stack is tuned to fit one viewport, never scroll */
 }
 .build-shell{
   width:100%;max-width:1320px;margin:0 auto;
   display:flex;flex-direction:column;align-items:center;
-  gap:clamp(6px,1.6vh,18px)
+  gap:clamp(14px,2.4vh,28px)
 }
 
 /* ── COMPACT HEADER ────────────────────────────────────────────── */
-.orbit-head{display:flex;flex-direction:column;align-items:center;gap:clamp(3px,.8vh,8px);text-align:center}
+.orbit-head{display:flex;flex-direction:column;align-items:center;gap:clamp(5px,1vh,12px);text-align:center}
 .orbit-head .zone-kicker{justify-content:center}
 .orbit-head .zone-kicker::before,
 .orbit-head .zone-kicker::after{content:'';width:18px;height:1px;background:var(--hairline-strong)}
@@ -407,7 +410,7 @@ const restPkgs = packages.filter((p) => p.name !== 'wicked-crew');
 .block[aria-current="true"] .blk-role{color:var(--role-tint)}
 
 /* ── RIGHT: the reused preview pane ───────────────────────────────── */
-.preview-col{min-width:0;display:flex;height:min(58vh,342px)}
+.preview-col{min-width:0;display:flex;height:min(62vh,400px)}
 .preview-col .ide-preview{
   flex:1;min-height:0;min-width:0;
   display:flex;flex-direction:column;background:#0d0f12;border-radius:12px;overflow:hidden;
