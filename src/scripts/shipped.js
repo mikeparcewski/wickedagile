@@ -1,11 +1,11 @@
 /* ──────────────────────────────────────────────────────────────
-   wickedagile — SHIPPED : THE FOUR-PLANE STACK (planes → two front doors)
+   wickedagile — SHIPPED : THE FOUR-PLANE STACK (planes → one surface)
    The platform as a composing stack: foundation (estate) → capability
-   (garden) → control (crew) → the EXPERIENCE capstone, two skins (studio ·
-   interactive). The reused preview pane sits BESIDE the stack. Selecting a
+   (garden) → control (crew) → the EXPERIENCE capstone, one surface
+   (wicked-studio). The reused preview pane sits BESIDE the stack. Selecting a
    block drives the same DUAL-MODE preview pane:
 
-     (a) SITE  — the 4 DEPLOYED sites (interactive · garden · estate · crew)
+     (a) SITE  — the 4 DEPLOYED sites (studio · garden · estate · crew)
          drive the browser-frame: /screenshots/<name>.png via a clip-path
          wipe (gated by prefers-reduced-motion).
      (b) LIB   — studio has no site of its own (it ships inside wicked-crew);
@@ -16,7 +16,7 @@
    data-order (the bottom-up assemble sequence). Exactly one holds aria-current.
 
    AUTO-PLAY: energy RISES up the spine — foundation → capability → control —
-   pinging each plane as it passes; the experience capstone (the two skins)
+   pinging each plane as it passes; the experience capstone (the surface)
    fires when it arrives, holds a beat, then the pulse restarts at the bottom.
    Any click / focus / arrow-key hands the preview to the visitor. Under
    prefers-reduced-motion there is no pulse — the stack parks fully assembled
@@ -28,23 +28,13 @@ import { FEATURED, esc, safeUrl } from './data.js';
 
 var PREFERS_REDUCED = window.matchMedia && window.matchMedia('(prefers-reduced-motion:reduce)').matches;
 
-/* ── LIBRARY snippets — products with no site of their own. studio = the
-   coder skin: a pure client of crew's public API, shipped inside wicked-crew. */
-var LIB_SNIPPETS = {
-  'wicked-studio': {
-    name: 'studio',
-    tagline: "The coder skin — a run board over crew's API: submit intent, watch phases, answer gates, review evidence. Ships inside wicked-crew.",
-    repo: 'https://github.com/mikeparcewski/wicked-crew/tree/main/packages/studio',
-    ext: 'ts', glyph: 'TS', cta: 'inside wicked-crew ↗',
-    lines: [
-      "// studio — the coder-facing skin. ships inside wicked-crew.",
-      "// a pure client of crew's public API + WS — no engine imports, no side door.",
-      "const run = await api.post('/api/v1/runs', { intent })",
-      "ws.on('gate.opened', (gate) => askHuman(gate))  // approvals surface here",
-      "// phases, verdicts, and evidence stream onto the board as the run works"
-    ]
-  }
-};
+/* ── LIBRARY snippets — products with no site of their own, rendered as a faux source file.
+   Empty for now. The one entry here was wicked-studio, described as "ships inside wicked-crew"
+   and linked to wicked-crew/tree/main/packages/studio — a path that stopped existing when studio
+   was carved out into its own repo, and a claim that stopped being true when it got its own site
+   at ws.wickedagile.com. It now previews as a site, like the other plane products. showLib()
+   no-ops on a missing key, so the mechanism stays available for the next site-less product. */
+var LIB_SNIPPETS = {};
 
 /* keyword set spans JS/TS + Python (a few extra keywords highlight harmlessly) */
 var TS_KEYWORDS = { 'import': 1, 'from': 1, 'await': 1, 'const': 1, 'let': 1, 'var': 1, 'return': 1, 'new': 1, 'def': 1, 'async': 1, 'class': 1, 'for': 1, 'in': 1, 'with': 1, 'None': 1, 'True': 1, 'False': 1, 'not': 1, 'and': 1, 'or': 1 };

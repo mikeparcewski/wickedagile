@@ -35,15 +35,16 @@ export var reposPromise=fetch('https://api.github.com/users/mikeparcewski/repos?
    sites — one per plane product: interactive (experience) · garden
    (capability) · estate (foundation) · crew (control). Each carries its OWN
    real screenshot + a plane-specific tagline so no preview reads as a
-   template. (studio, the coder skin, ships inside crew — it previews as a
-   code card, not a site.) */
+   template. (wicked-interactive no longer previews here: it moved to Foundation
+   as the document engine and has no site — crew spawns it and proxies it, so
+   there is nothing for a visitor to open.) */
 export var FEATURED=[
-  {name:'wicked-interactive',url:'https://wi.wickedagile.com',screenshot:'/screenshots/wicked-interactive.png',
-   desc:'The creator skin — describe it, watch it build in-browser, point at what to change. Ships HTML, PDF, decks, video. No code, no design tickets.'},
+  {name:'wicked-studio',url:'https://ws.wickedagile.com',screenshot:'/screenshots/wicked-studio.png',
+   desc:'Where product work happens — brainstorm it, build it under a check nothing self-approves, then produce the doc, deck or demo. A pure client of crew\u2019s API.'},
   {name:'wicked-garden',url:'https://wg.wickedagile.com',screenshot:'/screenshots/wicked-garden.png',
    desc:'The catalog your agents act through — multi-model councils, graph-aware refactors, repo playbooks, the QE specialist fleet. Open to your own packs.'},
   {name:'wicked-estate',url:'https://we.wickedagile.com',screenshot:'/screenshots/wicked-estate.png',
-   desc:'The system of record — a 75-language code graph, memory, and knowledge in one binary (MCP), including the injected edges grep never sees.'},
+   desc:'The system of record — a 102-language code graph, memory, and knowledge in one binary (MCP), including the injected edges grep never sees.'},
   {name:'wicked-crew',url:'https://wc.wickedagile.com',screenshot:'/screenshots/wicked-crew.png',
    desc:'The control plane — intent in, verified work out. Evaluator ≠ creator, deny dominates, "done" re-derived from evidence. The human stays in command.'},
 ];

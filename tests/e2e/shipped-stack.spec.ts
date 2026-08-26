@@ -73,33 +73,32 @@ test.describe('shipped stack', () => {
     await expect(garden).toHaveAttribute('aria-current', 'true');
   });
 
-  test('the experience skins preview: studio swaps to the code card, interactive back to a site', async ({ page }) => {
-    // studio — the coder skin, no site of its own — renders the faux code card.
-    const studio = page.locator('#projects .block', { hasText: 'studio' });
+  test('the experience capstone previews studio as a site, not a code card', async ({ page }) => {
+    // Was "the experience skins preview: studio swaps to the code card, interactive back to a
+    // site". Both halves stopped being true. studio was carved out into its own repo and has its
+    // own site at ws.wickedagile.com, so it previews in the browser frame like every other plane
+    // product -- nothing renders the code card now. And interactive is no longer a second block
+    // here at all: it moved to Foundation as the document engine with no site, and
+    // wi.wickedagile.com redirects to ws.wickedagile.com.
+    const studio = page.locator('#projects .block', { hasText: 'wicked-studio' });
     await studio.scrollIntoViewIfNeeded();
 
     await expect(async () => {
       await studio.click();
-      await expect(page.locator('#crumbName')).toHaveText('studio', { timeout: 2_000 });
+      await expect(page.locator('#crumbName')).toHaveText('wicked-studio', { timeout: 2_000 });
     }).toPass({ timeout: 15_000 });
 
     expect(page.url()).toContain('127.0.0.1');
 
-    await expect(page.locator('#codeCard')).toBeVisible();
-    await expect(page.locator('#browserFrame')).toBeHidden();
-    await expect(page.locator('#codeFile')).toHaveText('wicked-studio.ts');
-    await expect(page.locator('#codeBlock')).toContainText('/api/v1/runs');
-    await expect(studio).toHaveAttribute('aria-current', 'true');
-
-    // The other skin — interactive — restores the browser frame.
-    const interactive = page.locator('#projects .block', { hasText: 'wicked-interactive' });
-    await expect(async () => {
-      await interactive.click();
-      await expect(page.locator('#crumbName')).toHaveText('wicked-interactive', { timeout: 2_000 });
-    }).toPass({ timeout: 15_000 });
-    await expect(page.locator('#previewUrl')).toHaveText('wi.wickedagile.com');
     await expect(page.locator('#browserFrame')).toBeVisible();
     await expect(page.locator('#codeCard')).toBeHidden();
+    await expect(page.locator('#previewUrl')).toHaveText('ws.wickedagile.com');
+    await expect(studio).toHaveAttribute('aria-current', 'true');
+
+    // The capstone holds exactly one block now.
+    await expect(page.locator('#solutionCap .block')).toHaveCount(1);
+    // And interactive is not one of the stack's blocks.
+    await expect(page.locator('#projects .block', { hasText: 'wicked-interactive' })).toHaveCount(0);
   });
 
   test('arrow keys walk the stack and drive the preview', async ({ page }) => {
@@ -123,11 +122,13 @@ test.describe('shipped stack', () => {
     await expect(crew).toHaveAttribute('aria-current', 'true');
     await expect(page.locator('#previewUrl')).toHaveText('wc.wickedagile.com');
 
-    // Home jumps to the top of the stack (studio, the first block in DOM order).
+    // Home jumps to the top of the stack (studio, the first block in DOM order). It previews as
+    // a site now that it has one, so the browser frame is what shows -- not the code card.
     await page.keyboard.press('Home');
-    const studio = page.locator('#projects .block', { hasText: 'studio' });
+    const studio = page.locator('#projects .block', { hasText: 'wicked-studio' });
     await expect(studio).toBeFocused();
     await expect(studio).toHaveAttribute('aria-current', 'true');
-    await expect(page.locator('#codeCard')).toBeVisible();
+    await expect(page.locator('#browserFrame')).toBeVisible();
+    await expect(page.locator('#previewUrl')).toHaveText('ws.wickedagile.com');
   });
 });

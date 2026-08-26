@@ -4,27 +4,28 @@
  *
  * VOICE: builder's showcase, not vendor pitch — this is the "what I've been
  * building" chapter of a personal apex site. The storyboard is truthful
- * architecture: two skins, one control plane, one catalog, one record. The
+ * architecture: one surface, one control plane, one catalog, one record. The
  * planes COMPOSE UPWARD: foundation (estate, the system of record) →
  * capability (garden, the catalog) → control (crew, verified work) → the
- * EXPERIENCE capstone: two front doors (studio, the coder skin · interactive,
- * the creator skin) on one project model. The CONTRACT between each pair of
+ * EXPERIENCE capstone: one surface (wicked-studio) on one project model;
+ * interactive moved to Foundation as the document engine. The CONTRACT between each pair of
  * planes is named on the seam (.stack-riser). The full product stories live
  * on the per-plane deep-dive sites each block links to. The old "build on it."
  * extension coda is folded into ONE outro line (.stack-outro) pointing at
  * garden's #extend.
  *
  * Left column = the stack (three plane layers + the experience capstone).
- * Right column = the REUSED preview pane (browser-frame screenshot for the
- * four live sites; a faux code-card for studio — now its own product with a
- * site at ws.wickedagile.com, kept as the code card here until its DNS lands).
+ * Right column = the REUSED preview pane. All four blocks are browser-frame
+ * screenshots of live sites now: studio's DNS landed, so it previews as a site
+ * like the rest and nothing renders the faux code-card. showLib stays wired for
+ * the next product that ships without a site.
  * Selecting any block drives that pane (showSite / showLib) via data-idx +
  * data-mode + data-preview/data-lib + data-role/data-color — the same
  * contract as before.
  *
  * AUTO-PLAY (shipped.js): energy RISES up the spine — foundation → capability
  * → control — pinging each plane as it passes, then the experience capstone
- * fires (two skins light up), holds a beat, and the pulse restarts at the
+ * fires (the surface lights up), holds a beat, and the pulse restarts at the
  * bottom. Any click / focus / arrow-key hands the preview to the visitor.
  * Parks fully-built under prefers-reduced-motion. Below ~880px it falls back
  * to a stacked, plane-labelled list (.shipped-mobile).
@@ -38,14 +39,16 @@
  * ledger are internal to the foundation; wicked-core is the engine inside crew.
  */
 
-// ── the EXPERIENCE capstone: two skins, one project model ────────────────────
+// ── the EXPERIENCE capstone: one surface, one project model ──────────────────
+// Was two blocks, "two front doors". wicked-interactive is no longer one of them: it moved to
+// Foundation as the document engine, has no site, and wi.wickedagile.com now redirects to
+// ws.wickedagile.com. Studio is the surface, and it has its own site to preview.
 const capstone = {
-  label: 'Experience — two front doors',
-  sub: 'two skins · one project model',
+  label: 'Experience — where product work happens',
+  sub: 'one surface · one project model',
   hue: '#f0a868',
   blocks: [
-    { name: 'studio', role: 'coder skin', order: 3, idx: 0, mode: 'lib', lib: 'wicked-studio', color: '#f0a868', tint: '#f6bd8a', href: 'https://github.com/mikeparcewski/wicked-studio' },
-    { name: 'wicked-interactive', role: 'creator skin', order: 4, idx: 1, mode: 'site', preview: '0', color: '#f0a868', tint: '#f6bd8a', href: 'https://wi.wickedagile.com' },
+    { name: 'wicked-studio', role: 'the surface', order: 3, idx: 0, mode: 'site', preview: '0', color: '#f0a868', tint: '#f6bd8a', href: 'https://ws.wickedagile.com' },
   ],
 };
 
@@ -74,10 +77,10 @@ const layers = [
 // ── MOBILE fallback data (article-style): the planes, top-down. ──────────────
 const packages = [
   { name: 'wicked-crew', role: 'Control', color: '#d2a8ff', lang: 'JS', site: 'wc.wickedagile.com', href: 'https://wc.wickedagile.com', shot: '/screenshots/wicked-crew.png', desc: 'The control plane — intent in, verified work out. Runs your coding agents as governed workers: evaluator ≠ creator, "done" re-derived from evidence, the human in command.' },
-  { name: 'wicked-interactive', role: 'Experience', color: '#f0a868', lang: 'TS', site: 'wi.wickedagile.com', href: 'https://wi.wickedagile.com', shot: '/screenshots/wicked-interactive.png', desc: 'The creator skin — describe it, watch it build in-browser, point at what to change. Ships HTML, PDF, decks, video.' },
-  { name: 'studio', role: 'Experience', color: '#f0a868', lang: 'TS', href: 'https://github.com/mikeparcewski/wicked-studio', desc: 'The coder skin — the run board: submit intent, watch phases, answer gates, review evidence. Its own product; crew still bundles it.' },
+  { name: 'wicked-studio', role: 'Experience', color: '#f0a868', lang: 'TS', site: 'ws.wickedagile.com', href: 'https://ws.wickedagile.com', shot: '/screenshots/wicked-studio.png', desc: 'Where product work happens — brainstorm it, build it under a check nothing self-approves, then produce the doc, deck or demo. Its own product; crew still bundles it.' },
   { name: 'wicked-garden', role: 'Capability', color: '#56d364', lang: 'JS', site: 'wg.wickedagile.com', href: 'https://wg.wickedagile.com', shot: '/screenshots/wicked-garden.png', desc: 'The catalog your agents act through — multi-model councils, graph-aware refactors, repo playbooks, the QE specialist fleet. Open to your own packs.' },
-  { name: 'wicked-estate', role: 'Foundation', color: '#79c0ff', lang: 'RS', site: 'we.wickedagile.com', href: 'https://we.wickedagile.com', shot: '/screenshots/wicked-estate.png', desc: 'The system of record — a 75-language code graph, memory, and knowledge in one binary (MCP). Zero-infra, local-first; a team profile is coming.' },
+  { name: 'wicked-estate', role: 'Foundation', color: '#79c0ff', lang: 'RS', site: 'we.wickedagile.com', href: 'https://we.wickedagile.com', shot: '/screenshots/wicked-estate.png', desc: 'The system of record — a 102-language code graph, memory, and knowledge in one binary (MCP). Zero-infra, local-first; a team profile is coming.' },
+  { name: 'wicked-interactive', role: 'Foundation', color: '#79c0ff', lang: 'TS', href: 'https://github.com/mikeparcewski/wicked-interactive', desc: 'The document engine — doc storage and version lineage, HTML/PDF/PPTX rendering, demo recording. crew spawns it as a local bridge and proxies it: you depend on it, you do not visit it.' },
 ];
 const crewPkg = packages.find((p) => p.name === 'wicked-crew');
 const restPkgs = packages.filter((p) => p.name !== 'wicked-crew');
@@ -86,27 +89,27 @@ const restPkgs = packages.filter((p) => p.name !== 'wicked-crew');
 <!-- ════════════════════════════════════════════════════════════════
      SHIPPED — "the platform." · the FOUR-PLANE STACK.
      Planes compose UPWARD — foundation → capability → control → the experience
-     capstone: two front doors (studio · interactive) on one project model.
+     capstone: one surface (wicked-studio) on one project model.
      ════════════════════════════════════════════════════════════════ -->
 <section class="zoneB-section snap-section" id="projects">
   <div class="build-shell">
     <!-- compact header -->
     <div class="orbit-head">
-      <span class="zone-kicker">WHAT I'VE BEEN BUILDING · FOUR PLANES · TWO SKINS</span>
+      <span class="zone-kicker">WHAT I'VE BEEN BUILDING · FOUR PLANES · ONE SURFACE</span>
       <h2 class="zone-title">the experiment.</h2>
-      <p class="orbit-caption">What I've been building: the wicked experiment — <b>a record</b> of what's true, <b>a catalog</b> agents act through, <b>a control plane</b> that verifies the work, and <b>two front doors</b> on top. Local-first, zero-infra; every block links out to its own site for the full story.</p>
+      <p class="orbit-caption">What I've been building: the wicked experiment — <b>a record</b> of what's true, <b>a catalog</b> agents act through, <b>a control plane</b> that verifies the work, and <b>one surface</b> on top. Local-first, zero-infra; every block links out to its own site for the full story.</p>
     </div>
 
     <div class="build-grid">
       <!-- ── LEFT: the four-plane stack ──────────────────────────────── -->
       <div class="stack-col">
         <div class="stack" id="stackRoot" role="group"
-             aria-label="The wicked experiment, four planes: the foundation (wicked-estate, the system of record), the capability catalog (wicked-garden), the control plane (wicked-crew), and the experience plane on top — two skins, studio and wicked-interactive, on one project model.">
+             aria-label="The wicked experiment, four planes: the foundation (wicked-estate, the system of record), the capability catalog (wicked-garden), the control plane (wicked-crew), and the experience plane on top — one surface, wicked-studio, on one project model.">
 
           <!-- the rising "energy" pulse (travels the spine, driven by shipped.js) -->
           <span class="spine-pulse" id="spinePulse" aria-hidden="true"></span>
 
-          <!-- capstone: the EXPERIENCE plane — two skins, one project model -->
+          <!-- capstone: the EXPERIENCE plane — one surface, one project model -->
           <div class="solution-cap" id="solutionCap" style={`--hue:${capstone.hue}`}>
             <div class="cap-head">
               <span class="cap-mark" aria-hidden="true">= </span>
@@ -200,8 +203,9 @@ const restPkgs = packages.filter((p) => p.name !== 'wicked-crew');
               </div>
             </div>
 
-            <!-- MODE (b): LIBRARY — faux code-editor card (hidden at init;
-                 studio, the coder skin, renders here) -->
+            <!-- MODE (b): LIBRARY — faux code-editor card (hidden at init). No product
+                 currently renders here: studio moved to a site preview when it got its own
+                 site. Kept for the next product that ships without one. -->
             <div class="code-card" id="codeCard" aria-hidden="true" hidden>
               <div class="code-card-chrome">
                 <span class="cc-glyph" aria-hidden="true">TS</span>
