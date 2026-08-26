@@ -50,7 +50,11 @@ test.describe('universal chrome', () => {
     // Four plane groups holding five product rows (interactive + studio under
     // Experience; crew, garden, estate one each). Retired products are gone.
     await expect(menu.locator('.dropdown-plane')).toHaveCount(4);
-    await expect(menu.locator('.dropdown-item')).toHaveCount(5);
+    // 4, not 5: the ecosystem dropdown no longer carries a wicked-interactive row. Its builder UI
+    // moved into wicked-studio and the service answers a direct visitor with "it serves the API,
+    // not the UI", so a nav row there would spend the click telling you that. The product is not
+    // gone — SameGarden lists it under Foundation as the document engine, repo link, no "Visit".
+    await expect(menu.locator('.dropdown-item')).toHaveCount(4);
     // .dp-head renders text-transform:uppercase, so match case-insensitively.
     const planeNames = await menu.locator('.dp-head').allInnerTexts();
     expect(planeNames.join(' ')).toMatch(/experience[\s\S]*control[\s\S]*capability[\s\S]*foundation/i);
