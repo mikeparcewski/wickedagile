@@ -340,15 +340,17 @@ const restPkgs = packages.filter((p) => p.name !== 'wicked-crew');
 
 /* capstone — the EXPERIENCE plane (tinted in its plane hue via --hue): the
    surface lives INSIDE it, selectable like any other block.
-   It mirrors .layer's grid so wicked-studio lines up with the three plane
-   products: the head spans both columns, and the block sits in the SAME
-   second column the plane rows use. The label column stays empty here — the
-   capstone names its plane in the head, not in a side label — but it is
-   reserved, which is what puts all four blocks on one edge. */
+   It mirrors .layer's grid EXACTLY, one row: the plane name in the label column,
+   the product block in the second column, both vertically centred. That is what
+   puts all four rows on the same two vertical edges.
+   It used to put the head on a row of its own spanning both columns, with the
+   block beneath. The blocks still lined up — but the capstone was a two-row grid
+   among three single-row ones, so wicked-studio read as a different kind of
+   element. Keep this a single row. */
 .solution-cap{
   position:relative;z-index:1;
   display:grid;grid-template-columns:var(--label-col) 1fr;
-  column-gap:var(--label-gap);row-gap:9px;align-items:center;
+  column-gap:var(--label-gap);align-items:center;  /* single row: no row-gap to give */
   padding:11px 16px 12px var(--row-pad-l);border-radius:12px;
   border:1px solid color-mix(in oklab,var(--hue,var(--accent)) 55%,var(--hairline));
   border-left-width:var(--rail-w);
