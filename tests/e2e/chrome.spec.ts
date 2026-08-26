@@ -47,14 +47,21 @@ test.describe('universal chrome', () => {
     await expect(menu).toBeVisible();
     await expect(btn).toHaveAttribute('aria-expanded', 'true');
 
-    // Four plane groups holding five product rows (interactive + studio under
-    // Experience; crew, garden, estate one each). Retired products are gone.
+    // Four plane groups holding four product rows: studio alone under Experience, then crew,
+    // garden and estate one each. Retired products get no row.
     await expect(menu.locator('.dropdown-plane')).toHaveCount(4);
-    await expect(menu.locator('.dropdown-item')).toHaveCount(5);
+    // 4, not 5: the ecosystem dropdown no longer carries a wicked-interactive row. Its builder UI
+    // moved into wicked-studio and the service answers a direct visitor with "it serves the API,
+    // not the UI", so a nav row there would spend the click telling you that. The product is not
+    // gone — SameGarden lists it under Foundation as the document engine, repo link, no "Visit".
+    await expect(menu.locator('.dropdown-item')).toHaveCount(4);
     // .dp-head renders text-transform:uppercase, so match case-insensitively.
     const planeNames = await menu.locator('.dp-head').allInnerTexts();
     expect(planeNames.join(' ')).toMatch(/experience[\s\S]*control[\s\S]*capability[\s\S]*foundation/i);
-    await expect(menu.locator('a[href="https://wi.wickedagile.com"]')).toBeVisible();
+    // No wi. row — that is the point of the count above. wi.wickedagile.com now redirects to
+    // ws.wickedagile.com, so a row here would be a nav entry that bounces you to the row directly
+    // beneath it. Interactive is listed by SameGarden under Foundation instead: repo link, no Visit.
+    await expect(menu.locator('a[href*="wi.wickedagile.com"]')).toHaveCount(0);
     await expect(menu.locator('a[href="https://wc.wickedagile.com"]')).toBeVisible();
     await expect(menu.locator('a[href="https://wg.wickedagile.com"]')).toBeVisible();
     await expect(menu.locator('a[href="https://we.wickedagile.com"]')).toBeVisible();
