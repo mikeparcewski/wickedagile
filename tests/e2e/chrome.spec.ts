@@ -58,7 +58,10 @@ test.describe('universal chrome', () => {
     // .dp-head renders text-transform:uppercase, so match case-insensitively.
     const planeNames = await menu.locator('.dp-head').allInnerTexts();
     expect(planeNames.join(' ')).toMatch(/experience[\s\S]*control[\s\S]*capability[\s\S]*foundation/i);
-    await expect(menu.locator('a[href="https://wi.wickedagile.com"]')).toBeVisible();
+    // No wi. row — that is the point of the count above. wi.wickedagile.com now redirects to
+    // ws.wickedagile.com, so a row here would be a nav entry that bounces you to the row directly
+    // beneath it. Interactive is listed by SameGarden under Foundation instead: repo link, no Visit.
+    await expect(menu.locator('a[href*="wi.wickedagile.com"]')).toHaveCount(0);
     await expect(menu.locator('a[href="https://wc.wickedagile.com"]')).toBeVisible();
     await expect(menu.locator('a[href="https://wg.wickedagile.com"]')).toBeVisible();
     await expect(menu.locator('a[href="https://we.wickedagile.com"]')).toBeVisible();
