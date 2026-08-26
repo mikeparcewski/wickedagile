@@ -44,7 +44,7 @@ export var FEATURED=[
   {name:'wicked-garden',url:'https://wg.wickedagile.com',screenshot:'/screenshots/wicked-garden.png',
    desc:'The catalog your agents act through — multi-model councils, graph-aware refactors, repo playbooks, the QE specialist fleet. Open to your own packs.'},
   {name:'wicked-estate',url:'https://we.wickedagile.com',screenshot:'/screenshots/wicked-estate.png',
-   desc:'The system of record — a 75-language code graph, memory, and knowledge in one binary (MCP), including the injected edges grep never sees.'},
+   desc:'The system of record — a 102-language code graph, memory, and knowledge in one binary (MCP), including the injected edges grep never sees.'},
   {name:'wicked-crew',url:'https://wc.wickedagile.com',screenshot:'/screenshots/wicked-crew.png',
    desc:'The control plane — intent in, verified work out. Evaluator ≠ creator, deny dominates, "done" re-derived from evidence. The human stays in command.'},
 ];
