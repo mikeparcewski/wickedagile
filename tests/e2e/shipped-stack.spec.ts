@@ -136,6 +136,45 @@ test.describe('shipped stack', () => {
       .first()
       .evaluate((el) => Math.round(el.getBoundingClientRect().left));
     expect(capBlocksLeft).toBe(layerBlocksLeft);
+
+    // Blocks on one edge was NOT enough. It passed while the capstone still put its label on a
+    // row of its OWN above the chip -- the block lined up, but the capstone was a two-row grid
+    // among three single-row ones, so wicked-studio still read as a different kind of thing.
+    // Reported a second time as "studio isn't aligned with the other products".
+    // So also assert the four ROWS have the same shape: every plane label on one left edge, and
+    // each label vertically centred against its own product chip rather than stacked above it.
+    const labels = await page
+      .locator('#projects .cap-head, #projects .layer-label')
+      .evaluateAll((els) =>
+        els.map((el) => {
+          const r = el.getBoundingClientRect();
+          return { left: Math.round(r.left), mid: Math.round(r.top + r.height / 2) };
+        }),
+      );
+    const blocks = await page
+      .locator('#projects .block')
+      .evaluateAll((els) =>
+        els.map((el) => {
+          const r = el.getBoundingClientRect();
+          return { mid: Math.round(r.top + r.height / 2) };
+        }),
+      );
+
+    expect(labels).toHaveLength(4);
+    const labelLefts = labels.map((l) => l.left);
+    expect(
+      Math.max(...labelLefts) - Math.min(...labelLefts),
+      'the four plane labels do not share a left edge',
+    ).toBeLessThanOrEqual(1);
+
+    // Same row => label midpoint within a few px of its block's midpoint. When the label sat
+    // above the chip this gap was ~24px.
+    labels.forEach((l, i) => {
+      expect(
+        Math.abs(l.mid - blocks[i].mid),
+        `plane label ${i} is not on the same row as its product block`,
+      ).toBeLessThanOrEqual(6);
+    });
   });
 
   test('arrow keys walk the stack and drive the preview', async ({ page }) => {

@@ -44,8 +44,12 @@
 // Foundation as the document engine, has no site, and wi.wickedagile.com now redirects to
 // ws.wickedagile.com. Studio is the surface, and it has its own site to preview.
 const capstone = {
-  label: 'Experience — where product work happens',
-  sub: 'one surface · one project model',
+  // Just the plane name. It sits in the same 88px label column as CONTROL / CAPABILITY /
+  // FOUNDATION, so it has to read like them. The role line it used to carry
+  // ("where product work happens") stacked ABOVE the block and made this the only row in the
+  // stack with two rows -- the block lined up on the same edge, but the ROW did not, and it
+  // read as a different kind of element. The role is already stated in the section intro.
+  label: 'Experience',
   hue: '#f0a868',
   blocks: [
     { name: 'wicked-studio', role: 'the surface', order: 3, idx: 0, mode: 'site', preview: '0', color: '#f0a868', tint: '#f6bd8a', href: 'https://ws.wickedagile.com' },
@@ -111,13 +115,7 @@ const restPkgs = packages.filter((p) => p.name !== 'wicked-crew');
 
           <!-- capstone: the EXPERIENCE plane — one surface, one project model -->
           <div class="solution-cap" id="solutionCap" style={`--hue:${capstone.hue}`}>
-            <div class="cap-head">
-              <span class="cap-mark" aria-hidden="true">= </span>
-              <span class="cap-text">
-                <span class="cap-label">{capstone.label}</span>
-                <span class="cap-sub">{capstone.sub}</span>
-              </span>
-            </div>
+            <span class="cap-head">{capstone.label}</span>
             <div class="cap-blocks">
               {capstone.blocks.map((b) => (
                 <a
@@ -358,13 +356,16 @@ const restPkgs = packages.filter((p) => p.name !== 'wicked-crew');
   box-shadow:0 0 0 1px color-mix(in oklab,var(--hue,var(--accent)) 12%,transparent),0 14px 40px -22px rgba(0,0,0,.7);
   transition:box-shadow .4s var(--ease),border-color .4s var(--ease),background .4s var(--ease)
 }
-.solution-cap .cap-head{grid-column:1 / -1;display:flex;align-items:center;gap:10px}
-.solution-cap .cap-mark{font-family:var(--font-mono);font-weight:900;font-size:1.05rem;color:var(--hue,var(--accent));flex-shrink:0;line-height:1}
-.solution-cap .cap-text{display:flex;flex-direction:column;gap:1px;min-width:0}
-.solution-cap .cap-label{font-family:var(--font-mono);font-size:.9rem;font-weight:700;color:var(--ink);letter-spacing:.01em}
-.solution-cap .cap-sub{font-family:var(--font-mono);font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+/* column 1 — the label cell. Same typography as .layer-label so the four rows read as one
+   stack; the capstone is already distinguished by its border, gradient and is-built glow, so it
+   does not also need a different row shape. */
+.solution-cap .cap-head{
+  grid-column:1;
+  font-family:var(--font-mono);font-size:.55rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  color:color-mix(in oklab,var(--hue,var(--accent)) 62%,var(--muted));line-height:1.25
+}
 /* column 2 — the SAME column the plane rows put their blocks in */
-.solution-cap .cap-blocks{grid-column:2;display:flex;flex-wrap:wrap;gap:8px}
+.solution-cap .cap-blocks{grid-column:2;display:flex;flex-wrap:wrap;gap:8px;min-width:0}
 /* fires when the pulse reaches the top (auto-play) or on any interaction */
 .solution-cap.is-built{
   border-color:var(--hue,var(--accent));
