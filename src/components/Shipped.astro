@@ -312,7 +312,19 @@ const restPkgs = packages.filter((p) => p.name !== 'wicked-crew');
 /* ── THE STACK ─────────────────────────────────────────────────── */
 .stack{
   position:relative;display:flex;flex-direction:column;gap:clamp(5px,.8vh,9px);
-  padding-left:26px /* rail gutter: energy rises up the spine into the capstone */
+  padding-left:26px; /* rail gutter: energy rises up the spine into the capstone */
+
+  /* ROW GEOMETRY — shared by the three plane rows AND the experience capstone
+     so every product block lands on ONE vertical edge. A block's left offset
+     inside its row box is always: --rail-w + --row-pad-l + --label-col +
+     --label-gap. The capstone has no plane label to fill that column, but it
+     still reserves it (see .solution-cap) — otherwise its block sits ~95px
+     left of the other three and the stack reads as broken. Change these here,
+     never per-row. */
+  --rail-w:2px;      /* the accent border-left that carries the plane hue */
+  --row-pad-l:10px;  /* row padding inside that border */
+  --label-col:88px;  /* the CONTROL / CAPABILITY / FOUNDATION label column */
+  --label-gap:12px;  /* label column → blocks column */
 }
 /* the spine rail (energy travels UP it, foundation blue → experience amber) */
 .stack::before{
@@ -328,22 +340,31 @@ const restPkgs = packages.filter((p) => p.name !== 'wicked-crew');
   box-shadow:0 0 16px 4px color-mix(in oklab,var(--accent) 55%,transparent),0 0 34px 8px color-mix(in oklab,var(--accent) 22%,transparent)
 }
 
-/* capstone — the EXPERIENCE plane (tinted in its plane hue via --hue): the two
-   the surface lives INSIDE it, selectable like any other block */
+/* capstone — the EXPERIENCE plane (tinted in its plane hue via --hue): the
+   surface lives INSIDE it, selectable like any other block.
+   It mirrors .layer's grid so wicked-studio lines up with the three plane
+   products: the head spans both columns, and the block sits in the SAME
+   second column the plane rows use. The label column stays empty here — the
+   capstone names its plane in the head, not in a side label — but it is
+   reserved, which is what puts all four blocks on one edge. */
 .solution-cap{
-  position:relative;z-index:1;display:flex;flex-direction:column;gap:9px;
-  padding:11px 16px 12px;border-radius:12px;
+  position:relative;z-index:1;
+  display:grid;grid-template-columns:var(--label-col) 1fr;
+  column-gap:var(--label-gap);row-gap:9px;align-items:center;
+  padding:11px 16px 12px var(--row-pad-l);border-radius:12px;
   border:1px solid color-mix(in oklab,var(--hue,var(--accent)) 55%,var(--hairline));
+  border-left-width:var(--rail-w);
   background:linear-gradient(color-mix(in oklab,var(--hue,var(--accent)) 14%,transparent),color-mix(in oklab,var(--hue,var(--accent)) 4%,transparent));
   box-shadow:0 0 0 1px color-mix(in oklab,var(--hue,var(--accent)) 12%,transparent),0 14px 40px -22px rgba(0,0,0,.7);
   transition:box-shadow .4s var(--ease),border-color .4s var(--ease),background .4s var(--ease)
 }
-.solution-cap .cap-head{display:flex;align-items:center;gap:10px}
+.solution-cap .cap-head{grid-column:1 / -1;display:flex;align-items:center;gap:10px}
 .solution-cap .cap-mark{font-family:var(--font-mono);font-weight:900;font-size:1.05rem;color:var(--hue,var(--accent));flex-shrink:0;line-height:1}
 .solution-cap .cap-text{display:flex;flex-direction:column;gap:1px;min-width:0}
 .solution-cap .cap-label{font-family:var(--font-mono);font-size:.9rem;font-weight:700;color:var(--ink);letter-spacing:.01em}
 .solution-cap .cap-sub{font-family:var(--font-mono);font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
-.solution-cap .cap-blocks{display:flex;flex-wrap:wrap;gap:8px}
+/* column 2 — the SAME column the plane rows put their blocks in */
+.solution-cap .cap-blocks{grid-column:2;display:flex;flex-wrap:wrap;gap:8px}
 /* fires when the pulse reaches the top (auto-play) or on any interaction */
 .solution-cap.is-built{
   border-color:var(--hue,var(--accent));
@@ -363,10 +384,10 @@ const restPkgs = packages.filter((p) => p.name !== 'wicked-crew');
 /* ── LAYERS ────────────────────────────────────────────────────── */
 .layer{
   position:relative;z-index:1;
-  display:grid;grid-template-columns:88px 1fr;align-items:center;gap:12px;
-  padding:8px 12px 8px 10px;border-radius:11px;
+  display:grid;grid-template-columns:var(--label-col) 1fr;align-items:center;gap:var(--label-gap);
+  padding:8px 12px 8px var(--row-pad-l);border-radius:11px;
   border:1px solid var(--hairline);
-  border-left:2px solid color-mix(in oklab,var(--hue) 60%,var(--hairline));
+  border-left:var(--rail-w) solid color-mix(in oklab,var(--hue) 60%,var(--hairline));
   background:linear-gradient(color-mix(in oklab,var(--hue) 5%,transparent),transparent 78%);
   transition:box-shadow .5s var(--ease),border-color .5s var(--ease),background .5s var(--ease)
 }

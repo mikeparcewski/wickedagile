@@ -101,6 +101,43 @@ test.describe('shipped stack', () => {
     await expect(page.locator('#projects .block', { hasText: 'wicked-interactive' })).toHaveCount(0);
   });
 
+  test('all four product blocks sit on one vertical edge', async ({ page }) => {
+    // REGRESSION GUARD. The three plane rows (.layer) are a grid whose first
+    // column holds the CONTROL / CAPABILITY / FOUNDATION label, so their block
+    // starts one label-column in. The experience capstone had no such column,
+    // so wicked-studio's chip started 95px to the LEFT of the other three and
+    // the stack read as broken. Measured at 1440x700 before the fix:
+    //   wicked-studio left=103 · crew/garden/estate left=198  (spread 95)
+    // .solution-cap now mirrors .layer's grid via the shared --label-col /
+    // --label-gap / --row-pad-l / --rail-w tokens on .stack, so the four
+    // blocks land on one edge by construction, not by a tuned magic number.
+    //
+    // Measure at 1440x700 — a real laptop viewport. 1440x900 is taller than
+    // one and hides layout problems in this section.
+    await page.setViewportSize({ width: 1440, height: 700 });
+    await page.locator('#stackRoot').scrollIntoViewIfNeeded();
+
+    const lefts = await page
+      .locator('#projects .block')
+      .evaluateAll((els) => els.map((el) => Math.round(el.getBoundingClientRect().left)));
+
+    // studio + crew + garden + estate.
+    expect(lefts).toHaveLength(4);
+    // Sub-pixel rounding is the only tolerance; 95px of drift is not.
+    expect(Math.max(...lefts) - Math.min(...lefts)).toBeLessThanOrEqual(1);
+
+    // And say it the other way round: the capstone's block column starts where
+    // the plane rows' block column starts.
+    const capBlocksLeft = await page
+      .locator('#solutionCap .cap-blocks')
+      .evaluate((el) => Math.round(el.getBoundingClientRect().left));
+    const layerBlocksLeft = await page
+      .locator('#projects .layer .layer-blocks')
+      .first()
+      .evaluate((el) => Math.round(el.getBoundingClientRect().left));
+    expect(capBlocksLeft).toBe(layerBlocksLeft);
+  });
+
   test('arrow keys walk the stack and drive the preview', async ({ page }) => {
     // Focus the foundation block (bottom of the stack: DOM order ends at estate).
     const estate = page.locator('#projects .block', { hasText: 'wicked-estate' });
