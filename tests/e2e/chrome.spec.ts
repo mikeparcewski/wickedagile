@@ -47,8 +47,8 @@ test.describe('universal chrome', () => {
     await expect(menu).toBeVisible();
     await expect(btn).toHaveAttribute('aria-expanded', 'true');
 
-    // Four plane groups holding five product rows (interactive + studio under
-    // Experience; crew, garden, estate one each). Retired products are gone.
+    // Four plane groups holding four product rows: studio alone under Experience, then crew,
+    // garden and estate one each. Retired products get no row.
     await expect(menu.locator('.dropdown-plane')).toHaveCount(4);
     // 4, not 5: the ecosystem dropdown no longer carries a wicked-interactive row. Its builder UI
     // moved into wicked-studio and the service answers a direct visitor with "it serves the API,
