@@ -19,7 +19,7 @@ function boot(){
 
   /* TERMINAL COPY BANKS */
   var ART_I=['surfacing the latest thinking from the field...','here\'s what\'s been keeping me up at night...','recent dispatches from production.','field notes. unfiltered.','the good stuff. no padding.','things that needed to be written down.','dispatches from the build.','pulled from Medium. the real stuff.'];
-  var PRJ_I=['four planes. one platform.','what i\'ve been building.','two skins, one control plane, one catalog, one record.','local-first. agent-native. shipped.','the workshop, exposed.','not seven scattered tools — four planes.','intent in. verified work out.','the wicked platform. current.'];
+  var PRJ_I=['four planes. one platform.','what i\'ve been building.','one surface, one control plane, one catalog, one record.','local-first. agent-native. shipped.','the workshop, exposed.','not seven scattered tools — four planes.','intent in. verified work out.','the wicked platform. current.'];
   var ABT_I=['the human in the loop.','brief history. no padding.','the career, summarized.','who wrote the tools.','the arc.','this is mike.','thirty years, five chapters.','the backstory.'];
 
   /* TERMINAL */
@@ -63,15 +63,15 @@ function boot(){
     var repos=await Promise.race([reposPromise,delay(3500).then(function(){return null})]);
     var STARS={};(repos||[]).forEach(function(r){STARS[r.name]=r.stargazers_count||0});
     var PLANES=[
-      {name:'EXPERIENCE',cls:'t-o',note:'two front doors',items:[
-        {label:'wicked-interactive',repo:'wicked-interactive',desc:'creator skin — describe it, watch it build, ship HTML/PDF/decks/video'},
-        {label:'studio',suffix:' · ships inside wicked-crew',desc:'coder skin — submit intent, watch the run, answer gates'}]},
+      {name:'EXPERIENCE',cls:'t-o',note:'where product work happens',items:[
+        {label:'wicked-studio',repo:'wicked-studio',desc:'brainstorm it, build it under a check nothing self-approves, then ship the doc, deck or demo'}]},
       {name:'CONTROL',cls:'t-v',note:'intent in · verified work out',items:[
         {label:'wicked-crew',repo:'wicked-crew',desc:'runs your coding agents as governed workers — evaluator ≠ creator, evidence-gated'}]},
       {name:'CAPABILITY',cls:'t-g',note:'the catalog',items:[
         {label:'wicked-garden',repo:'wicked-garden',desc:'skills + tools agents act through — councils, QE fleet, playbooks. bring your own pack'}]},
       {name:'FOUNDATION',cls:'t-c',note:'the system of record',items:[
-        {label:'wicked-estate',repo:'wicked-estate',desc:'code graph (75 languages) + memory + knowledge in one binary — MCP'}]}
+        {label:'wicked-estate',repo:'wicked-estate',desc:'code graph (102 languages) + memory + knowledge in one binary — MCP'},
+        {label:'wicked-interactive',repo:'wicked-interactive',desc:'the document engine — doc storage, HTML/PDF/PPTX rendering, demo recording. you depend on it, you do not visit it'}]}
     ];
     commitLine('<span class="t-d">'+esc(SEP)+'</span>');appendTxt('\n');
     for(var pi=0;pi<PLANES.length;pi++){
@@ -85,7 +85,7 @@ function boot(){
       appendTxt('\n');
     }
     commitLine('<span class="t-d">'+esc(SEP)+'</span>');
-    commitLine('<span class="t-d">two skins · one control plane · one catalog · one record</span>');
+    commitLine('<span class="t-d">one surface · one control plane · one catalog · one record</span>');
     appendTxt('all → ');commitLine('<a href="https://github.com/mikeparcewski" target="_blank" rel="noopener">github.com/mikeparcewski</a>');appendTxt('\n');await delay(1000);
     await typeCmd('/');showMenu('about');await delay(920);hideMenu();
     await typeCmd('about');await delay(140);commitCmd('about');await delay(160);
