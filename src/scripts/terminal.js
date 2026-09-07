@@ -66,11 +66,11 @@ function boot(){
       {name:'EXPERIENCE',cls:'t-o',note:'where product work happens',items:[
         {label:'wicked-studio',repo:'wicked-studio',desc:'brainstorm it, build it under a check nothing self-approves, then ship the doc, deck or demo'}]},
       {name:'CONTROL',cls:'t-v',note:'intent in · verified work out',items:[
-        {label:'wicked-crew',repo:'wicked-crew',desc:'runs your coding agents as governed workers — evaluator ≠ creator, evidence-gated'}]},
+        {label:'wicked-crew',repo:'wicked-crew',desc:'the harness for your agent harnesses — runs your coding agents as governed workers, evaluator ≠ creator, evidence-gated'}]},
       {name:'CAPABILITY',cls:'t-g',note:'the catalog',items:[
         {label:'wicked-garden',repo:'wicked-garden',desc:'skills + tools agents act through — councils, QE fleet, playbooks. bring your own pack'}]},
-      {name:'FOUNDATION',cls:'t-c',note:'the system of record',items:[
-        {label:'wicked-estate',repo:'wicked-estate',desc:'code graph (102 languages) + memory + knowledge in one binary — MCP'},
+      {name:'FOUNDATION',cls:'t-c',note:'the center of gravity',items:[
+        {label:'wicked-estate',repo:'wicked-estate',desc:'everything else queries it — code graph (102 langs) + memory + knowledge in one MCP binary, requirements graph as source of truth'},
         {label:'wicked-interactive',repo:'wicked-interactive',desc:'the document engine — doc storage, HTML/PDF/PPTX rendering, demo recording. you depend on it, you do not visit it'}]}
     ];
     commitLine('<span class="t-d">'+esc(SEP)+'</span>');appendTxt('\n');
@@ -86,6 +86,8 @@ function boot(){
     }
     commitLine('<span class="t-d">'+esc(SEP)+'</span>');
     commitLine('<span class="t-d">one surface · one control plane · one catalog · one record</span>');
+    commitLine('<span class="t-d">governance beyond the gate: steering · governed knowledge (agents propose, you promote) · requirements graph as source of truth</span>');
+    appendTxt('\nget it → ');commitLine('<span class="t-y t-b">npx wicked-installer</span> <span class="t-d">· Claude Code · Antigravity · Codex · OpenCode · Pi</span>');
     appendTxt('all → ');commitLine('<a href="https://github.com/mikeparcewski" target="_blank" rel="noopener">github.com/mikeparcewski</a>');appendTxt('\n');await delay(1000);
     await typeCmd('/');showMenu('about');await delay(920);hideMenu();
     await typeCmd('about');await delay(140);commitCmd('about');await delay(160);
