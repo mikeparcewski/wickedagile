@@ -80,10 +80,10 @@ const layers = [
 
 // ── MOBILE fallback data (article-style): the planes, top-down. ──────────────
 const packages = [
-  { name: 'wicked-crew', role: 'Control', color: '#d2a8ff', lang: 'JS', site: 'wc.wickedagile.com', href: 'https://wc.wickedagile.com', shot: '/screenshots/wicked-crew.png', desc: 'The control plane — intent in, verified work out. Runs your coding agents as governed workers: evaluator ≠ creator, "done" re-derived from evidence, the human in command.' },
+  { name: 'wicked-crew', role: 'Control', color: '#d2a8ff', lang: 'JS', site: 'wc.wickedagile.com', href: 'https://wc.wickedagile.com', shot: '/screenshots/wicked-crew.png', desc: 'The control plane — the harness for your agent harnesses. Runs your coding agents as governed workers: evaluator ≠ creator, "done" re-derived from evidence, the human in command.' },
   { name: 'wicked-studio', role: 'Experience', color: '#f0a868', lang: 'TS', site: 'ws.wickedagile.com', href: 'https://ws.wickedagile.com', shot: '/screenshots/wicked-studio.png', desc: 'Where product work happens — brainstorm it, build it under a check nothing self-approves, then produce the doc, deck or demo. Its own product; crew still bundles it.' },
   { name: 'wicked-garden', role: 'Capability', color: '#56d364', lang: 'JS', site: 'wg.wickedagile.com', href: 'https://wg.wickedagile.com', shot: '/screenshots/wicked-garden.png', desc: 'The catalog your agents act through — multi-model councils, graph-aware refactors, repo playbooks, the QE specialist fleet. Open to your own packs.' },
-  { name: 'wicked-estate', role: 'Foundation', color: '#79c0ff', lang: 'RS', site: 'we.wickedagile.com', href: 'https://we.wickedagile.com', shot: '/screenshots/wicked-estate.png', desc: 'The system of record — a 102-language code graph, memory, and knowledge in one binary (MCP). Zero-infra, local-first; a team profile (self-hosted Postgres) ships for the CLI and index path — MCP under team is the named follow-up.' },
+  { name: 'wicked-estate', role: 'Foundation', color: '#79c0ff', lang: 'RS', site: 'we.wickedagile.com', href: 'https://we.wickedagile.com', shot: '/screenshots/wicked-estate.png', desc: 'The center of gravity — everything else queries it. A 102-language code graph, memory, and knowledge in one MCP binary, where the requirements graph is the source of truth. Zero-infra, local-first.' },
   { name: 'wicked-interactive', role: 'Foundation', color: '#79c0ff', lang: 'TS', href: 'https://github.com/mikeparcewski/wicked-interactive', desc: 'The document engine — doc storage and version lineage, HTML/PDF/PPTX rendering, demo recording. crew spawns it as a local bridge and proxies it: you depend on it, you do not visit it.' },
 ];
 const crewPkg = packages.find((p) => p.name === 'wicked-crew');
@@ -217,7 +217,7 @@ const restPkgs = packages.filter((p) => p.name !== 'wicked-crew');
           </div>
 
           <div class="preview-readout">
-            <div class="readout-desc" id="readoutDesc">Your live technical environment, queryable — requirements↔implementation, blast-radius, infra + policy relationships, operational history.</div>
+            <div class="readout-desc" id="readoutDesc">The center of gravity — everything else queries it. The requirements graph is the source of truth: requirements↔implementation, blast-radius, infra + policy relationships, operational history.</div>
             <a class="readout-cta" id="readoutCta" href="https://we.wickedagile.com">Open ↗</a>
           </div>
         </div>
@@ -251,8 +251,10 @@ const restPkgs = packages.filter((p) => p.name !== 'wicked-crew');
       ))}
     </div>
 
-    <!-- OUTRO — the folded-in extension coda (one line, links to garden's
-         extend story). Replaces the retired full-band Extend section. -->
+    <!-- OUTRO — the forward edge (governance beyond the gate) + the install
+         next-step + the folded-in extension coda. -->
+    <p class="stack-forward">Governance beyond the gate — <b>steering</b> as citable doctrine · <b>governed knowledge</b> — agents propose, you promote · the <b>requirements graph</b> as source of truth.</p>
+    <p class="stack-install"><span class="install-lead">One install, local-first —</span> <code class="install-cmd">npx wicked-installer</code> <span class="install-clis">Claude Code · Antigravity · Codex · OpenCode · Pi</span></p>
     <p class="stack-outro">Built to be built on — the catalog is open to your own packs. <a href="https://wg.wickedagile.com/#extend">extend it in the garden →</a></p>
   </div>
 </section>
@@ -566,6 +568,26 @@ const restPkgs = packages.filter((p) => p.name !== 'wicked-crew');
 }
 .stack-outro a:hover{opacity:.78}
 .stack-outro a:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:2px}
+
+/* ── FORWARD EDGE (governance beyond the gate) + INSTALL next-step ─────── */
+.stack-forward{
+  margin:0;font-family:var(--font-mono);font-size:.62rem;letter-spacing:.03em;
+  color:var(--muted);text-align:center;line-height:1.5;max-width:78ch
+}
+.stack-forward b{color:var(--ink);font-weight:700}
+.stack-install{
+  margin:0;font-family:var(--font-mono);font-size:.64rem;letter-spacing:.02em;
+  color:var(--muted);line-height:1.5;
+  display:flex;flex-wrap:wrap;gap:5px 9px;justify-content:center;align-items:baseline
+}
+.stack-install .install-lead{color:var(--muted)}
+.stack-install .install-cmd{
+  font-family:var(--font-mono);font-weight:700;color:var(--accent);
+  background:color-mix(in oklab,var(--accent) 12%,transparent);
+  border:1px solid color-mix(in oklab,var(--accent) 32%,transparent);
+  border-radius:6px;padding:2px 8px
+}
+.stack-install .install-clis{color:var(--faint);letter-spacing:.05em}
 
 /* ── REDUCED MOTION — no rising pulse; the stack sits assembled ──────── */
 @media(prefers-reduced-motion:reduce){
