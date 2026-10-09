@@ -37,4 +37,16 @@ test.describe('reduced motion', () => {
     await expect(page.locator('#termOutput')).toContainText('w i c k e d');
     expect(errors, errors.map((e) => e.message).join('\n')).toHaveLength(0);
   });
+
+  // wicked-web#31: snapping moves the viewport for you, the motion the preference asks the page to
+  // suppress. global.css re-declares `scroll-snap-type` on html (mandatory) after the chrome's
+  // guard, so it carries the guard too; assert at a desktop width, where snapping would be on.
+  test('no scroll snapping at desktop width', async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 700 });
+    await page.goto('/', { waitUntil: 'domcontentloaded' });
+    expect(await page.evaluate(() => matchMedia('(prefers-reduced-motion: reduce)').matches)).toBe(true);
+    expect(
+      await page.evaluate(() => getComputedStyle(document.documentElement).scrollSnapType),
+    ).toBe('none');
+  });
 });
