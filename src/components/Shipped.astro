@@ -6,7 +6,7 @@
  * building" chapter of a personal apex site. The storyboard is truthful
  * architecture: one surface, one control plane, one catalog, one record. The
  * planes COMPOSE UPWARD: foundation (estate, the system of record) →
- * capability (garden, the catalog) → control (crew, verified work) → the
+ * capability (garden, the catalog) → control (crew, gated work) → the
  * EXPERIENCE capstone: one surface (wicked-studio) on one project model;
  * interactive moved to Foundation as the document engine. The CONTRACT between each pair of
  * planes is named on the seam (.stack-riser). The full product stories live
@@ -16,7 +16,7 @@
  *
  * Left column = the stack (three plane layers + the experience capstone).
  * Right column = the REUSED preview pane. All four blocks are browser-frame
- * screenshots of live sites now: studio's DNS landed, so it previews as a site
+ * screenshots of the deployed sites (badged "Site preview" — a still, not a live embed): studio's DNS landed, so it previews as a site
  * like the rest and nothing renders the faux code-card. showLib stays wired for
  * the next product that ships without a site.
  * Selecting any block drives that pane (showSite / showLib) via data-idx +
@@ -39,53 +39,54 @@
  * ledger are internal to the foundation; wicked-core is the engine inside crew.
  */
 
+import { PLANES, PRODUCTS, product } from 'wicked-web/data/family.js';
+
+// Names, links, plane hues, roles, contracts and copy come from the ONE family manifest
+// (wicked-web/data/family.js). Only the presentation contract stays here: `idx` (stable block
+// id), `preview` (index into FEATURED in ../scripts/data.js, which is built from the same
+// manifest) and `order` (the bottom-up assemble sequence shipped.js animates).
+const PRESENT = {
+  'wicked-studio': { idx: 0, preview: '0', order: 3, role: 'the surface' },
+  'wicked-crew':   { idx: 2, preview: '3', order: 2, role: 'Drive · gate · audit' },
+  'wicked-garden': { idx: 3, preview: '1', order: 1, role: 'The catalog' },
+  'wicked-estate': { idx: 4, preview: '2', order: 0, role: 'System of record' },
+};
+const blockOf = (s, plane) => ({
+  name: s.name, role: PRESENT[s.name].role, order: PRESENT[s.name].order, idx: PRESENT[s.name].idx,
+  mode: 'site', preview: PRESENT[s.name].preview, color: plane.color, tint: plane.tint, href: s.href,
+});
+const planeOf = (key) => PLANES.find((p) => p.key === key);
+const sited = (plane) => plane.products.filter((s) => s.hasSite && PRESENT[s.name]);
+
 // ── the EXPERIENCE capstone: one surface, one project model ──────────────────
-// Was two blocks, "two front doors". wicked-interactive is no longer one of them: it moved to
-// Foundation as the document engine, has no site, and wi.wickedagile.com now redirects to
-// ws.wickedagile.com. Studio is the surface, and it has its own site to preview.
+// wicked-interactive is no longer a front door: it moved to Foundation as the document engine,
+// has no site, and wi.wickedagile.com redirects to ws.wickedagile.com. The capstone label is
+// just the plane name, so it reads like the CONTROL / CAPABILITY / FOUNDATION labels beside it.
+const experience = planeOf('experience');
 const capstone = {
-  // Just the plane name. It sits in the same 88px label column as CONTROL / CAPABILITY /
-  // FOUNDATION, so it has to read like them. The role line it used to carry
-  // ("where product work happens") stacked ABOVE the block and made this the only row in the
-  // stack with two rows -- the block lined up on the same edge, but the ROW did not, and it
-  // read as a different kind of element. The role is already stated in the section intro.
-  label: 'Experience',
-  hue: '#f0a868',
-  blocks: [
-    { name: 'wicked-studio', role: 'the surface', order: 3, idx: 0, mode: 'site', preview: '0', color: '#f0a868', tint: '#f6bd8a', href: 'https://ws.wickedagile.com' },
-  ],
+  label: experience.name,
+  hue: experience.color,
+  blocks: sited(experience).map((s) => blockOf(s, experience)),
 };
 
-// ── the PLANES, TOP → BOTTOM (foundation renders last/lowest). Each block
-// keeps the data-* preview contract (idx/mode/preview|lib/role/color) plus
-// data-order = the bottom-up assemble sequence. `contract` = what crosses the
-// seam ABOVE this plane (rendered as the riser between them).
-const layers = [
-  { key: 'control', label: 'Control', hue: '#d2a8ff',
-    contract: 'submit intent · watch the run · answer gates',
-    blocks: [
-      { name: 'wicked-crew', role: 'Drive · gate · audit', order: 2, idx: 2, mode: 'site', preview: '3', color: '#d2a8ff', tint: '#e2c5ff', href: 'https://wc.wickedagile.com' },
-    ]},
-  { key: 'capability', label: 'Capability', hue: '#56d364',
-    contract: 'invokes skills as governed workers — evaluator ≠ creator',
-    blocks: [
-      { name: 'wicked-garden', role: 'The catalog', order: 1, idx: 3, mode: 'site', preview: '1', color: '#56d364', tint: '#7ee787', href: 'https://wg.wickedagile.com' },
-    ]},
-  { key: 'foundation', label: 'Foundation', hue: '#79c0ff',
-    contract: 'reads & writes the record — never around it',
-    blocks: [
-      { name: 'wicked-estate', role: 'System of record', order: 0, idx: 4, mode: 'site', preview: '2', color: '#79c0ff', tint: '#a5d6ff', href: 'https://we.wickedagile.com' },
-    ]},
-];
+// ── the PLANES below it, TOP → BOTTOM (foundation renders last/lowest). `contract` = what
+// crosses the seam ABOVE this plane (rendered as the riser between them) — i.e. the manifest's
+// seam BELOW the plane above.
+const layers = ['control', 'capability', 'foundation'].map((key) => {
+  const plane = planeOf(key);
+  const above = PLANES[PLANES.indexOf(plane) - 1];
+  return {
+    key, label: plane.name, hue: plane.color, contract: above.seam,
+    blocks: sited(plane).map((s) => blockOf(s, plane)),
+  };
+});
 
-// ── MOBILE fallback data (article-style): the planes, top-down. ──────────────
-const packages = [
-  { name: 'wicked-crew', role: 'Control', color: '#d2a8ff', lang: 'JS', site: 'wc.wickedagile.com', href: 'https://wc.wickedagile.com', shot: '/screenshots/wicked-crew.png', desc: 'The control plane — the harness for your agent harnesses. Runs your coding agents as governed workers: evaluator ≠ creator, "done" re-derived from evidence, the human in command.' },
-  { name: 'wicked-studio', role: 'Experience', color: '#f0a868', lang: 'TS', site: 'ws.wickedagile.com', href: 'https://ws.wickedagile.com', shot: '/screenshots/wicked-studio.png', desc: 'Where product work happens — brainstorm it, build it under a check nothing self-approves, then produce the doc, deck or demo. Its own product; crew still bundles it.' },
-  { name: 'wicked-garden', role: 'Capability', color: '#56d364', lang: 'JS', site: 'wg.wickedagile.com', href: 'https://wg.wickedagile.com', shot: '/screenshots/wicked-garden.png', desc: 'The catalog your agents act through — multi-model councils, graph-aware refactors, repo playbooks, the QE specialist fleet. Open to your own packs.' },
-  { name: 'wicked-estate', role: 'Foundation', color: '#79c0ff', lang: 'RS', site: 'we.wickedagile.com', href: 'https://we.wickedagile.com', shot: '/screenshots/wicked-estate.png', desc: 'The center of gravity — everything else queries it. A 102-language code graph, memory, and knowledge in one MCP binary, where the requirements graph is the source of truth. Zero-infra, local-first.' },
-  { name: 'wicked-interactive', role: 'Foundation', color: '#79c0ff', lang: 'TS', href: 'https://github.com/mikeparcewski/wicked-interactive', desc: 'The document engine — doc storage and version lineage, HTML/PDF/PPTX rendering, demo recording. crew spawns it as a local bridge and proxies it: you depend on it, you do not visit it.' },
-];
+// ── MOBILE fallback data (article-style): crew first, then the rest top-down. ─
+const packages = [product('wicked-crew'), ...PRODUCTS.filter((s) => s.name !== 'wicked-crew')].map((s) => ({
+  name: s.name, role: s.planeName, color: s.color, lang: s.lang,
+  site: s.hasSite ? s.href.replace('https://', '') : undefined, href: s.href,
+  shot: s.screenshot, desc: s.desc,
+}));
 const crewPkg = packages.find((p) => p.name === 'wicked-crew');
 const restPkgs = packages.filter((p) => p.name !== 'wicked-crew');
 ---
@@ -101,7 +102,7 @@ const restPkgs = packages.filter((p) => p.name !== 'wicked-crew');
     <div class="orbit-head">
       <span class="zone-kicker">WHAT I'VE BEEN BUILDING · FOUR PLANES · ONE SURFACE</span>
       <h2 class="zone-title">the experiment.</h2>
-      <p class="orbit-caption">What I've been building: the wicked experiment — <b>a record</b> of what's true, <b>a catalog</b> agents act through, <b>a control plane</b> that verifies the work, and <b>one surface</b> on top. Local-first, zero-infra; every block links out to its own site for the full story.</p>
+      <p class="orbit-caption">What I've been building: the wicked experiment — <b>a record</b> of what's true, <b>a catalog</b> agents act through, <b>a control plane</b> that gates the work, and <b>one surface</b> on top. Local-first, zero-infra; every block links out to its own site for the full story.</p>
     </div>
 
     <div class="build-grid">
@@ -193,7 +194,7 @@ const restPkgs = packages.filter((p) => p.name !== 'wicked-crew');
               <div class="browser-chrome">
                 <span class="lights" aria-hidden="true"><i></i><i></i><i></i></span>
                 <span class="url" id="previewUrl">we.wickedagile.com</span>
-                <span class="live"><span class="pulse" aria-hidden="true"></span>Live</span>
+                <span class="live"><span class="pulse" aria-hidden="true"></span>Site preview</span>
               </div>
               <div class="browser-shot" id="browserShot">
                 <div class="shot-bg shot-bg-back"></div>
@@ -217,7 +218,7 @@ const restPkgs = packages.filter((p) => p.name !== 'wicked-crew');
           </div>
 
           <div class="preview-readout">
-            <div class="readout-desc" id="readoutDesc">The center of gravity — everything else queries it. The requirements graph is the source of truth: requirements↔implementation, blast-radius, infra + policy relationships, operational history.</div>
+            <div class="readout-desc" id="readoutDesc">{product('wicked-estate').desc}</div>
             <a class="readout-cta" id="readoutCta" href="https://we.wickedagile.com">Open ↗</a>
           </div>
         </div>
@@ -228,7 +229,7 @@ const restPkgs = packages.filter((p) => p.name !== 'wicked-crew');
     <div class="shipped-mobile" aria-label="the wicked experiment — four planes, plane by plane">
       <a class="expm-feat" href={crewPkg.href} target="_self" rel="noopener" style={`--role:${crewPkg.color}`}>
         <div class="expm-feat-shot" style={crewPkg.shot ? `background-image:url('${crewPkg.shot}')` : ''}>
-          <span class="expm-feat-tag">Control · the plane that verifies</span>
+          <span class="expm-feat-tag">Control · the plane that gates</span>
         </div>
         <div class="expm-feat-body">
           <h3 class="expm-feat-name">wicked-crew</h3>
@@ -246,14 +247,14 @@ const restPkgs = packages.filter((p) => p.name !== 'wicked-crew');
             <span class="expm-title"><b>{p.name}</b><span class="expm-role">{p.role}</span></span>
             <span class="expm-desc">{p.desc}</span>
           </span>
-          <span class="expm-badge">{p.site ? 'live ↗' : 'repo ↗'}</span>
+          <span class="expm-badge">{p.site ? 'site ↗' : 'repo ↗'}</span>
         </a>
       ))}
     </div>
 
     <!-- OUTRO — the forward edge (governance beyond the gate) + the install
          next-step + the folded-in extension coda. -->
-    <p class="stack-forward">Governance beyond the gate — <b>steering</b> as citable doctrine · <b>governed knowledge</b> — agents propose, you promote · the <b>requirements graph</b> as source of truth.</p>
+    <p class="stack-forward">Governance beyond the gate — <b>steering</b> as citable doctrine · <b>governed knowledge</b> — agents propose, you promote · <b>requirement ↔ code links</b> in the record.</p>
     <p class="stack-install"><span class="install-lead">One install, local-first —</span> <code class="install-cmd">npx wicked-installer</code> <span class="install-clis">Claude Code · Antigravity · Codex · OpenCode · Pi</span></p>
     <p class="stack-outro">Built to be built on — the catalog is open to your own packs. <a href="https://wg.wickedagile.com/#extend">extend it in the garden →</a></p>
   </div>
