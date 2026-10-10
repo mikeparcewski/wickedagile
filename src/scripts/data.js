@@ -5,6 +5,7 @@
    shipped split-editor (shipped.js).
    ────────────────────────────────────────────────────────────── */
 'use strict';
+import { product } from 'wicked-web/data/family.js';
 
 /* ── HELPERS ──────────────────────────────────────────────────── */
 export function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
@@ -30,21 +31,14 @@ export var reposPromise=fetch('https://api.github.com/users/mikeparcewski/repos?
 
 /* ── FEATURED ─────────────────────────────────────────────────── */
 /* The DEPLOYED sites shown in the platform's center preview (browser-frame
-   mode). Screenshots resolve from the public/ root → '/screenshots/<name>.png'.
-   Consumed by shipped.js via each station's data-preview index. Four live
-   sites — one per plane product: interactive (experience) · garden
-   (capability) · estate (foundation) · crew (control). Each carries its OWN
-   real screenshot + a plane-specific tagline so no preview reads as a
-   template. (wicked-interactive no longer previews here: it moved to Foundation
-   as the document engine and has no site — crew spawns it and proxies it, so
-   there is nothing for a visitor to open.) */
-export var FEATURED=[
-  {name:'wicked-studio',url:'https://ws.wickedagile.com',screenshot:'/screenshots/wicked-studio.png',
-   desc:'Where product work happens — brainstorm it, build it under a check nothing self-approves, then produce the doc, deck or demo. A pure client of crew\u2019s API.'},
-  {name:'wicked-garden',url:'https://wg.wickedagile.com',screenshot:'/screenshots/wicked-garden.png',
-   desc:'The catalog your agents act through — multi-model councils, graph-aware refactors, repo playbooks, the QE specialist fleet. Open to your own packs.'},
-  {name:'wicked-estate',url:'https://we.wickedagile.com',screenshot:'/screenshots/wicked-estate.png',
-   desc:'The center of gravity — everything else queries it. Code graph, memory, and knowledge in one MCP binary, including the injected edges grep never sees.'},
-  {name:'wicked-crew',url:'https://wc.wickedagile.com',screenshot:'/screenshots/wicked-crew.png',
-   desc:'The control plane — the harness for your agent harnesses. Intent in, verified work out: evaluator ≠ creator, "done" re-derived from evidence, the human in command.'},
-];
+   mode, badged "Site preview": a screenshot, not a live embed). Built from the
+   ONE family manifest (wicked-web/data/family.js) so names, links and copy
+   match the stack, the nav and the footer. The ORDER is the preview contract:
+   Shipped.astro's PRESENT map points each block's data-preview at an index
+   here. Screenshots resolve from the public/ root → '/screenshots/<name>.png'.
+   (wicked-interactive has no site — crew spawns and proxies it — so it never
+   previews here.) */
+export var FEATURED=['wicked-studio','wicked-garden','wicked-estate','wicked-crew'].map(function(name){
+  var s=product(name);
+  return {name:s.name,url:s.href,screenshot:s.screenshot,desc:s.desc};
+});

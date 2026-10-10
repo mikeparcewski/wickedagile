@@ -12,7 +12,7 @@ __      _(_) ___| | _____  __| | __ _  __ _(_) | ___
 The owner's **personal apex** — one architect's body of work: the things he
 builds (the **wicked-\*** platform, four planes) and the things he publishes
 (the dispatch feed), finishing with a little about him. The product *selling*
-lives on the per-product deep-dive sites (wc/we/wg/wi/ws); this page shows the
+lives on the per-product deep-dive sites (wc/we/wg/ws; wi now redirects to ws); this page shows the
 work and links out. It is also the **canonical style source** for the family:
 the design tokens, fonts, theme system, topbar, footer, and hero terminal
 defined here are the reference the sibling sites (wicked-garden,
@@ -26,10 +26,14 @@ wicked-interactive, wicked-estate, …) are meant to match.
   the hero terminal session).
 - **Design tokens** live in `src/styles/tokens.css` (the `:root` + `[data-theme="light"]`
   custom properties and the global base) and are imported via `src/styles/global.css`.
-- **Shared data module** (`src/scripts/data.js`) holds the Medium RSS CORS-proxy
-  race, the GitHub repos fetch, the helpers, and the `FEATURED` site list. The hero
-  terminal (`src/scripts/terminal.js`) imports from it; the finalized middle
-  sections will too.
+- **Family facts come from one manifest** — `wicked-web/data/family.js` (planes,
+  products, links, hues, one-line claims). `Shipped.astro` builds its stack and
+  mobile list from it, `src/scripts/data.js` builds the `FEATURED` preview list
+  from it, and the hero terminal's `/projects` readout reads it; the Topbar,
+  Footer and SameGarden map in wicked-web render from the same file. Change a
+  product's name, link or claim there, then re-pin `wicked-web` here.
+- **Shared data module** (`src/scripts/data.js`) holds the baked articles
+  promise, the GitHub repos fetch, the helpers, and `FEATURED`.
 
 ## Develop
 
@@ -61,18 +65,20 @@ Every section is implemented and content-complete, in page order:
 - `src/components/Hero.astro` — the builder/writer hero ("The best code tells
   a story. The best stories have architecture.") with the live auto-typing
   terminal (`/articles`, `/projects`, `/about`; disabled on mobile).
-- `src/components/Shipped.astro` — "the platform.": what I've been building,
-  as the **four-plane stack** (two skins, one control plane, one catalog, one
-  record). Foundation (wicked-estate) → Capability (wicked-garden) → Control
-  (wicked-crew) → the Experience capstone holding both skins (studio ·
-  wicked-interactive), with the contract named on every seam. A spine pulse
-  rises foundation → skins; every block drives a dual-mode preview
-  (browser-frame screenshots for the 4 live sites, a faux code-editor card for
-  studio, which ships inside crew) and links out to the plane's own deep-dive
-  site. The retired "build on it." Extend band survives as one outro line
-  linking to garden's `#extend`. Retired/absorbed packages (testing → garden +
-  crew, brain → estate, bus/vault/ledger internal, core inside crew) are not
-  shown as standalone products.
+- `src/components/Shipped.astro` — "the experiment.": what I've been building,
+  as the **four-plane stack** (one surface, one control plane, one catalog, one
+  record). Foundation (wicked-estate, with wicked-interactive as the document
+  engine) → Capability (wicked-garden) → Control (wicked-crew) → the Experience
+  capstone holding **one surface**, wicked-studio, with the contract named on
+  every seam. A spine pulse rises foundation → surface; every block drives the
+  preview pane — a browser-frame screenshot of that product's deployed site,
+  badged "Site preview" (a still, not a live embed) — and links out to the
+  plane's own deep-dive site. wicked-interactive has no site (crew spawns and
+  proxies it), so it appears only in the mobile list and the hero terminal. The
+  retired "build on it." Extend band survives as one outro line linking to
+  garden's `#extend`. Retired/absorbed packages (testing → garden + crew, brain
+  → estate, bus/vault/ledger internal, core inside crew) are not shown as
+  standalone products.
 - `src/components/Articles.astro` — the "yes, and…" dispatch feed, baked from
   the Medium RSS at build time (`src/lib/articles.mjs`).
 - `src/components/About.astro` — the closer: the multi-chapter career rail
