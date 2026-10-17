@@ -12,15 +12,15 @@ __      _(_) ___| | _____  __| | __ _  __ _(_) | ___
 The **wicked family's front door** and the builder's showcase. It leads with the platform: the
 family one-liner (*Your coding agents do the work. A different agent checks it against your rules.
 You get the evidence.*), how it works in five steps, and the four-plane stack. Then **Built by Mike
-Parcewski**: why it was built, the hard problems it solves, and how to reach him, followed by the
+Parcewski**: why it was built, the hard problems it solves, and where to see more of his work, followed by the
 dispatch feed and the career chapters. Product deep dives live on the per-product sites
 (wc/we/wg/ws; wi redirects to ws). It is also the **canonical style source** for the family: the
 design tokens, fonts, theme system, topbar, footer, and hero terminal defined here are the reference
 the sibling sites are meant to match.
 
 Copy rule: say what ships today in plain words (job, agent, sandbox, rules), and never invent bio
-facts. Anything about the builder that is not already public is an `[ADD: …]` placeholder for the
-owner to fill.
+facts. The builder section is a showcase, not a job ad: it links only to what the site already
+carries (GitHub, Medium, the career chapters).
 
 ## Tech
 

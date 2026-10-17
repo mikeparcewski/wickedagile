@@ -27,7 +27,7 @@ test.describe('editorial identity', () => {
     await expect(page).toHaveTitle('wicked — your coding agents, checked against your rules');
   });
 
-  test('the builder section names who built it and how to reach him', async ({ page }) => {
+  test('the builder section names who built it and links to more of his work', async ({ page }) => {
     await expect(page.locator('#builder h2')).toHaveText('Built by Mike Parcewski.');
     await expect(page.locator('#builder .builder-problem')).toHaveCount(4);
     await expect(page.locator('#builder .builder-reach a[href="https://github.com/mikeparcewski"]')).toBeAttached();

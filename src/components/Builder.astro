@@ -1,12 +1,12 @@
 ---
 /**
  * Builder.astro — "built by": who built the platform, why, the hard problems it
- * solves, and how to reach him. Prominent but not the lead (the platform leads).
+ * solves, and where to see more of his work. Prominent but not the lead (the platform leads).
  *
  * FACT RULE: no invented bio. Everything here is either already public on this
  * site / the family repos (name, ~30 years, GitHub, Medium) or a description of
- * what ships in the code. Anything else is an explicit [ADD: …] placeholder for
- * the owner to fill before this deploys.
+ * what ships in the code. It is a showcase, not a job ad: no contact solicitation,
+ * only the links the site already carries.
  */
 const PROBLEMS = [
   {
@@ -35,12 +35,10 @@ const PROBLEMS = [
       <h2 class="zone-title" id="builderHeading">Built by Mike Parcewski.</h2>
       <p class="builder-lede">After about thirty years of shipping software, one question was left: what does it take to trust work an agent did? wicked is the answer, built in the open on GitHub, and its own changes ship through it.</p>
       <p class="builder-arch"><b>Under the hood:</b> a Rust engine and a Rust code graph (114 languages, served over MCP), TypeScript surfaces, embedded SQLite for crash-safe state, and an event bus with dead-lettering and replay. Four layers: one surface, one control plane, one catalog, one record.</p>
-      <p class="builder-note">[ADD: one or two sentences on what you are looking for next: role type, location or remote]</p>
       <div class="builder-reach">
-        <span class="builder-reach-label">Reach Mike</span>
+        <span class="builder-reach-label">More from Mike</span>
         <a href="https://github.com/mikeparcewski" target="_blank" rel="noopener">GitHub ↗</a>
         <a href="https://medium.com/@mike.parcewski" target="_blank" rel="noopener">Writing ↗</a>
-        <span class="builder-placeholder">[ADD: preferred contact: email, LinkedIn or booking link]</span>
         <a href="#about">The career ↓</a>
       </div>
     </div>
@@ -67,11 +65,6 @@ const PROBLEMS = [
 .builder-lede{margin:0;font-size:clamp(1rem,1.5vw,1.2rem);line-height:1.45;color:var(--ink)}
 .builder-arch{margin:0;font-size:.9rem;line-height:1.5;color:var(--muted)}
 .builder-arch b{color:var(--ink)}
-.builder-note,.builder-placeholder{
-  margin:0;font-family:var(--font-mono);font-size:.72rem;line-height:1.5;
-  color:var(--accent);border:1px dashed color-mix(in oklab,var(--accent) 45%,transparent);
-  border-radius:6px;padding:6px 9px
-}
 .builder-reach{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;font-family:var(--font-mono);font-size:.74rem}
 .builder-reach-label{color:var(--faint);letter-spacing:.18em;text-transform:uppercase;font-size:.62rem}
 .builder-reach a{color:var(--accent);text-decoration:none;font-weight:700;border-bottom:1px solid color-mix(in oklab,var(--accent) 40%,transparent)}
