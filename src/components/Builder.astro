@@ -1,0 +1,91 @@
+---
+/**
+ * Builder.astro — "built by": who built the platform, why, the hard problems it
+ * solves, and how to reach him. Prominent but not the lead (the platform leads).
+ *
+ * FACT RULE: no invented bio. Everything here is either already public on this
+ * site / the family repos (name, ~30 years, GitHub, Medium) or a description of
+ * what ships in the code. Anything else is an explicit [ADD: …] placeholder for
+ * the owner to fill before this deploys.
+ */
+const PROBLEMS = [
+  {
+    h: 'Governed multi-agent delivery',
+    p: 'Jobs are durable, resumable workflows defined as data, on a Rust engine with a single-writer core. Every phase ends at a gate that says what it checked, and one failed check stops the job.',
+  },
+  {
+    h: 'Sandboxed agents',
+    p: 'Each agent runs in a hardened container: all capabilities dropped, a read-only root, its own network whose only exit is a model gateway, and Landlock inside. Keys stay in a broker; the sandbox sees placeholders.',
+  },
+  {
+    h: 'A different agent reviews the work',
+    p: 'The agent that built a change cannot approve it. When no other agent is available the job stops, or it runs as “reduced assurance”, labelled on the job, every gate and the delivery.',
+  },
+  {
+    h: 'Evidence trails',
+    p: '“Done” is re-derived from evidence in a ledger, never asserted. App changes need an attributed acceptance pass before anything is pushed, and every job keeps who built it, who checked it, what ran and what was skipped.',
+  },
+];
+---
+
+<section class="builder-section snap-section" id="builder" aria-labelledby="builderHeading">
+  <div class="builder-shell">
+    <div class="builder-intro">
+      <span class="zone-kicker">THE BUILDER</span>
+      <h2 class="zone-title" id="builderHeading">Built by Mike Parcewski.</h2>
+      <p class="builder-lede">After about thirty years of shipping software, one question was left: what does it take to trust work an agent did? wicked is the answer, built in the open on GitHub, and its own changes ship through it.</p>
+      <p class="builder-arch"><b>Under the hood:</b> a Rust engine and a Rust code graph (114 languages, served over MCP), TypeScript surfaces, embedded SQLite for crash-safe state, and an event bus with dead-lettering and replay. Four layers: one surface, one control plane, one catalog, one record.</p>
+      <p class="builder-note">[ADD: one or two sentences on what you are looking for next: role type, location or remote]</p>
+      <div class="builder-reach">
+        <span class="builder-reach-label">Reach Mike</span>
+        <a href="https://github.com/mikeparcewski" target="_blank" rel="noopener">GitHub ↗</a>
+        <a href="https://medium.com/@mike.parcewski" target="_blank" rel="noopener">Writing ↗</a>
+        <span class="builder-placeholder">[ADD: preferred contact: email, LinkedIn or booking link]</span>
+        <a href="#about">The career ↓</a>
+      </div>
+    </div>
+    <ul class="builder-problems" aria-label="Hard problems solved">
+      {PROBLEMS.map((x) => (
+        <li class="builder-problem">
+          <h3>{x.h}</h3>
+          <p>{x.p}</p>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<style is:global>
+.builder-section{
+  border-top:1px solid var(--hairline);
+  scroll-margin-top:var(--topbar-h);
+  display:flex;align-items:center;
+  padding:calc(var(--topbar-h) + 28px) 28px 56px;
+}
+.builder-shell{width:100%;max-width:1240px;margin:0 auto;display:grid;grid-template-columns:5fr 6fr;gap:44px;align-items:start}
+.builder-intro{display:flex;flex-direction:column;gap:14px}
+.builder-lede{margin:0;font-size:clamp(1rem,1.5vw,1.2rem);line-height:1.45;color:var(--ink)}
+.builder-arch{margin:0;font-size:.9rem;line-height:1.5;color:var(--muted)}
+.builder-arch b{color:var(--ink)}
+.builder-note,.builder-placeholder{
+  margin:0;font-family:var(--font-mono);font-size:.72rem;line-height:1.5;
+  color:var(--accent);border:1px dashed color-mix(in oklab,var(--accent) 45%,transparent);
+  border-radius:6px;padding:6px 9px
+}
+.builder-reach{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;font-family:var(--font-mono);font-size:.74rem}
+.builder-reach-label{color:var(--faint);letter-spacing:.18em;text-transform:uppercase;font-size:.62rem}
+.builder-reach a{color:var(--accent);text-decoration:none;font-weight:700;border-bottom:1px solid color-mix(in oklab,var(--accent) 40%,transparent)}
+.builder-reach a:hover{opacity:.8}
+.builder-problems{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.builder-problem{
+  background:color-mix(in oklab,var(--canvas-2) 88%,transparent);
+  border:1px solid var(--hairline);border-radius:10px;padding:18px 18px 20px
+}
+.builder-problem h3{margin:0 0 8px;font-family:var(--font-display);font-weight:800;font-stretch:110%;font-size:1rem;line-height:1.2;color:var(--ink)}
+.builder-problem p{margin:0;font-size:.86rem;line-height:1.45;color:var(--muted)}
+@media(max-width:960px){.builder-shell{grid-template-columns:1fr;gap:28px}}
+@media(max-width:600px){
+  .builder-section{padding:40px 20px 36px}
+  .builder-problems{grid-template-columns:1fr}
+}
+</style>

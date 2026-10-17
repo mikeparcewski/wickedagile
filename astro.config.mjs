@@ -12,5 +12,7 @@ const alias = existsSync(localUI) ? { 'wicked-web': localUI } : {};
 export default defineConfig({
   site: 'https://wickedagile.com',
   output: 'static',
+  // Astro's HTML compression deletes the space before inline tags (<b>, <code>) and fuses words.
+  compressHTML: false,
   vite: { resolve: { alias } },
 });

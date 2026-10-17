@@ -47,9 +47,9 @@ import { PLANES, PRODUCTS, product } from 'wicked-web/data/family.js';
 // manifest) and `order` (the bottom-up assemble sequence shipped.js animates).
 const PRESENT = {
   'wicked-studio': { idx: 0, preview: '0', order: 3, role: 'the surface' },
-  'wicked-crew':   { idx: 2, preview: '3', order: 2, role: 'Drive · gate · audit' },
-  'wicked-garden': { idx: 3, preview: '1', order: 1, role: 'The catalog' },
-  'wicked-estate': { idx: 4, preview: '2', order: 0, role: 'System of record' },
+  'wicked-crew':   { idx: 2, preview: '3', order: 2, role: 'Runs and checks jobs' },
+  'wicked-garden': { idx: 3, preview: '1', order: 1, role: 'Skills and tools' },
+  'wicked-estate': { idx: 4, preview: '2', order: 0, role: 'What agents know' },
 };
 const blockOf = (s, plane) => ({
   name: s.name, role: PRESENT[s.name].role, order: PRESENT[s.name].order, idx: PRESENT[s.name].idx,
@@ -100,16 +100,16 @@ const restPkgs = packages.filter((p) => p.name !== 'wicked-crew');
   <div class="build-shell">
     <!-- compact header -->
     <div class="orbit-head">
-      <span class="zone-kicker">WHAT I'VE BEEN BUILDING · FOUR PLANES · ONE SURFACE</span>
-      <h2 class="zone-title">the experiment.</h2>
-      <p class="orbit-caption">What I've been building: the wicked experiment — <b>a record</b> of what's true, <b>a catalog</b> agents act through, <b>a control plane</b> that gates the work, and <b>one surface</b> on top. Local-first, zero-infra; every block links out to its own site for the full story.</p>
+      <span class="zone-kicker">THE ARCHITECTURE · FOUR LAYERS · ONE SURFACE</span>
+      <h2 class="zone-title">the platform.</h2>
+      <p class="orbit-caption">Four products, one stack: <b>a record</b> of what's true about your code, <b>a catalog</b> of skills agents act through, <b>a control plane</b> that runs and checks the jobs, and <b>one surface</b> where you direct it all. Local, no servers to run; every block links out to its own site.</p>
     </div>
 
     <div class="build-grid">
       <!-- ── LEFT: the four-plane stack ──────────────────────────────── -->
       <div class="stack-col">
         <div class="stack" id="stackRoot" role="group"
-             aria-label="The wicked experiment, four planes: the foundation (wicked-estate, the system of record), the capability catalog (wicked-garden), the control plane (wicked-crew), and the experience plane on top — one surface, wicked-studio, on one project model.">
+             aria-label="The wicked platform, four layers: the foundation (wicked-estate, the system of record), the capability catalog (wicked-garden), the control plane (wicked-crew), and the experience plane on top — one surface, wicked-studio, on one project model.">
 
           <!-- the rising "energy" pulse (travels the spine, driven by shipped.js) -->
           <span class="spine-pulse" id="spinePulse" aria-hidden="true"></span>
@@ -177,7 +177,7 @@ const restPkgs = packages.filter((p) => p.name !== 'wicked-crew');
           ))}
         </div>
 
-        <p class="stack-hint">Energy rises foundation → surface · click a block to preview · arrow keys walk the stack</p>
+        <p class="stack-hint">Click a block to preview its site</p>
       </div>
 
       <!-- ── RIGHT: the REUSED preview pane ───────────────────────────── -->
@@ -226,10 +226,10 @@ const restPkgs = packages.filter((p) => p.name !== 'wicked-crew');
     </div>{/* .build-grid */}
 
     <!-- MOBILE (≤880): the control plane, then the rest as a plane-labelled list. -->
-    <div class="shipped-mobile" aria-label="the wicked experiment — four planes, plane by plane">
+    <div class="shipped-mobile" aria-label="the wicked platform, layer by layer">
       <a class="expm-feat" href={crewPkg.href} target="_self" rel="noopener" style={`--role:${crewPkg.color}`}>
         <div class="expm-feat-shot" style={crewPkg.shot ? `background-image:url('${crewPkg.shot}')` : ''}>
-          <span class="expm-feat-tag">Control · the plane that gates</span>
+          <span class="expm-feat-tag">Control · runs and checks the jobs</span>
         </div>
         <div class="expm-feat-body">
           <h3 class="expm-feat-name">wicked-crew</h3>
@@ -254,8 +254,8 @@ const restPkgs = packages.filter((p) => p.name !== 'wicked-crew');
 
     <!-- OUTRO — the forward edge (governance beyond the gate) + the install
          next-step + the folded-in extension coda. -->
-    <p class="stack-forward">Governance beyond the gate — <b>steering</b> as citable doctrine · <b>governed knowledge</b> — agents propose, you promote · <b>requirement ↔ code links</b> in the record.</p>
-    <p class="stack-install"><span class="install-lead">One install, local-first —</span> <code class="install-cmd">npx wicked-installer</code> <span class="install-clis">Claude Code · Antigravity · Codex · OpenCode · Pi</span></p>
+    <p class="stack-forward"><b>Rules</b> you set apply everywhere, to one project or to one repo · <b>memory</b> (what happened, what you told it) stays separate from <b>knowledge</b> (what was learned from your code and docs) · agents suggest, you approve.</p>
+    <p class="stack-install"><span class="install-lead">One install —</span> <code class="install-cmd">npx wicked-installer</code> <span class="install-clis">Claude Code · Antigravity · Codex · OpenCode · Pi</span> <span class="install-lead">· jobs run agents in containers: Docker, Podman, Rancher Desktop, Colima or OrbStack</span></p>
     <p class="stack-outro">Built to be built on — the catalog is open to your own packs. <a href="https://wg.wickedagile.com/#extend">extend it in the garden →</a></p>
   </div>
 </section>

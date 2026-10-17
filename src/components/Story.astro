@@ -1,0 +1,58 @@
+---
+/**
+ * Story.astro — "how it works": the platform's core story in five steps, right
+ * under the hero. Plain words only (job, agent, sandbox, rules); every step is
+ * something that ships today (crew 0.13 / studio 0.9). Keep it in step with
+ * wicked-web's family manifest and the product sites.
+ */
+const STEPS = [
+  { n: '01', h: 'Ask in a chat', p: 'Start a New job in studio with a chat. It proposes a plan, and nothing starts until you confirm it.' },
+  { n: '02', h: 'Your agents, sandboxed', p: 'Claude Code, Codex, Copilot, OpenCode or Pi, signed in once on the Agents tab, each work in a sandbox that sees your repo and never your real keys.' },
+  { n: '03', h: 'A different agent checks', p: 'Review goes to an agent other than the builder, against your rules. One failed check stops the job. If no other agent is available, the job stops unless you choose “reduced assurance”, which is labelled everywhere.' },
+  { n: '04', h: 'Tested before delivery', p: 'Jobs that change your app pass acceptance testing before anything is delivered. Skipping it takes a reason, and the skip is labelled.' },
+  { n: '05', h: 'You get the evidence', p: 'The change arrives with who built it, who checked it, what ran and what was skipped. What the team learned becomes memory you can see and edit.' },
+];
+---
+
+<section class="story-section snap-section" id="how" aria-labelledby="storyHeading">
+  <div class="story-shell">
+    <div class="story-head">
+      <span class="zone-kicker">HOW IT WORKS · FIVE STEPS</span>
+      <h2 class="zone-title" id="storyHeading">intent in. checked work out.</h2>
+    </div>
+    <ol class="story-steps">
+      {STEPS.map((s) => (
+        <li class="story-step">
+          <span class="story-n" aria-hidden="true">{s.n}</span>
+          <h3 class="story-h">{s.h}</h3>
+          <p class="story-p">{s.p}</p>
+        </li>
+      ))}
+    </ol>
+  </div>
+</section>
+
+<style is:global>
+.story-section{
+  border-top:1px solid var(--hairline);
+  scroll-margin-top:var(--topbar-h);
+  display:flex;align-items:center;
+  padding:calc(var(--topbar-h) + 28px) 28px 48px;
+}
+.story-shell{width:100%;max-width:1240px;margin:0 auto;display:flex;flex-direction:column;gap:28px}
+.story-head{display:flex;flex-direction:column;gap:10px}
+.story-steps{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(5,1fr);gap:14px;counter-reset:none}
+.story-step{
+  background:color-mix(in oklab,var(--canvas-2) 88%,transparent);
+  border:1px solid var(--hairline);border-radius:10px;padding:18px 16px 20px;
+  display:flex;flex-direction:column;gap:8px
+}
+.story-n{font-family:var(--font-mono);font-size:.66rem;letter-spacing:.2em;color:var(--accent);font-weight:700}
+.story-h{margin:0;font-family:var(--font-display);font-weight:800;font-stretch:110%;font-size:1.02rem;line-height:1.15;color:var(--ink)}
+.story-p{margin:0;font-size:.86rem;line-height:1.45;color:var(--muted)}
+@media(max-width:1100px){.story-steps{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:600px){
+  .story-section{padding:40px 20px 32px}
+  .story-steps{grid-template-columns:1fr}
+}
+</style>

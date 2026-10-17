@@ -66,10 +66,10 @@ test.describe('shipped stack', () => {
     expect(page.url()).toContain('127.0.0.1');
 
     await expect(page.locator('#previewUrl')).toHaveText('wg.wickedagile.com');
-    await expect(page.locator('#centerRole')).toHaveText('The catalog');
+    await expect(page.locator('#centerRole')).toHaveText('Skills and tools');
     await expect(page.locator('#browserFrame')).toBeVisible();
     await expect(page.locator('#codeCard')).toBeHidden();
-    await expect(page.locator('#readoutDesc')).toContainText('catalog');
+    await expect(page.locator('#readoutDesc')).toContainText('skills');
     await expect(garden).toHaveAttribute('aria-current', 'true');
   });
 
