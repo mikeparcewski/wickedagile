@@ -1,10 +1,10 @@
 ---
 /**
- * index.astro — the wickedagile.com landing page: the owner's PERSONAL APEX.
- * The story is the person who writes and builds — hero (builder/writer voice)
- * → the things I build (the four-plane stack) → the things I publish (the
- * dispatch feed) → a little about me (the chapters). The product SELLING
- * lives on the per-product deep-dive sites (wc/we/wg/wi/ws), not here.
+ * index.astro — the wickedagile.com landing page: the wicked FAMILY FRONT DOOR
+ * and the builder's showcase. The platform leads — hero (the family one-liner)
+ * → how it works (five steps) → the platform (the four-plane stack) → built by
+ * (who, why, the hard problems, more of his work) → the dispatch feed → the
+ * career chapters. Product deep dives live on the per-product sites (wc/we/wg/ws).
  * Articles are fetched at BUILD TIME and baked in (no client-side RSS).
  */
 import Base from 'wicked-web/layouts/Base.astro';
@@ -12,7 +12,9 @@ import '../styles/global.css';
 import Topbar from 'wicked-web/components/Topbar.astro';
 import Hero from '../components/Hero.astro';
 import Articles from '../components/Articles.astro';
+import Story from '../components/Story.astro';
 import Shipped from '../components/Shipped.astro';
+import Builder from '../components/Builder.astro';
 import About from '../components/About.astro';
 import Footer from 'wicked-web/components/Footer.astro';
 import { getArticles } from '../lib/articles.mjs';
@@ -24,13 +26,15 @@ const articlesJson = JSON.stringify(articles).replace(/</g, '\\u003c');
 ---
 
 <Base
-  title="wickedagile — the best code tells a story"
-  description="Mike Parcewski's body of work — the wicked experiment he's running (four planes of local-first, AI-native infrastructure for coding agents), the dispatches he writes, and a little about the person behind both."
+  title="wicked — your coding agents, checked against your rules"
+  description="Your coding agents do the work. A different agent checks it against your rules. You get the evidence. The wicked platform (studio, crew, garden, estate) and the architect who built it, Mike Parcewski."
 >
   <script is:inline set:html={`window.__ARTICLES__=${articlesJson};`}></script>
   <Topbar repo="https://github.com/mikeparcewski" />
   <Hero />
+  <Story />
   <Shipped />
+  <Builder />
   <Articles articles={articles} />
   <About />
   <Footer repo="https://github.com/mikeparcewski" />

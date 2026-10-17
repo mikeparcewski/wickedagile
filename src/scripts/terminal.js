@@ -38,8 +38,9 @@ function boot(){
   var SPLASH=['','  ┌───────────────────────────────────────────┐','  │                                           │','  │     w i c k e d  ·  a g i l e            │','  │                                           │','  │     ai-native  ·  local-first  ·  v2026   │','  │                                           │','  └───────────────────────────────────────────┘',''];
   async function runSession(){
     for(var i=0;i<SPLASH.length;i++){commitLine('<span class="t-c">'+esc(SPLASH[i])+'</span>');await delay(38)}
-    commitLine('<span class="t-d">  the best code tells a story.</span>');
-    commitLine('<span class="t-d">  the best stories have architecture.</span>');
+    commitLine('<span class="t-d">  your coding agents do the work.</span>');
+    commitLine('<span class="t-d">  a different agent checks it against your rules.</span>');
+    commitLine('<span class="t-d">  you get the evidence.</span>');
     appendTxt('\n');commitLine('<span style="opacity:.2;font-size:.68em">  type / to explore  ·  or watch this run</span>');appendTxt('\n');await delay(1500);
     await typeCmd('/');showMenu('articles');await delay(920);hideMenu();
     await typeCmd('articles');await delay(140);commitCmd('articles');await delay(160);
@@ -80,8 +81,8 @@ function boot(){
     }
     commitLine('<span class="t-d">'+esc(SEP)+'</span>');
     commitLine('<span class="t-d">one surface · one control plane · one catalog · one record</span>');
-    commitLine('<span class="t-d">governance beyond the gate: steering · governed knowledge (agents propose, you promote) · requirements graph as source of truth</span>');
-    appendTxt('\nget it → ');commitLine('<span class="t-y t-b">npx wicked-installer</span> <span class="t-d">· Claude Code · Antigravity · Codex · OpenCode · Pi</span>');
+    commitLine('<span class="t-d">rules you set (everywhere, per project or per repo) · memory you can see and edit · knowledge learned from your code and docs</span>');
+    appendTxt('\nget it → ');commitLine('<span class="t-y t-b">npx wicked-installer</span> <span class="t-d">· Claude Code · Antigravity · Codex · OpenCode · Pi · jobs need a container runtime</span>');
     appendTxt('all → ');commitLine('<a href="https://github.com/mikeparcewski" target="_blank" rel="noopener">github.com/mikeparcewski</a>');appendTxt('\n');await delay(1000);
     await typeCmd('/');showMenu('about');await delay(920);hideMenu();
     await typeCmd('about');await delay(140);commitCmd('about');await delay(160);
