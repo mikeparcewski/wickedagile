@@ -11,7 +11,7 @@
 const PROBLEMS = [
   {
     h: 'Governed multi-agent delivery',
-    p: 'Jobs are durable, resumable workflows defined as data, on a Rust engine with a single-writer core. Every phase ends at a gate that says what it checked, and one failed check stops the job.',
+    p: 'Jobs are durable, resumable workflows defined as data, on a Rust engine with a single-writer core. By default one agent builds the change in checkpointed turns, and its rigor is re-scored from the diff. Every gate says what it checked, and a failed check sends the work back or stops the job.',
   },
   {
     h: 'Sandboxed agents',
@@ -19,11 +19,11 @@ const PROBLEMS = [
   },
   {
     h: 'A different agent reviews the work',
-    p: 'The agent that built a change cannot approve it. When no other agent is available the job stops, or it runs as “reduced assurance”, labelled on the job, every gate and the delivery.',
+    p: 'The agent that built a change cannot approve it. When no other agent is available the job stops, unless you launch it as “reduced assurance”, labelled on the job, every gate and the delivery.',
   },
   {
     h: 'Evidence trails',
-    p: '“Done” is re-derived from evidence in a ledger, never asserted. App changes need an attributed acceptance pass before anything is pushed, and every job keeps who built it, who checked it, what ran and what was skipped.',
+    p: '“Done” is re-derived from evidence in a ledger, never asserted. App changes need an attributed acceptance pass before anything is pushed, unless a labelled waiver or skip says otherwise, and every job keeps who built it, who checked it, what ran and what was skipped.',
   },
 ];
 ---
