@@ -41,7 +41,7 @@ function boot(){
     commitLine('<span class="t-d">  your coding agents do the work.</span>');
     commitLine('<span class="t-d">  a different agent checks it against your rules.</span>');
     commitLine('<span class="t-d">  you get the evidence.</span>');
-    appendTxt('\n');commitLine('<span style="opacity:.2;font-size:.68em">  type / to explore  ·  or watch this run</span>');appendTxt('\n');await delay(1500);
+    appendTxt('\n');commitLine('<span style="opacity:.45;font-size:var(--text-caption)">  type / to explore  ·  or watch this run</span>');appendTxt('\n');await delay(1500);
     await typeCmd('/');showMenu('articles');await delay(920);hideMenu();
     await typeCmd('articles');await delay(140);commitCmd('articles');await delay(160);
     await typeOut('\n'+randFrom(ART_I)+'\n\n',17);

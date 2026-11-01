@@ -113,7 +113,7 @@ const SHORT = ["Early Years", "Scale", "Architecture", "AI", "Reckoning"];
 /* ══════════════════════════════════════════════════════════════════
    ABOUT — "chapters." Rail + scroll-snap. ON-BRAND: every color comes
    from the shared theme tokens, so this section reads as dark by default
-   and recolors correctly under [data-theme="light"] (harbor blue).
+   and recolors correctly under [data-theme="light"] (Wicked Light).
    Signal yellow (--accent) appears ONLY as a stamp: the section-title
    swash, the rail progress fill, and the active rail node.
    ══════════════════════════════════════════════════════════════════ */
@@ -167,7 +167,7 @@ const SHORT = ["Early Years", "Scale", "Architecture", "AI", "Reckoning"];
   height:0%;
   background:var(--accent);
   border-radius:6px;
-  box-shadow:0 0 14px 1px rgba(255,218,25,.45);
+  box-shadow:0 0 14px 1px color-mix(in oklab,var(--accent) 45%,transparent);
   transition:height .55s var(--ease);
   will-change:height;
 }
@@ -195,8 +195,8 @@ const SHORT = ["Early Years", "Scale", "Architecture", "AI", "Reckoning"];
              color .35s var(--ease),box-shadow .35s var(--ease),transform .35s var(--ease);
 }
 .rail-numn{
-  font-family:var(--font-mono);font-weight:600;
-  font-size:.5rem;letter-spacing:.02em;line-height:1;
+  font-family: var(--font-sans);font-weight: var(--weight-strong);
+  font-size: var(--text-caption);line-height:1;
 }
 /* passed chapters read as DONE — accent ring, ink number */
 .rail-node.is-done .rail-dot{
@@ -209,10 +209,10 @@ const SHORT = ["Early Years", "Scale", "Architecture", "AI", "Reckoning"];
   background:var(--accent);
   border-color:var(--accent);
   color:var(--accent-ink);
-  box-shadow:0 0 0 4px rgba(255,218,25,.16),0 0 18px 2px rgba(255,218,25,.5);
+  box-shadow:0 0 0 4px color-mix(in oklab,var(--accent) 16%,transparent),0 0 18px 2px color-mix(in oklab,var(--accent) 50%,transparent);
   transform:translateX(-1px);
 }
-.rail-node.is-active .rail-numn{font-size:.56rem;font-weight:700}
+.rail-node.is-active .rail-numn{font-size: var(--text-caption);font-weight: var(--weight-strong)}
 
 /* active chapter name shown next to the rail */
 .rail-label{
@@ -220,16 +220,16 @@ const SHORT = ["Early Years", "Scale", "Architecture", "AI", "Reckoning"];
   left:50px;
   top:50%;transform:translateY(-50%);
   display:flex;flex-direction:column;gap:6px;
-  font-family:var(--font-mono);
+  font-family: var(--font-sans);
   max-width:120px;
 }
 .rail-label-num{
-  font-size:.6rem;letter-spacing:.34em;text-transform:uppercase;
-  color:var(--accent);font-weight:600;
+  font-size: var(--text-caption);
+  color:var(--accent);font-weight: var(--weight-strong);
 }
 .rail-label-name{
-  font-size:.78rem;letter-spacing:.04em;
-  color:var(--ink);font-weight:500;line-height:1.25;
+  font-size: var(--text-caption);
+  color:var(--ink);font-weight: var(--weight-strong);line-height:1.25;
   transition:opacity .35s var(--ease),transform .35s var(--ease);
 }
 /* when JS is tracking, label cross-fades on change */
@@ -293,51 +293,51 @@ const SHORT = ["Early Years", "Scale", "Architecture", "AI", "Reckoning"];
 /* section masthead — house lowercase-period voice */
 .about-masthead .chapter-pad{display:flex;flex-direction:column;gap:14px}
 .about-kicker{
-  font-family:var(--font-mono);font-size:.66rem;letter-spacing:.3em;text-transform:uppercase;
-  color:var(--muted);font-weight:500;display:inline-flex;align-items:center;gap:11px
+  font-family: var(--font-sans);font-size: var(--text-caption);
+  color:var(--muted);font-weight: var(--weight-strong);display:inline-flex;align-items:center;gap:11px
 }
 .about-kicker::before{content:'';width:26px;height:1px;background:var(--accent)}
 .about-h2{
-  font-family:var(--font-display);font-weight:900;font-stretch:125%;
-  font-size:clamp(2.6rem,5vw,4.4rem);line-height:.9;letter-spacing:-.035em;
+  font-family: var(--font-sans);font-weight: var(--weight-strong);
+  font-size: var(--text-title);line-height:.9;letter-spacing: var(--tracking-title);
   color:var(--ink);margin:0
 }
 .about-h2 .stamp{position:relative;display:inline-block}
 .about-h2 .stamp::after{ display:none }
 .about-sub{
-  font-family:var(--font-mono);font-size:.72rem;letter-spacing:.04em;
+  font-family: var(--font-sans);font-size: var(--text-caption);
   color:var(--muted);max-width:54ch;line-height:1.6
 }
 
 /* oversized chapter numeral — on-brand: ink at low opacity */
 .ch-num{
-  font-family:var(--font-display);font-weight:900;font-stretch:125%;
-  font-size:clamp(7rem,18vw,15rem);line-height:.74;letter-spacing:-.06em;
+  font-family: var(--font-sans);font-weight: var(--weight-strong);
+  font-size: var(--text-title);line-height:.74;letter-spacing: var(--tracking-title);
   color:var(--ink);opacity:.07;
   position:absolute;left:-.02em;top:-.16em;z-index:0;pointer-events:none;user-select:none
 }
 .ch-name{
-  font-family:var(--font-mono);font-size:.66rem;letter-spacing:.34em;text-transform:uppercase;
-  color:var(--muted);font-weight:700;
+  font-family: var(--font-sans);font-size: var(--text-caption);
+  color:var(--muted);font-weight: var(--weight-strong);
   position:relative;z-index:1;display:block;padding-left:2px;margin-bottom:16px
 }
 .ch-quote{
   position:relative;z-index:1;
-  font-family:var(--font-display);font-weight:800;font-stretch:125%;
-  font-size:clamp(1.8rem,3.8vw,3.3rem);line-height:1.02;letter-spacing:-.03em;
+  font-family: var(--font-sans);font-weight: var(--weight-strong);
+  font-size: var(--text-title);line-height:1.02;letter-spacing: var(--tracking-title);
   color:var(--ink);max-width:20ch;margin:0
 }
 /* one yellow stamp per chapter: a leading quote-mark accent */
 .ch-quote .qmark{
-  font-family:var(--font-display);font-weight:900;color:var(--accent);
+  font-family: var(--font-sans);font-weight: var(--weight-strong);color:var(--accent);
   margin-right:.06em;line-height:0
 }
 .ch-body{
   position:relative;z-index:1;
   margin-top:clamp(22px,2.6vw,32px);
   max-width:62ch;
-  font-family:var(--font-display);font-weight:400;
-  font-size:clamp(1rem,1.25vw,1.18rem);line-height:1.72;
+  font-family: var(--font-sans);font-weight: var(--weight-regular);
+  font-size: var(--text-section);line-height:1.72;
   color:var(--muted);
   padding-left:2px
 }
@@ -351,7 +351,7 @@ const SHORT = ["Early Years", "Scale", "Architecture", "AI", "Reckoning"];
   .rail-dot{width:18px;height:18px}
   .rail-node.is-active .rail-dot{width:26px;height:26px}
   .rail-label{display:none}
-  .ch-num{font-size:clamp(6rem,22vw,11rem)}
+  .ch-num{font-size: var(--text-title)}
   .ch-quote{max-width:24ch}
 }
 @media(max-width:600px){
@@ -384,8 +384,8 @@ const SHORT = ["Early Years", "Scale", "Architecture", "AI", "Reckoning"];
     min-height:calc(100vh - var(--topbar-h) - 60px);
     padding:clamp(28px,6vh,60px) 0;
   }
-  .ch-num{font-size:clamp(5rem,26vw,9rem)}
-  .ch-quote{font-size:clamp(1.5rem,7vw,2.2rem);max-width:100%}
+  .ch-num{font-size: var(--text-title)}
+  .ch-quote{font-size: var(--text-title);max-width:100%}
 }
 
 /* ── REDUCED MOTION — keep state, drop animation ─────────────────── */
