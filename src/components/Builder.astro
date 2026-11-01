@@ -11,11 +11,11 @@
 const PROBLEMS = [
   {
     h: 'Governed multi-agent delivery',
-    p: 'Jobs are durable, resumable workflows defined as data, on a Rust engine with a single-writer core. By default one agent builds the change in checkpointed turns, and its rigor is re-scored from the diff. Every gate says what it checked, and a failed check sends the work back or stops the job.',
+    p: 'Jobs are durable, resumable workflows defined as data, on a Rust engine with a single-writer core. In power mode (the default when a built-in workflow is launched on a repo), one agent builds the change in checkpointed turns and its rigor is re-scored from the diff. Every gate says what it checked, and a failed check sends the work back or stops the job.',
   },
   {
     h: 'Sandboxed agents',
-    p: 'Each agent runs in a hardened container: all capabilities dropped, a read-only root, its own network whose only exit is a model gateway, and Landlock inside. Keys stay in a broker; the sandbox sees placeholders.',
+    p: 'Each agent runs in a hardened container: all capabilities dropped, a read-only root, its own network whose only exit is a model gateway, and Landlock inside. Keys stay in a broker and the sandbox sees placeholders, except a Claude subscription’s sign-in token, which a guard keeps out of the delivered work.',
   },
   {
     h: 'A different agent reviews the work',
@@ -23,7 +23,7 @@ const PROBLEMS = [
   },
   {
     h: 'Evidence trails',
-    p: '“Done” is re-derived from evidence in a ledger, never asserted. App changes need an attributed acceptance pass before anything is pushed, unless a labelled waiver or skip says otherwise, and every job keeps who built it, who checked it, what ran and what was skipped.',
+    p: '“Done” is re-derived from evidence in a ledger, never asserted. Feature, bug-fix, migration, MCP-server and editor-plugin jobs need an attributed acceptance pass before anything is pushed, unless a labelled waiver or skip says otherwise, and every job keeps who built it, who checked it, what ran and what was skipped.',
   },
 ];
 ---

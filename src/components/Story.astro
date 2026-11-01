@@ -7,9 +7,9 @@
  */
 const STEPS = [
   { n: '01', h: 'Ask in a chat', p: 'Start a New job in studio with a chat. It proposes a plan, and nothing starts until you confirm it.' },
-  { n: '02', h: 'Your agents, sandboxed', p: 'Claude Code, Codex, Copilot, OpenCode or Pi, signed in once on the Agents tab, each work in a sandbox that sees your repo and never your real keys.' },
+  { n: '02', h: 'Your agents, sandboxed', p: 'Claude Code, Codex, Copilot, OpenCode or Pi, signed in once on the Agents tab, each work in a sandbox that sees your repo. Your keys stay in a broker; a Claude subscription’s sign-in token is the one exception, and a guard keeps it out of the delivered work.' },
   { n: '03', h: 'A different agent checks', p: 'Review goes to an agent other than the builder, against your rules. A failed check sends the work back or stops the job. If no other agent is available, the job stops unless you choose “reduced assurance”, which is labelled everywhere.' },
-  { n: '04', h: 'Tested before delivery', p: 'Jobs that change your app pass acceptance testing before anything is delivered. A change small on every measure is waived; skipping takes a reason. Either is labelled.' },
+  { n: '04', h: 'Tested before delivery', p: 'Jobs launched as a feature, bug fix, migration, MCP server or editor plugin pass acceptance testing before anything is delivered. A change small on every measure is waived; skipping takes a reason. Either is labelled.' },
   { n: '05', h: 'You get the evidence', p: 'The change arrives with who built it, who checked it, what ran and what was skipped. What the team learned becomes memory you can see and edit.' },
 ];
 ---
