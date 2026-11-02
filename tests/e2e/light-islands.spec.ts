@@ -53,3 +53,15 @@ test('article meta stays in its row in Wicked Light (no stray absolute positioni
   test.skip((await meta.count()) === 0, 'no articles in this build');
   await expect(meta).toHaveCSS('position', 'static');
 });
+
+test('keyboard focus inside the terminal is the light focus colour in Wicked Light', async ({ page }) => {
+  await page.goto('/');
+  const focus = await page.locator('.term-window').evaluate((el) => getComputedStyle(el).getPropertyValue('--focus').trim());
+  expect(focus).toBe('#ededea');
+  // and the chrome's :focus-visible outline follows it for an element inside the island
+  const outline = await page.locator('.term-window').evaluate((el) => {
+    const a = document.createElement('a'); a.href = '#'; a.textContent = 'x'; el.appendChild(a); a.focus({ focusVisible: true } as FocusOptions);
+    const c = getComputedStyle(a).outlineColor; a.remove(); return c;
+  });
+  expect(outline).toBe('rgb(237, 237, 234)');
+});
