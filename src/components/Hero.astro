@@ -138,6 +138,13 @@
   /* Phones: drop the "the work" / "the writing" hero CTAs (mobile-only). */
   .hero-ctas{display:none}
 }
+/* First screen at 1440x700: the sub-line, the buttons and the default-review small print all fit
+   above the fold (identity.spec checks it), so the text column is a little wider and the gaps tighter. */
+@media(min-width:961px){
+  .terminal-section{gap:24px;padding-top:calc(var(--topbar-h) + 20px)}
+  .hero-row{grid-template-columns:1.25fr 1.75fr}
+  .hero-text-side{gap:16px}
+}
 </style>
 
 <script>

@@ -35,7 +35,7 @@ const TILES = [
         </li>
       ))}
     </ul>
-    <p class="can-soon"><strong>Coming soon:</strong> a catalog of job types in New job, and <strong>Apps</strong>: live apps and dashboards over your APIs and databases.</p>
+    <p class="can-soon"><strong>Coming soon:</strong>{' '}a catalog of job types in New job, and{' '}<strong>Apps</strong>: live apps and dashboards over your APIs and databases.</p>
   </div>
 </section>
 
@@ -43,10 +43,12 @@ const TILES = [
 .can-section{
   border-top:1px solid var(--hairline);
   scroll-margin-top:var(--topbar-h);
-  display:flex;align-items:center;
-  padding:calc(var(--topbar-h) + 28px) 28px 48px;
+  /* top-aligned: a section lands 128px down (scroll-margin + the page's scroll-padding), so centring
+     it in its full-height box pushed the coming-soon line off a 1440x700 screen */
+  display:flex;align-items:flex-start;
+  padding:16px 28px 24px;
 }
-.can-shell{width:100%;max-width:1240px;margin:0 auto;display:flex;flex-direction:column;gap:24px}
+.can-shell{width:100%;max-width:1240px;margin:0 auto;display:flex;flex-direction:column;gap:16px}
 .can-grid{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
 .can-soon{margin:0;font-size:.86rem;line-height:1.45;color:var(--muted)}
 .can-soon strong{color:var(--ink)}

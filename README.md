@@ -70,8 +70,10 @@ Every section is implemented and content-complete, in page order:
   on what wicked does, and the live auto-typing
   terminal (`/articles`, `/projects`, `/about`; disabled on mobile).
 - `src/components/Story.astro` — "intent in. checked work out.": how it works,
-  in five steps (ask in a chat, sandboxed agents, a different agent checks,
-  tested before delivery, the evidence).
+  in five steps (ask in a chat, sandboxed agents, one builds and another
+  checks, tested before delivery, the evidence).
+- `src/components/CanDo.astro` — "what you can do with it.": eight things you
+  can do with the platform, and one coming-soon line (no dates).
 - `src/components/Shipped.astro` — "the platform.": what I've been building,
   as the **four-plane stack** (one surface, one control plane, one catalog, one
   record). Foundation (wicked-estate, with wicked-interactive as the document

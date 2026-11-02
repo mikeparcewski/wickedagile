@@ -43,9 +43,26 @@ test.describe('editorial identity', () => {
   test('what you can do: eight tiles and one coming-soon line, no dates', async ({ page }) => {
     await expect(page.locator('#can .can-tile')).toHaveCount(8);
     const soon = page.locator('#can .can-soon');
-    await expect(soon).toContainText('Coming soon:');
-    await expect(soon).toContainText('Apps');
+    // whole phrases, so a word fused to its <strong> (Astro compressHTML) fails here
+    await expect(soon).toContainText('Coming soon: a catalog of job types in New job, and Apps: live apps');
     await expect(soon).not.toContainText(/20\d\d|Q[1-4]/);
+  });
+
+  test('how it works and the builder say what a job does today, and nothing they no longer may', async ({ page }) => {
+    const how = (await page.locator('#how').innerText()).replace(/\s+/g, ' ');
+    expect(how).toContain('a feature, bug fix, migration, MCP server or editor plugin pass acceptance testing');
+    expect(how).toContain('A Claude subscription’s sign-in token is the one exception');
+    expect(how).toContain('By default a different agent reviews it');
+    expect(how).toContain('up to three hand-off attempts in all');
+    const builder = (await page.locator('#builder').innerText()).replace(/\s+/g, ' ');
+    expect(builder).toContain('sends the work back, waits for you or stops the job');
+    expect(builder).toContain('By default the agent that built a change cannot approve it');
+    expect(builder).toContain('A saved workflow may require fewer checks');
+    for (const text of [how, builder]) {
+      expect(text).not.toMatch(/never asserted/i);
+      expect(text).not.toMatch(/one failed check stops/i);
+      expect(text).not.toMatch(/app changes (need|pass)/i);
+    }
   });
 
   test('sections run hero → how → can → stack → builder → articles → about', async ({ page }) => {
@@ -76,4 +93,26 @@ test.describe('editorial identity', () => {
       'https://wg.wickedagile.com/#extend',
     );
   });
+});
+
+test.describe('the first screen and each new section fit a 1440x700 laptop', () => {
+  test.use({ viewport: { width: 1440, height: 700 } });
+  const bottom = (page: import('@playwright/test').Page, sel: string) =>
+    page.evaluate((s) => document.querySelector(s)!.getBoundingClientRect().bottom, sel);
+
+  test('the hero small print is above the fold', async ({ page }) => {
+    await page.goto('/', { waitUntil: 'networkidle' });
+    await page.evaluate(async () => { await document.fonts.ready; });
+    expect(await bottom(page, '.hero-fine')).toBeLessThanOrEqual(700);
+  });
+
+  // The wheel handler moves one section per notch, so anything below the screen is skipped.
+  for (const [hash, last] of [['#how', '#how .story-step:last-child'], ['#can', '#can .can-soon']]) {
+    test(`${hash} ends on screen after its anchor`, async ({ page }) => {
+      await page.goto(`/${hash}`, { waitUntil: 'networkidle' });
+      await page.evaluate(async () => { await document.fonts.ready; });
+      await page.waitForTimeout(300);
+      expect(await bottom(page, last)).toBeLessThanOrEqual(700);
+    });
+  }
 });
