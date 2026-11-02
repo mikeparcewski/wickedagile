@@ -58,6 +58,9 @@ test.describe('editorial identity', () => {
     expect(builder).toContain('sends the work back, waits for you or stops the job');
     expect(builder).toContain('By default the agent that built a change cannot approve it');
     expect(builder).toContain('A saved workflow may require fewer checks');
+    // rules have no per-repo target (core crates/wicked-governance/src/conformance.rs)
+    const page_ = (await page.locator('body').innerText()).replace(/\s+/g, ' ');
+    expect(page_).not.toMatch(/\b(?:one|single)\s+repo(?:sitory)?\b/i);
     for (const text of [how, builder]) {
       expect(text).not.toMatch(/never asserted/i);
       expect(text).not.toMatch(/one failed check stops/i);
