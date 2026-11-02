@@ -1,9 +1,11 @@
 /**
  * Editorial identity — wickedagile.com is the wicked FAMILY FRONT DOOR and the
  * builder's showcase (operator decision D1, 2026-10-17). Source contract
- * (src/pages/index.astro + Hero.astro + Story.astro + Shipped.astro + Builder.astro):
- *   - Hero leads with the family one-liner, with "how it works" / "who built it" CTAs.
- *   - Section order: hero → how it works (#how) → the platform stack (#projects)
+ * (src/pages/index.astro + Hero.astro + Story.astro + CanDo.astro + Shipped.astro + Builder.astro):
+ *   - Hero leads with the family one-liner, with "how it works" / "what you can do" /
+ *     "who built it" CTAs, and the default-review qualifier as small print.
+ *   - Section order: hero → how it works (#how) → what you can do (#can)
+ *     → the platform stack (#projects)
  *     → built by (#builder) → articles/dispatches (#content) → about chapters (#about).
  *   - The "build on it." Extend band is retired; its pitch survives as ONE
  *     outro line in the stack section linking to garden's #extend.
@@ -22,8 +24,13 @@ test.describe('editorial identity', () => {
     await expect(page.locator('.hero-text')).toContainText('in sandboxes');
     await expect(page.locator('.hero-ctas .btn-primary')).toHaveText('how it works →');
     await expect(page.locator('.hero-ctas .btn-primary')).toHaveAttribute('href', '#how');
-    await expect(page.locator('.hero-ctas .btn-ghost')).toHaveText('who built it →');
-    await expect(page.locator('.hero-ctas .btn-ghost')).toHaveAttribute('href', '#builder');
+    const ghosts = page.locator('.hero-ctas .btn-ghost');
+    await expect(ghosts).toHaveText(['what you can do →', 'who built it →']);
+    await expect(ghosts.nth(0)).toHaveAttribute('href', '#can');
+    await expect(ghosts.nth(1)).toHaveAttribute('href', '#builder');
+    // N1: review is the default, not a guarantee; the qualifier sits in the first screen.
+    await expect(page.locator('.hero-fine')).toContainText('By default a different agent reviews the work.');
+    await expect(page.locator('.hero-fine')).toContainText('reduced assurance');
     await expect(page).toHaveTitle('wicked — your coding agents, checked against your rules');
   });
 
@@ -33,11 +40,19 @@ test.describe('editorial identity', () => {
     await expect(page.locator('#builder .builder-reach a[href="https://github.com/mikeparcewski"]')).toBeAttached();
   });
 
-  test('sections run hero → how → stack → builder → articles → about', async ({ page }) => {
+  test('what you can do: eight tiles and one coming-soon line, no dates', async ({ page }) => {
+    await expect(page.locator('#can .can-tile')).toHaveCount(8);
+    const soon = page.locator('#can .can-soon');
+    await expect(soon).toContainText('Coming soon:');
+    await expect(soon).toContainText('Apps');
+    await expect(soon).not.toContainText(/20\d\d|Q[1-4]/);
+  });
+
+  test('sections run hero → how → can → stack → builder → articles → about', async ({ page }) => {
     // DOM order is the scroll order — rank each section by position among
     // all <section> elements in the page (querySelectorAll, not direct children).
     const order = await page.evaluate(() =>
-      ['#terminal-section', '#how', '#projects', '#builder', '#content', '#about'].map((sel) => {
+      ['#terminal-section', '#how', '#can', '#projects', '#builder', '#content', '#about'].map((sel) => {
         const el = document.querySelector(sel);
         return el ? Array.prototype.indexOf.call(document.body.querySelectorAll('section'), el) : -1;
       }),
