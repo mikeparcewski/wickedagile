@@ -106,8 +106,14 @@ test.describe('the first screen and each new section fit a 1440x700 laptop', () 
     expect(await bottom(page, '.hero-fine')).toBeLessThanOrEqual(700);
   });
 
+  test('the eight tiles fit across the screen', async ({ page }) => {
+    await page.goto('/#can', { waitUntil: 'networkidle' });
+    const right = await page.evaluate(() => Math.max(...Array.from(document.querySelectorAll('#can .can-tile')).map((t) => t.getBoundingClientRect().right)));
+    expect(right).toBeLessThanOrEqual(1440);
+  });
+
   // The wheel handler moves one section per notch, so anything below the screen is skipped.
-  for (const [hash, last] of [['#how', '#how .story-step:last-child'], ['#can', '#can .can-soon']]) {
+  for (const [hash, last] of [['#how', '#how .story-step:last-child'], ['#can', '#can .can-soon'], ['#builder', '#builder .builder-problem:last-child']]) {
     test(`${hash} ends on screen after its anchor`, async ({ page }) => {
       await page.goto(`/${hash}`, { waitUntil: 'networkidle' });
       await page.evaluate(async () => { await document.fonts.ready; });

@@ -81,4 +81,10 @@ const PROBLEMS = [
   .builder-section{padding:40px 20px 36px}
   .builder-problems{grid-template-columns:1fr}
 }
+/* Top-aligned from 961px: a section lands 128px down (its scroll-margin plus the page's
+   scroll-padding), so centring the cards in the full-height box pushed their last lines off a
+   1440x700 screen (identity.spec checks the fit). */
+@media(min-width:961px){
+  .builder-section{align-items:flex-start;padding-top:16px;padding-bottom:24px}
+}
 </style>
