@@ -3,7 +3,7 @@
  * wicked-web Topbar (node_modules/wicked-web/src/components/Topbar.astro).
  * Source contract:
  *   - setTheme(t) stamps data-theme on <html> AND persists localStorage
- *     'wa-theme'; Base.astro's no-flash init re-applies it before paint.
+ *     'wa-theme-v3'; Base.astro's no-flash init re-applies it before paint.
  *   - #projectsBtn toggles #projectsMenu (hidden attr) + aria-expanded;
  *     a document-level click or Escape closes it.
  */
@@ -14,26 +14,28 @@ test.describe('universal chrome', () => {
     await page.goto('/', { waitUntil: 'domcontentloaded' });
   });
 
-  test("theme toggle flips data-theme on <html> and persists 'wa-theme' across reload", async ({ page }) => {
+  test("theme toggle flips data-theme on <html> and persists 'wa-theme-v3' across reload", async ({ page }) => {
     const html = page.locator('html');
-    await expect(html).toHaveAttribute('data-theme', 'light');
+    await expect(html).toHaveAttribute('data-theme', 'dark');
+    // loading a page persists nothing: only a click writes the choice
+    expect(await page.evaluate(() => localStorage.getItem('wa-theme-v3'))).toBeNull();
 
     await page.locator('#themeBtn').click();
-    await expect(html).toHaveAttribute('data-theme', 'dark');
+    await expect(html).toHaveAttribute('data-theme', 'light');
     await expect
-      .poll(() => page.evaluate(() => localStorage.getItem('wa-theme')))
-      .toBe('dark');
+      .poll(() => page.evaluate(() => localStorage.getItem('wa-theme-v3')))
+      .toBe('light');
 
     // Persistence: the no-flash init in Base.astro must re-apply the stored theme.
     await page.reload({ waitUntil: 'domcontentloaded' });
-    await expect(html).toHaveAttribute('data-theme', 'dark');
+    await expect(html).toHaveAttribute('data-theme', 'light');
 
     // And it toggles back.
     await page.locator('#themeBtn').click();
-    await expect(html).toHaveAttribute('data-theme', 'light');
+    await expect(html).toHaveAttribute('data-theme', 'dark');
     await expect
-      .poll(() => page.evaluate(() => localStorage.getItem('wa-theme')))
-      .toBe('light');
+      .poll(() => page.evaluate(() => localStorage.getItem('wa-theme-v3')))
+      .toBe('dark');
   });
 
   test('ecosystem dropdown opens on click and lists the four planes', async ({ page }) => {
@@ -77,4 +79,11 @@ test.describe('universal chrome', () => {
     await expect(menu).toBeHidden();
     await expect(btn).toHaveAttribute('aria-expanded', 'false');
   });
+});
+
+test('a stored v2 theme is ignored: the reset to Wicked Dark happens once, and the load writes nothing', async ({ page }) => {
+  await page.addInitScript(() => localStorage.setItem('wa-theme', 'light'));
+  await page.goto('/');
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
+  expect(await page.evaluate(() => localStorage.getItem('wa-theme-v3'))).toBeNull();
 });

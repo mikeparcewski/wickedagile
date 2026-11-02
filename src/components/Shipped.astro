@@ -292,15 +292,15 @@ const restPkgs = packages.filter((p) => p.name !== 'wicked-crew');
 .orbit-head .zone-kicker::before,
 .orbit-head .zone-kicker::after{content:'';width:18px;height:1px;background:var(--hairline-strong)}
 .zone-title{
-  font-family:var(--font-display);font-weight:900;font-stretch:125%;
-  font-size:clamp(1.9rem,3.2vw,2.9rem);color:var(--ink);
-  line-height:.9;letter-spacing:-.03em;margin:0
+  font-family: var(--font-sans);font-weight: var(--weight-strong);
+  font-size: var(--text-title);color:var(--ink);
+  line-height:.9;letter-spacing: var(--tracking-title);margin:0
 }
 .orbit-caption{
-  font-family:var(--font-sans,inherit);font-size:clamp(.8rem,1.1vw,.94rem);
+  font-family:var(--font-sans,inherit);font-size: var(--text-lead);
   line-height:1.4;color:var(--muted);margin:0;max-width:64ch
 }
-.orbit-caption b{color:var(--ink);font-weight:700}
+.orbit-caption b{color:var(--ink);font-weight: var(--weight-strong)}
 
 /* ── TWO-COLUMN: stack (left) + live preview (right) ───────────────── */
 .build-grid{
@@ -330,7 +330,7 @@ const restPkgs = packages.filter((p) => p.name !== 'wicked-crew');
 /* the spine rail (energy travels UP it, foundation blue → experience amber) */
 .stack::before{
   content:'';position:absolute;left:11px;top:10px;bottom:10px;width:2px;z-index:0;
-  background:linear-gradient(to top,color-mix(in oklab,#79c0ff 45%,transparent),color-mix(in oklab,#f0a868 62%,transparent));
+  background:linear-gradient(to top,color-mix(in oklab,var(--plane-foundation) 45%,transparent),color-mix(in oklab,var(--plane-experience) 62%,transparent));
   opacity:.32;border-radius:2px
 }
 /* the travelling energy pulse — JS animates its `top`; hidden at rest */
@@ -366,7 +366,7 @@ const restPkgs = packages.filter((p) => p.name !== 'wicked-crew');
    does not also need a different row shape. */
 .solution-cap .cap-head{
   grid-column:1;
-  font-family:var(--font-mono);font-size:.55rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  font-family: var(--font-sans);font-size: var(--text-caption);font-weight: var(--weight-strong);
   color:color-mix(in oklab,var(--hue,var(--accent)) 62%,var(--muted));line-height:1.25
 }
 /* column 2 — the SAME column the plane rows put their blocks in */
@@ -382,9 +382,9 @@ const restPkgs = packages.filter((p) => p.name !== 'wicked-crew');
 .stack-riser{
   position:relative;z-index:1;display:flex;align-items:center;gap:8px;
   padding-left:6px;margin:-1px 0 1px;
-  font-family:var(--font-mono);font-size:.55rem;letter-spacing:.07em;text-transform:uppercase;color:var(--faint);line-height:1.35
+  font-family: var(--font-sans);font-size: var(--text-caption);color:var(--faint);line-height:1.35
 }
-.stack-riser .riser-arrow{color:color-mix(in oklab,var(--accent) 70%,var(--faint));font-size:.7rem;line-height:1;flex-shrink:0}
+.stack-riser .riser-arrow{color:color-mix(in oklab,var(--accent) 70%,var(--faint));font-size: var(--text-caption);line-height:1;flex-shrink:0}
 .stack-riser .riser-word{min-width:0}
 
 /* ── LAYERS ────────────────────────────────────────────────────── */
@@ -404,9 +404,13 @@ const restPkgs = packages.filter((p) => p.name !== 'wicked-crew');
   box-shadow:-8px 0 26px -12px var(--hue),0 0 0 1px color-mix(in oklab,var(--hue) 28%,transparent)
 }
 .layer-label{
-  font-family:var(--font-mono);font-size:.55rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  font-family: var(--font-sans);font-size: var(--text-caption);font-weight: var(--weight-strong);
   color:color-mix(in oklab,var(--hue) 62%,var(--muted));line-height:1.25
 }
+/* the plane hues in the manifest are dark-ground values: on Wicked Light's ground they mix toward the ink
+   instead, so the 12px labels keep their hue and clear 4.5:1 */
+[data-theme="light"] .layer-label,
+[data-theme="light"] .solution-cap .cap-head{color:color-mix(in oklab,var(--hue,var(--accent)) 45%,var(--ink))}
 .layer-blocks{display:flex;flex-wrap:wrap;gap:8px;min-width:0}
 
 /* a BLOCK = one package (selectable → drives the preview) */
@@ -416,13 +420,13 @@ const restPkgs = packages.filter((p) => p.name !== 'wicked-crew');
   background:linear-gradient(#14181d,#0f1216);
   border:1px solid var(--hairline-strong);
   box-shadow:0 6px 18px rgba(0,0,0,.42);
-  font-family:var(--font-mono);white-space:nowrap;cursor:pointer;
+  font-family: var(--font-sans);white-space:nowrap;cursor:pointer;
   transition:transform .16s var(--ease),border-color .16s var(--ease),box-shadow .22s var(--ease),background .16s,opacity .3s
 }
 .block .blk-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;background:var(--role);box-shadow:0 0 8px -1px var(--role)}
-.block .blk-name{font-size:.8rem;font-weight:700;color:var(--role-tint);letter-spacing:.01em}
+.block .blk-name{font-size: var(--text-body);font-weight: var(--weight-strong);color:var(--role-tint);}
 .block .blk-role{
-  font-size:.52rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);
+  font-size: var(--text-caption);color:var(--muted);
   padding-left:8px;border-left:1px solid var(--hairline-strong)
 }
 .block:hover,
@@ -445,7 +449,7 @@ const restPkgs = packages.filter((p) => p.name !== 'wicked-crew');
 .preview-col .ide-preview{
   flex:1;min-height:0;min-width:0;
   display:flex;flex-direction:column;background:#0d0f12;border-radius:12px;overflow:hidden;
-  font-family:var(--font-mono);
+  font-family: var(--font-sans);
   border:1px solid rgba(255,255,255,.06);
   box-shadow:0 32px 80px rgba(0,0,0,.72),0 0 0 1px rgba(255,255,255,.05),
              0 0 70px -18px var(--center-glow,rgba(121,192,255,.4));
@@ -456,8 +460,8 @@ const restPkgs = packages.filter((p) => p.name !== 'wicked-crew');
   background:#1a1d21;border-bottom:1px solid rgba(255,255,255,.06);
   padding:8px 13px;flex-shrink:0
 }
-.center-titlebar .ct-name{font-size:.78rem;font-weight:700;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.center-titlebar .ct-role{font-size:.56rem;letter-spacing:.14em;text-transform:uppercase;font-weight:700;flex-shrink:0}
+.center-titlebar .ct-name{font-size: var(--text-caption);font-weight: var(--weight-strong);color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.center-titlebar .ct-role{font-size: var(--text-caption);font-weight: var(--weight-strong);flex-shrink:0}
 
 .preview-stage{flex:1;min-height:0;display:flex;flex-direction:column;padding:12px 13px 0}
 .browser-frame{
@@ -474,16 +478,16 @@ const restPkgs = packages.filter((p) => p.name !== 'wicked-crew');
 .browser-chrome .lights{display:flex;gap:5px}
 .browser-chrome .lights i{width:8px;height:8px;border-radius:999px;background:var(--hairline-strong)}
 .browser-chrome .url{
-  flex:1;font-family:var(--font-mono);font-size:.58rem;color:var(--muted);
+  flex:1;font-family: var(--font-sans);font-size: var(--text-caption);color:var(--muted);
   background:rgba(230,237,243,.05);padding:5px 10px;border-radius:6px;
   border:1px solid var(--hairline);white-space:nowrap;overflow:hidden;text-overflow:ellipsis
 }
 .browser-chrome .live{
-  font-family:var(--font-mono);font-size:.5rem;letter-spacing:.12em;text-transform:uppercase;
+  font-family: var(--font-sans);font-size: var(--text-caption);
   color:var(--muted);display:inline-flex;align-items:center;gap:5px;flex-shrink:0
 }
 .browser-chrome .live .pulse{width:6px;height:6px;border-radius:999px;background:var(--accent);animation:livePulse 1.8s ease-in-out infinite}
-@keyframes livePulse{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(255,218,25,.55)}50%{opacity:.6;box-shadow:0 0 0 4px rgba(255,218,25,0)}}
+@keyframes livePulse{0%,100%{opacity:1;box-shadow:0 0 0 0 color-mix(in oklab,var(--accent) 55%,transparent)}50%{opacity:.6;box-shadow:0 0 0 4px color-mix(in oklab,var(--accent) 0%,transparent)}}
 .browser-shot{position:relative;flex:1;min-height:0;overflow:hidden;background:#080c10}
 .shot-bg{position:absolute;inset:0;background-size:cover;background-position:center 52%}
 .shot-bg-back{z-index:1}
@@ -506,21 +510,21 @@ const restPkgs = packages.filter((p) => p.name !== 'wicked-crew');
   background:#14181d;border-bottom:1px solid var(--hairline)
 }
 .code-card-chrome .cc-glyph{
-  font-family:var(--font-mono);font-size:.54rem;font-weight:700;letter-spacing:.04em;
+  font-family: var(--font-sans);font-size: var(--text-caption);font-weight: var(--weight-strong);
   color:#79c0ff;background:rgba(121,192,255,.12);border-radius:4px;padding:2px 7px;flex-shrink:0
 }
 .code-card-chrome .cc-file{
-  flex:1;font-family:var(--font-mono);font-size:.64rem;color:var(--ink);
+  flex:1;font-family:var(--font-mono);font-size: var(--text-code);color:var(--ink);
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis
 }
 .code-card-chrome .cc-badge{
-  font-family:var(--font-mono);font-size:.48rem;letter-spacing:.12em;text-transform:uppercase;
+  font-family: var(--font-sans);font-size: var(--text-caption);
   color:var(--muted);border:1px solid var(--hairline);border-radius:5px;padding:2px 7px;flex-shrink:0
 }
 .code-card-body{flex:1;min-height:0;overflow:auto;background:#0d0f12}
 .code-card-body::-webkit-scrollbar{width:4px;height:4px}
 .code-card-body::-webkit-scrollbar-thumb{background:rgba(255,255,255,.08);border-radius:2px}
-.code-block{margin:0;padding:12px 14px 14px 0;font-family:var(--font-mono);font-size:.7rem;line-height:1.8}
+.code-block{margin:0;padding:12px 14px 14px 0;font-family:var(--font-mono);font-size: var(--text-code);line-height:1.8}
 .code-block code{display:block}
 .code-line{display:flex;align-items:flex-start;white-space:pre-wrap;word-break:break-word}
 .code-line .ln{
@@ -540,30 +544,30 @@ const restPkgs = packages.filter((p) => p.name !== 'wicked-crew');
   padding:11px 13px 13px;border-top:1px solid var(--hairline)
 }
 .readout-desc{
-  font-family:var(--font-mono);font-size:.64rem;color:#c9d1d9;line-height:1.45;min-width:0;
+  font-family: var(--font-sans);font-size: var(--text-caption);color:#c9d1d9;line-height:1.45;min-width:0;
   display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden
 }
 .readout-cta{
-  font-family:var(--font-mono);font-size:.62rem;font-weight:700;letter-spacing:.05em;
+  font-family: var(--font-sans);font-size: var(--text-caption);font-weight: var(--weight-strong);
   color:var(--accent);text-decoration:none;white-space:nowrap;flex-shrink:0;
-  border-bottom:1px solid rgba(255,218,25,.32);padding-bottom:1px;transition:opacity .15s
+  border-bottom:1px solid color-mix(in oklab,var(--accent) 32%,transparent);padding-bottom:1px;transition:opacity .15s
 }
 .readout-cta:hover{opacity:.78}
 .readout-cta:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:2px}
 
 /* ── STACK HINT (a quiet caption under the stack) ─────────────────── */
 .stack-hint{
-  margin:4px 0 0;font-family:var(--font-mono);font-size:.55rem;letter-spacing:.09em;
-  text-transform:uppercase;color:var(--faint);text-align:left
+  margin:4px 0 0;font-family: var(--font-sans);font-size: var(--text-caption);
+  color:var(--faint);text-align:left
 }
 
 /* ── STACK OUTRO (the one-line extension coda under the grid) ─────── */
 .stack-outro{
-  margin:0;font-family:var(--font-mono);font-size:.66rem;letter-spacing:.03em;
+  margin:0;font-family: var(--font-sans);font-size: var(--text-caption);
   color:var(--muted);text-align:center;line-height:1.5
 }
 .stack-outro a{
-  color:var(--accent);text-decoration:none;font-weight:700;white-space:nowrap;
+  color:var(--accent);text-decoration:none;font-weight: var(--weight-strong);white-space:nowrap;
   border-bottom:1px solid color-mix(in oklab,var(--accent) 40%,transparent);
   padding-bottom:1px;transition:opacity .15s
 }
@@ -572,23 +576,23 @@ const restPkgs = packages.filter((p) => p.name !== 'wicked-crew');
 
 /* ── FORWARD EDGE (governance beyond the gate) + INSTALL next-step ─────── */
 .stack-forward{
-  margin:0;font-family:var(--font-mono);font-size:.62rem;letter-spacing:.03em;
+  margin:0;font-family: var(--font-sans);font-size: var(--text-caption);
   color:var(--muted);text-align:center;line-height:1.5;max-width:78ch
 }
-.stack-forward b{color:var(--ink);font-weight:700}
+.stack-forward b{color:var(--ink);font-weight: var(--weight-strong)}
 .stack-install{
-  margin:0;font-family:var(--font-mono);font-size:.64rem;letter-spacing:.02em;
+  margin:0;font-family: var(--font-sans);font-size: var(--text-caption);
   color:var(--muted);line-height:1.5;
   display:flex;flex-wrap:wrap;gap:5px 9px;justify-content:center;align-items:baseline
 }
 .stack-install .install-lead{color:var(--muted)}
 .stack-install .install-cmd{
-  font-family:var(--font-mono);font-weight:700;color:var(--accent);
+  font-family:var(--font-mono);font-size: var(--text-code);font-weight: var(--weight-regular);color:var(--accent);
   background:color-mix(in oklab,var(--accent) 12%,transparent);
   border:1px solid color-mix(in oklab,var(--accent) 32%,transparent);
   border-radius:6px;padding:2px 8px
 }
-.stack-install .install-clis{color:var(--faint);letter-spacing:.05em}
+.stack-install .install-clis{color:var(--faint);}
 
 /* ── REDUCED MOTION — no rising pulse; the stack sits assembled ──────── */
 @media(prefers-reduced-motion:reduce){
@@ -615,22 +619,22 @@ const restPkgs = packages.filter((p) => p.name !== 'wicked-crew');
 /* ── MOBILE experiments: featured flagship + a compact link list ── */
 .expm-feat{display:flex;flex-direction:column;border:1px solid color-mix(in oklab,var(--role) 42%,var(--hairline-strong));border-radius:12px;overflow:hidden;background:var(--surface);text-decoration:none;color:inherit}
 .expm-feat-shot{position:relative;aspect-ratio:16/9;background-size:cover;background-position:top center;background-color:#080c10}
-.expm-feat-tag{position:absolute;top:9px;left:10px;font-family:var(--font-mono);font-size:.54rem;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:#fff;background:color-mix(in oklab,var(--role) 58%,#000);padding:3px 9px;border-radius:5px}
+.expm-feat-tag{position:absolute;top:9px;left:10px;font-family: var(--font-sans);font-size: var(--text-caption);font-weight: var(--weight-strong);color:#fff;background:color-mix(in oklab,var(--role) 58%,#000);padding:3px 9px;border-radius:5px}
 .expm-feat-body{padding:14px 16px 16px;display:flex;flex-direction:column;gap:8px}
-.expm-feat-name{font-family:var(--font-mono);font-size:1.1rem;font-weight:700;color:#e6edf3}
-.expm-feat-desc{font-family:var(--font-mono);font-size:.72rem;color:#8a98a6;line-height:1.5}
-.expm-feat-cta{font-family:var(--font-mono);font-size:.6rem;letter-spacing:.06em;color:var(--role)}
-.expm-row{display:flex;gap:12px;align-items:center;border:1px solid var(--hairline);border-left:3px solid var(--role,var(--hairline-strong));border-radius:10px;padding:11px;background:rgba(20,24,29,.6);text-decoration:none;color:inherit;transition:background .15s}
-.expm-row:active{background:rgba(255,255,255,.03)}
+.expm-feat-name{font-family: var(--font-sans);font-size: var(--text-lead);font-weight: var(--weight-strong);color:var(--ink)}
+.expm-feat-desc{font-family: var(--font-sans);font-size: var(--text-caption);color:var(--muted);line-height:1.5}
+.expm-feat-cta{font-family: var(--font-sans);font-size: var(--text-caption);color:var(--role)}
+.expm-row{display:flex;gap:12px;align-items:center;border:1px solid var(--hairline);border-left:3px solid var(--role,var(--hairline-strong));border-radius:10px;padding:11px;background:var(--surface);text-decoration:none;color:inherit;transition:background .15s}
+.expm-row:active{background:var(--surface-2)}
 .expm-thumb{flex-shrink:0;width:60px;height:60px;border-radius:7px;background-size:cover;background-position:top center;background-color:#080c10;border:1px solid rgba(255,255,255,.12)}
 .expm-thumb--icon{display:flex;align-items:center;justify-content:center;background:color-mix(in oklab,var(--role) 12%,#0d1117);border-color:color-mix(in oklab,var(--role) 30%,var(--hairline))}
-.expm-glyph{font-family:var(--font-mono);font-size:.9rem;font-weight:700;letter-spacing:.06em;color:var(--role)}
+.expm-glyph{font-family: var(--font-sans);font-size: var(--text-body);font-weight: var(--weight-strong);color:var(--role)}
 .expm-body{display:flex;flex-direction:column;gap:4px;min-width:0;flex:1}
 .expm-title{display:flex;align-items:baseline;gap:8px;min-width:0}
-.expm-title b{font-family:var(--font-mono);font-size:.86rem;font-weight:700;color:#e6edf3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.expm-role{font-family:var(--font-mono);font-size:.5rem;letter-spacing:.12em;text-transform:uppercase;color:var(--role);flex-shrink:0}
-.expm-desc{font-family:var(--font-mono);font-size:.68rem;color:#8a98a6;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.expm-badge{align-self:flex-start;font-family:var(--font-mono);font-size:.5rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(201,209,217,.6);border:1px solid rgba(255,255,255,.14);border-radius:5px;padding:2px 7px;flex-shrink:0}
+.expm-title b{font-family: var(--font-sans);font-size: var(--text-body);font-weight: var(--weight-strong);color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.expm-role{font-family: var(--font-sans);font-size: var(--text-caption);color:var(--role);flex-shrink:0}
+.expm-desc{font-family: var(--font-sans);font-size: var(--text-caption);color:var(--muted);line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.expm-badge{align-self:flex-start;font-family: var(--font-sans);font-size: var(--text-caption);color:rgba(201,209,217,.6);border:1px solid rgba(255,255,255,.14);border-radius:5px;padding:2px 7px;flex-shrink:0}
 .expm-row.has-shot .expm-badge{color:#56d364;border-color:rgba(86,211,100,.4)}
 </style>
 
