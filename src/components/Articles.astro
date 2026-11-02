@@ -272,7 +272,8 @@ const feat = list[0] || null;
 }
 .priority.has-thumb .ghost-index{display:none}
 .priority:not(.has-thumb){background:var(--surface-2)}
-.priority:not(.has-thumb) .priority-overlay{background:linear-gradient(to top,rgba(0,0,0,.5),transparent 60%)}
+/* a thumbless card is on the page's own ground in both themes: shade toward that ground, never black */
+.priority:not(.has-thumb) .priority-overlay{background:linear-gradient(to top,color-mix(in oklab,var(--surface-base) 60%,transparent),transparent 60%)}
 .priority-body{position:relative;z-index:3;padding:26px 24px;display:flex;flex-direction:column;gap:11px}
 .priority-hd{
   display:inline-flex;align-items:center;gap:9px;
