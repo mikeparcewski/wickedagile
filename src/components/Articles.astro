@@ -350,12 +350,6 @@ const feat = list[0] || null;
 /* a11y FIX: contract-required date · N min read meta must clear AA.
    Was --faint (near-invisible). Now --muted in BOTH themes. */
 .dispatch-row-meta{font-family: var(--font-sans);font-size: var(--text-caption);color:var(--muted);}
-/* a11y FIX (light): --muted (rgba .58) only reaches ~3.63:1 on the harbor-blue
-   surface for this .52rem mono text. Bump to an opaque AA tone (>=4.5:1 on every
-   light surface: .78 alpha -> ~5.2:1 worst case). Scoped to the light override only.
-   (The source's .sw-tele selector is dropped — the service grid was removed.) */
-[data-theme="light"] .dispatch-row-meta,
-
 /* 1px inset highlight + sliding OPEN tag */
 .dispatch-row::after{
   content:'';position:absolute;inset:0;border-radius:2px;pointer-events:none;

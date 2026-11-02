@@ -1,0 +1,36 @@
+import { test, expect } from '@playwright/test';
+
+/**
+ * Wicked Light (wicked-web v3): the page turns light, but the device mockups (product blocks, the
+ * preview pane, the mobile product cards) stay dark, so their text must keep Wicked Dark's values.
+ * Before this, light-theme ink landed on those dark grounds (about 1.05:1 for the preview title).
+ */
+const DARK_INK = 'rgb(237, 237, 234)';
+const DARK_MUTED = 'rgb(169, 169, 163)';
+
+test.beforeEach(async ({ page }) => {
+  await page.addInitScript(() => localStorage.setItem('wa-theme-v3', 'light'));
+});
+
+test('desktop: the product blocks and the preview pane keep dark-ground text in Wicked Light', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto('/');
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
+  await expect(page.locator('.center-titlebar .ct-name')).toHaveCSS('color', DARK_INK);
+  await expect(page.locator('.block:not([aria-current="true"]) .blk-role').first()).toHaveCSS('color', DARK_MUTED);
+});
+
+test('phone: the mobile product cards keep dark-ground text in Wicked Light', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto('/');
+  await expect(page.locator('.expm-feat-name')).toHaveCSS('color', DARK_INK);
+  await expect(page.locator('.expm-feat')).toHaveCSS('background-color', 'rgb(26, 26, 26)');
+  await expect(page.locator('.expm-row .expm-title b').first()).toHaveCSS('color', DARK_INK);
+});
+
+test('article meta stays in its row in Wicked Light (no stray absolute positioning)', async ({ page }) => {
+  await page.goto('/');
+  const meta = page.locator('.dispatch-row-meta').first();
+  test.skip((await meta.count()) === 0, 'no articles in this build');
+  await expect(meta).toHaveCSS('position', 'static');
+});

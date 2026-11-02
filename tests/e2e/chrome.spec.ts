@@ -80,3 +80,10 @@ test.describe('universal chrome', () => {
     await expect(btn).toHaveAttribute('aria-expanded', 'false');
   });
 });
+
+test('a stored v2 theme is ignored: the reset to Wicked Dark happens once, and the load writes nothing', async ({ page }) => {
+  await page.addInitScript(() => localStorage.setItem('wa-theme', 'light'));
+  await page.goto('/');
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
+  expect(await page.evaluate(() => localStorage.getItem('wa-theme-v3'))).toBeNull();
+});
