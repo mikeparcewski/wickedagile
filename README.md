@@ -28,8 +28,8 @@ carries (GitHub, Medium, the career chapters).
   runtime. The page ships as plain HTML/CSS plus a few small, self-contained
   per-component scripts (the theme toggle + ecosystem dropdown in the topbar, and
   the hero terminal session).
-- **Design tokens** live in `src/styles/tokens.css` (the `:root` + `[data-theme="light"]`
-  custom properties and the global base) and are imported via `src/styles/global.css`.
+- **Design tokens** come from `wicked-web` (its `src/styles/tokens.css`, loaded by the shared
+  `Base` layout); `src/styles/global.css` here holds only the apex's own page rules.
 - **Family facts come from one manifest** — `wicked-web/data/family.js` (planes,
   products, links, hues, one-line claims). `Shipped.astro` builds its stack and
   mobile list from it, `src/scripts/data.js` builds the `FEATURED` preview list
@@ -66,10 +66,15 @@ is set via `public/CNAME` (`wickedagile.com`), so the Astro `site` is
 
 Every section is implemented and content-complete, in page order:
 
-- `src/components/Hero.astro` — the builder/writer hero ("The best code tells
-  a story. The best stories have architecture.") with the live auto-typing
+- `src/components/Hero.astro` — the family one-liner as the headline, one line
+  on what wicked does, and the live auto-typing
   terminal (`/articles`, `/projects`, `/about`; disabled on mobile).
-- `src/components/Shipped.astro` — "the experiment.": what I've been building,
+- `src/components/Story.astro` — "intent in. checked work out.": how it works,
+  in five steps (ask in a chat, sandboxed agents, one builds and another
+  checks, tested before delivery, the evidence).
+- `src/components/CanDo.astro` — "what you can do with it.": eight things you
+  can do with the platform, and one coming-soon line (no dates).
+- `src/components/Shipped.astro` — "the platform.": what I've been building,
   as the **four-plane stack** (one surface, one control plane, one catalog, one
   record). Foundation (wicked-estate, with wicked-interactive as the document
   engine) → Capability (wicked-garden) → Control (wicked-crew) → the Experience
@@ -83,6 +88,9 @@ Every section is implemented and content-complete, in page order:
   garden's `#extend`. Retired/absorbed packages (testing → garden + crew, brain
   → estate, bus/vault/ledger internal, core inside crew) are not shown as
   standalone products.
+- `src/components/Builder.astro` — who built it: why, the hard problems it
+  solves (governed delivery, sandboxed agents, a different agent reviews,
+  evidence trails), and where to see more.
 - `src/components/Articles.astro` — the "yes, and…" dispatch feed, baked from
   the Medium RSS at build time (`src/lib/articles.mjs`).
 - `src/components/About.astro` — the closer: the multi-chapter career rail
