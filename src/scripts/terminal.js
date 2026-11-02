@@ -65,7 +65,7 @@ function boot(){
     var repos=await Promise.race([reposPromise,delay(3500).then(function(){return null})]);
     var STARS={};(repos||[]).forEach(function(r){STARS[r.name]=r.stargazers_count||0});
     /* planes + copy from the ONE family manifest (wicked-web/data/family.js) */
-    var CLS={experience:'t-o',control:'t-v',capability:'t-g',foundation:'t-c'};
+    var CLS={experience:'t-o',control:'t-v',capability:'t-g',foundation:'t-f'};
     var PLANES=FAMILY_PLANES.map(function(p){return {name:p.name.toUpperCase(),cls:CLS[p.key],note:p.role.toLowerCase(),
       items:p.products.map(function(s){return {label:s.name,repo:s.name,desc:s.blurb}})}});
     commitLine('<span class="t-d">'+esc(SEP)+'</span>');appendTxt('\n');

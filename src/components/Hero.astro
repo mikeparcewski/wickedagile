@@ -106,8 +106,11 @@
 .term-body::-webkit-scrollbar{width:3px}
 .term-body::-webkit-scrollbar-thumb{background:rgba(255,255,255,.08);border-radius:2px}
 .term-output{white-space:pre-wrap;word-break:break-word;flex:1}
-.term-output a{color:#79c0ff;text-decoration:underline}
-.t-y{color:#ebc06b}.t-g{color:#56d364}.t-c{color:#79c0ff}.t-o{color:#f0a868}.t-v{color:#d2a8ff}.t-b{font-weight: var(--weight-strong)}.t-d{opacity:.38}
+/* the terminal's colours are palette tokens (the dark island above pins their dark values): ink for the splash,
+   its box and links; a plane's hue only on that plane's lines (the four planes, from data/family.js) */
+.term-output a{color:var(--link);text-decoration:underline}
+.t-y{color:#ebc06b}.t-c{color:var(--ink-high)}.t-b{font-weight: var(--weight-strong)}.t-d{opacity:.38}
+.t-o{color:var(--plane-experience)}.t-v{color:var(--plane-control)}.t-g{color:var(--plane-capability)}.t-f{color:var(--plane-foundation)}
 .term-prompt-line{display:flex;align-items:center;padding-top:2px;flex-shrink:0}
 .term-prompt-char{color:#56d364;margin-right:6px;user-select:none;flex-shrink:0}
 .term-cursor-text{color:#c9d1d9}
