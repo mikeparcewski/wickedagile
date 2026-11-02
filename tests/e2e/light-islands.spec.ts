@@ -64,4 +64,17 @@ test('keyboard focus inside the terminal is the light focus colour in Wicked Lig
     const c = getComputedStyle(a).outlineColor; a.remove(); return c;
   });
   expect(outline).toBe('rgb(237, 237, 234)');
+  // a card link is its own focus target, ringed outside the card on the light page: the page's (dark) focus colour
+  const photo = page.locator('.priority.has-thumb').first();
+  if (await photo.count()) {
+    expect(await photo.evaluate((el) => getComputedStyle(el).getPropertyValue('--focus').trim())).toBe('#18181a');
+  }
+  await page.setViewportSize({ width: 390, height: 844 });
+  for (const sel of ['.expm-feat', '.expm-row']) {
+    const v = await page.locator(sel).first().evaluate((el) => getComputedStyle(el).getPropertyValue('--focus').trim());
+    expect(v, sel).toBe('#18181a');
+  }
+  // and Tab onto the first mobile product card: its ring is the page's dark focus colour
+  await page.locator('.expm-feat').focus();
+  await expect(page.locator('.expm-feat')).toHaveCSS('outline-color', 'rgb(24, 24, 26)');
 });
