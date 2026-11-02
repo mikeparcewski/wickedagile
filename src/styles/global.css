@@ -85,7 +85,7 @@ body::before {
   --hairline: #232323; --border-subtle: #232323; --hairline-strong: #2e2e2e; --border: #2e2e2e;
   --surface: #1a1a1a; --surface-2: #212121;
   --accent: #ededea; --accent-hover: #ffffff; --accent-fg: #141414; --accent-ink: #141414;
-  --accent-wash: rgba(237, 237, 234, 0.05); --link: #ededea;
+  --accent-wash: rgba(237, 237, 234, 0.05); --link: #ededea; --focus: #ededea; /* keyboard focus stays visible on the dark ground */
   --beam: #ededea; --beam-glow: rgba(237, 237, 234, 0.42);
   --plane-experience: #f0a868; --plane-control: #d2a8ff; --plane-capability: #56d364; --plane-foundation: #79c0ff;
 }
