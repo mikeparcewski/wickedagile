@@ -114,8 +114,8 @@ const SHORT = ["Early Years", "Scale", "Architecture", "AI", "Reckoning"];
    ABOUT — "chapters." Rail + scroll-snap. ON-BRAND: every color comes
    from the shared theme tokens, so this section reads as dark by default
    and recolors correctly under [data-theme="light"] (Wicked Light).
-   Signal yellow (--accent) appears ONLY as a stamp: the section-title
-   swash, the rail progress fill, and the active rail node.
+   The accent (monochrome in Wicked Dark / Light) marks only the rail
+   progress fill, the active rail node and the quote mark.
    ══════════════════════════════════════════════════════════════════ */
 .about-section{
   position:relative;
@@ -309,8 +309,9 @@ const SHORT = ["Early Years", "Scale", "Architecture", "AI", "Reckoning"];
   color:var(--muted);max-width:54ch;line-height:1.6
 }
 
-/* oversized chapter numeral — on-brand: ink at low opacity */
-.ch-num{
+/* the chapter numeral watermark: hidden under the type scale (a 28px ghost behind the label reads as
+   noise; the label already says "Chapter 01" and the rail carries the numbers) */
+.ch-num{display:none;
   font-family: var(--font-sans);font-weight: var(--weight-strong);
   font-size: var(--text-title);line-height:.74;letter-spacing: var(--tracking-title);
   color:var(--ink);opacity:.07;
@@ -327,7 +328,7 @@ const SHORT = ["Early Years", "Scale", "Architecture", "AI", "Reckoning"];
   font-size: var(--text-title);line-height:1.02;letter-spacing: var(--tracking-title);
   color:var(--ink);max-width:20ch;margin:0
 }
-/* one yellow stamp per chapter: a leading quote-mark accent */
+/* one accent per chapter: a leading quote-mark */
 .ch-quote .qmark{
   font-family: var(--font-sans);font-weight: var(--weight-strong);color:var(--accent);
   margin-right:.06em;line-height:0

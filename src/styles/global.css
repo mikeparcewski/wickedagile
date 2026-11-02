@@ -69,3 +69,24 @@ body::before {
   -webkit-mask-position: center;  mask-position: center;
   -webkit-mask-size: cover;       mask-size: cover;
 }
+
+/* ── DARK ISLANDS ─────────────────────────────────────────────────────────
+   Surfaces that stay dark in both themes: the terminal, the product blocks and
+   the preview pane, the mobile product cards, and article cards over a photo.
+   They are device mockups, and the plane hues they carry come from the family
+   manifest as dark-ground values. Under Wicked Light the page tokens turn dark,
+   so these surfaces take Wicked Dark's text, line and action values (the design
+   package's dark theme, packages/design-system/dist/tokens.css) and never show
+   light-theme ink on a dark ground. */
+.term-window, .block, .ide-preview, .expm-feat, .expm-row, .priority.has-thumb {
+  color-scheme: dark;
+  --ink: #ededea; --ink-high: #ededea; --ink-body: #cfcfca;
+  --muted: #a9a9a3; --ink-muted: #a9a9a3; --faint: #8f8f89; --ink-dim: #8f8f89;
+  --hairline: #232323; --border-subtle: #232323; --hairline-strong: #2e2e2e; --border: #2e2e2e;
+  --surface: #1a1a1a; --surface-2: #212121;
+  --accent: #ededea; --accent-hover: #ffffff; --accent-fg: #141414; --accent-ink: #141414;
+  --accent-wash: rgba(237, 237, 234, 0.05); --link: #ededea;
+  --beam: #ededea; --beam-glow: rgba(237, 237, 234, 0.42);
+  --plane-experience: #f0a868; --plane-control: #d2a8ff; --plane-capability: #56d364; --plane-foundation: #79c0ff;
+}
+
