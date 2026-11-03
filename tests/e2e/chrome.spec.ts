@@ -1,11 +1,12 @@
 /**
- * Universal chrome — theme toggle + ecosystem dropdown, both from the shared
+ * Universal chrome — theme toggle, the lockup and the flask, all from the shared
  * wicked-web Topbar (node_modules/wicked-web/src/components/Topbar.astro).
  * Source contract:
  *   - setTheme(t) stamps data-theme on <html> AND persists localStorage
  *     'wa-theme-v3'; Base.astro's no-flash init re-applies it before paint.
- *   - #projectsBtn toggles #projectsMenu (hidden attr) + aria-expanded;
- *     a document-level click or Escape closes it.
+ *   - the umbrella site passes no pkg, so the lockup stands alone (no product path);
+ *   - the flask is a plain link to Wicked Labs (LAB in data/family.js), on the
+ *     desktop icon row and as the phone menu's first row. There is no Experiments menu.
  */
 import { test, expect } from '@playwright/test';
 
@@ -38,46 +39,32 @@ test.describe('universal chrome', () => {
       .toBe('dark');
   });
 
-  test('ecosystem dropdown opens on click and lists the four planes', async ({ page }) => {
-    const btn = page.locator('#projectsBtn');
-    const menu = page.locator('#projectsMenu');
+  test('the lockup stands alone (no product path) and the flask links Wicked Labs', async ({ page }) => {
+    const lockup = page.locator('.topbar a.wordmark');
+    await expect(lockup).toHaveCount(1);
+    await expect(lockup).toHaveAttribute('aria-label', 'Wicked Agile');
+    await expect(lockup).toHaveAttribute('href', 'https://wickedagile.com');
+    await expect(page.locator('.topbar .crumbs')).toHaveCount(0);
+    const lab = page.locator('.topbar .nav').getByRole('link', { name: 'Wicked Labs' });
+    await expect(lab).toHaveAttribute('href', 'https://wickedlabs.ai/');
+    await expect(lab).toBeVisible();
+    // the old Experiments menu is gone: no button that opens it, no product rows
+    await expect(page.locator('#projectsBtn, #projectsMenu, .dropdown-menu, .dropdown-plane')).toHaveCount(0);
+  });
 
-    await expect(menu).toBeHidden();
-    await expect(btn).toHaveAttribute('aria-expanded', 'false');
-
-    await btn.click();
-    await expect(menu).toBeVisible();
-    await expect(btn).toHaveAttribute('aria-expanded', 'true');
-
-    // Four plane groups holding four product rows: studio alone under Experience, then crew,
-    // garden and estate one each. Retired products get no row.
-    await expect(menu.locator('.dropdown-plane')).toHaveCount(4);
-    // 4, not 5: the ecosystem dropdown no longer carries a wicked-interactive row. Its builder UI
-    // moved into wicked-studio and the service answers a direct visitor with "it serves the API,
-    // not the UI", so a nav row there would spend the click telling you that. The product is not
-    // gone — SameGarden lists it under Foundation as the document engine, repo link, no "Visit".
-    await expect(menu.locator('.dropdown-item')).toHaveCount(4);
-    // .dp-head renders text-transform:uppercase, so match case-insensitively.
-    const planeNames = await menu.locator('.dp-head').allInnerTexts();
-    expect(planeNames.join(' ')).toMatch(/experience[\s\S]*control[\s\S]*capability[\s\S]*foundation/i);
-    // No wi. row — that is the point of the count above. wi.wickedagile.com now redirects to
-    // ws.wickedagile.com, so a row here would be a nav entry that bounces you to the row directly
-    // beneath it. Interactive is listed by SameGarden under Foundation instead: repo link, no Visit.
-    await expect(menu.locator('a[href*="wi.wickedagile.com"]')).toHaveCount(0);
-    await expect(menu.locator('a[href="https://wc.wickedagile.com"]')).toBeVisible();
-    await expect(menu.locator('a[href="https://wg.wickedagile.com"]')).toBeVisible();
-    await expect(menu.locator('a[href="https://we.wickedagile.com"]')).toBeVisible();
-    // studio rides Experience as a first-class product with its own site.
-    await expect(menu.locator('a[href="https://ws.wickedagile.com"]')).toBeVisible();
-    // Retired/internal packages have no top-level entry.
-    await expect(menu.locator('a[href*="wicked-bus"]')).toHaveCount(0);
-    await expect(menu.locator('a[href*="wicked-brain"]')).toHaveCount(0);
-    await expect(menu.locator('a[href*="wt.wickedagile.com"]')).toHaveCount(0);
-
-    // Escape closes it again.
+  test('on a phone the menu leads with Wicked Labs, then media, writing and GitHub', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto('/', { waitUntil: 'domcontentloaded' });
+    await page.locator('#menuBtn').click();
+    const rows = page.locator('#mobileMenu a');
+    await expect(rows).toHaveCount(4);
+    await expect(rows.first()).toContainText('Wicked Labs');
+    await expect(rows.first()).toHaveAttribute('href', 'https://wickedlabs.ai/');
+    // no product-site rows in the menu any more (SameGarden lists the products on the page)
+    const products = ['wc', 'wg', 'we', 'ws'].map((h) => `#mobileMenu a[href^="https://${h}.wickedagile.com"]`).join(', ');
+    await expect(page.locator(products)).toHaveCount(0);
     await page.keyboard.press('Escape');
-    await expect(menu).toBeHidden();
-    await expect(btn).toHaveAttribute('aria-expanded', 'false');
+    await expect(page.locator('#mobileMenu')).toBeHidden();
   });
 });
 
