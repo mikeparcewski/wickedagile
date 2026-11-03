@@ -15,7 +15,7 @@
     "build:renamed": "node scripts/build-graph.mjs --door-work=Build && astro build --outDir dist-renamed && node scripts/build-graph.mjs"
   },
   "dependencies": {
-    "astro": "^7.3.2",
+    "astro": "^7.4.5",
     "wicked-web": "github:mikeparcewski/wicked-web#9b73714d63778ab54cef667ab5639a8636695b99"
   },
   "devDependencies": {
