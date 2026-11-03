@@ -52,19 +52,30 @@ test.describe('universal chrome', () => {
     await expect(page.locator('#projectsBtn, #projectsMenu, .dropdown-menu, .dropdown-plane')).toHaveCount(0);
   });
 
-  test('on a phone the menu leads with Wicked Labs, then media, writing and GitHub', async ({ page }) => {
+  test('on a phone the menu opens on the hamburger and leads with Wicked Labs, then media, writing and GitHub', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto('/', { waitUntil: 'domcontentloaded' });
-    await page.locator('#menuBtn').click();
-    const rows = page.locator('#mobileMenu a');
-    await expect(rows).toHaveCount(4);
+    const btn = page.locator('#menuBtn');
+    const menu = page.locator('#mobileMenu');
+    await expect(menu).toBeHidden();
+    await expect(btn).toHaveAttribute('aria-expanded', 'false');
+    await btn.click();
+    await expect(menu).toBeVisible();
+    await expect(btn).toHaveAttribute('aria-expanded', 'true');
+    // Wicked Labs first, then the three the icon row carries on a desktop, each to its own destination
+    const rows = menu.locator('a');
     await expect(rows.first()).toContainText('Wicked Labs');
     await expect(rows.first()).toHaveAttribute('href', 'https://wickedlabs.ai/');
-    // no product-site rows in the menu any more (SameGarden lists the products on the page)
+    await expect(rows.first()).toBeVisible();
+    await expect(menu.getByRole('link', { name: /wicked bits/ })).toHaveAttribute('href', 'https://bits.wickedagile.com/');
+    await expect(menu.getByRole('link', { name: /Medium/ })).toHaveAttribute('href', /^https:\/\/medium\.com\//);
+    await expect(menu.getByRole('link', { name: /GitHub/ })).toHaveAttribute('href', 'https://github.com/mikeparcewski');
+    // no product-site rows in the menu any more (the page's Shipped section lists the products)
     const products = ['wc', 'wg', 'we', 'ws'].map((h) => `#mobileMenu a[href^="https://${h}.wickedagile.com"]`).join(', ');
     await expect(page.locator(products)).toHaveCount(0);
     await page.keyboard.press('Escape');
-    await expect(page.locator('#mobileMenu')).toBeHidden();
+    await expect(menu).toBeHidden();
+    await expect(btn).toHaveAttribute('aria-expanded', 'false');
   });
 });
 

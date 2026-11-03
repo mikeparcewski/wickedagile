@@ -26,8 +26,8 @@ carries (GitHub, Medium, the career chapters).
 
 - **[Astro](https://astro.build) — static output.** Zero client-side framework
   runtime. The page ships as plain HTML/CSS plus a few small, self-contained
-  per-component scripts (the theme toggle + ecosystem dropdown in the topbar, and
-  the hero terminal session).
+  per-component scripts (the theme toggle and the phone menu in the topbar, whose
+  flask links Wicked Labs, and the hero terminal session).
 - **Design tokens** come from `wicked-web` (its `src/styles/tokens.css`, loaded by the shared
   `Base` layout); `src/styles/global.css` here holds only the apex's own page rules.
 - **Family facts come from one manifest** — `wicked-web/data/family.js` (planes,
