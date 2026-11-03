@@ -94,3 +94,8 @@ test('the map has no Video filter and no video placeholders (operator, 2026-11-0
   expect(await page.evaluate(() => /Video/.test(document.querySelector('#graph')!.textContent || '') || /none yet/i.test(document.body.innerText))).toBe(false);
 });
 
+test('media queries use max-width/min-width, which Safari before 16.4 understands (wickedagile#71)', async ({ request }) => {
+  const html = await (await request.get('/')).text();
+  expect(html.match(/@media\s*\(\s*width\s*[<>]/g) ?? []).toEqual([]);
+});
+
