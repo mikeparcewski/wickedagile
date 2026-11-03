@@ -43,3 +43,13 @@ test('header links go to the live family sites', async ({ page }) => {
   expect(hrefs).toContain('https://wickedlabs.ai/');
   expect(hrefs.some((h) => h?.startsWith('https://bits.wickedagile.com'))).toBe(true);
 });
+
+test('header carries no section links (operator, 2026-11-03)', async ({ page }) => {
+  for (const vp of [{ width: 1440, height: 700 }, { width: 390, height: 844 }]) {
+    await page.setViewportSize(vp);
+    await page.goto('/', { waitUntil: 'networkidle' });
+    await expect(page.locator('header a[href^="#graph"], header a[href^="#learn"], header a[href^="#work"]')).toHaveCount(0);
+    await expect(page.locator('header .nsep')).toHaveCount(0);
+  }
+});
+
