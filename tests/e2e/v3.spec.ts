@@ -96,6 +96,13 @@ test('the map has no Video filter and no video placeholders (operator, 2026-11-0
 
 test('media queries use max-width/min-width, which Safari before 16.4 understands (wickedagile#71)', async ({ request }) => {
   const html = await (await request.get('/')).text();
-  expect(html.match(/@media\s*\(\s*width\s*[<>]/g) ?? []).toEqual([]);
+  // the page's own HTML and every stylesheet it links (the Astro build bundles its CSS into /_astro/*.css)
+  // every <link rel=stylesheet>, whatever the attribute order; there must be at least one (or the check reads nothing)
+  const sheets = [...html.matchAll(/<link\b[^>]*>/g)].map((m) => m[0]).filter((t) => /\brel="?stylesheet\b/.test(t)).map((t) => (t.match(/\bhref="([^"]+)"/) || [])[1]).filter(Boolean) as string[];
+  expect(sheets.length).toBeGreaterThan(0);
+  const css = await Promise.all(sheets.map(async (h) => (await request.get(h)).text()));
+  for (const [where, text] of [['index.html', html], ...sheets.map((h, i) => [h, css[i]])]) {
+    expect(text.match(/@media\s*\(\s*width\s*[<>]/g) ?? [], where).toEqual([]);
+  }
 });
 

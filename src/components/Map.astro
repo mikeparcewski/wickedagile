@@ -1,0 +1,21 @@
+---
+/* "Follow a thread" and the map (DES-SITES-V2 §4.4). The controls, the marks, the routes and the panel are drawn by
+   src/scripts/map.js; without script this frame says so and Learn and Work below list everything on it. */
+const { G } = Astro.props;
+const LB = G.labels;
+---
+<section class="snap mapsec" id="graph" aria-labelledby="gh">
+ <div class="wrap">
+  <div class="top">
+    <div><h2 id="gh">Follow a thread</h2><p class="sub">Pick a question to light up its route.</p></div>
+    <div class="controls needs-js" id="controls" role="group" aria-label="Filter the map"></div>
+  </div>
+  <div class="qrow needs-js" id="qrow" role="group" aria-label="Threads"></div>
+  <div class="tcards needs-js" id="tcards" role="group" aria-label="Threads"></div>
+  <p class="nojs">The map needs JavaScript. Everything on it is listed below: {LB.learn}, then {LB.work}.</p>
+  <div class="stage needs-js">
+    <div class="gwrap g" id="gwrap" role="group" aria-label={`Map: ${LB.learn} on the left, ${LB.work} on the right, threads as routes`}><span class="shore l" aria-hidden="true">{LB.learn}</span><span class="shore r" id="shoreR" aria-hidden="true">{LB.work}</span><svg id="svg" aria-hidden="true"></svg><div id="stations"></div><div class="pulse" id="pulse"></div><div class="mapempty" id="mapEmpty" hidden><p>Nothing on the map matches these filters.</p><button type="button" class="btn small" id="resetF4">Clear filters</button></div></div>
+    <aside class="panel" id="panel" aria-label="Details" tabindex="-1"></aside><p class="sr" id="mapStatus" aria-live="polite"></p>
+  </div>
+ </div>
+</section>

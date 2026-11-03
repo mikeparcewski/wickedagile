@@ -1,0 +1,44 @@
+---
+/* wickedagile.com v3, the company site (DES-SITES-V2 rev 10.2-final, build brief B3): four frames that snap, the
+   hero, the map (#graph), Learn (#learn) and Work (#work). Everything is read at build time from
+   src/data/graph.built.json (scripts/build-graph.mjs); the page makes no request at run time. */
+import Page from '../layouts/Page.astro';
+import Topbar from 'wicked-web/components/Topbar.astro';
+import Footer from 'wicked-web/components/Footer.astro';
+import Hero from '../components/Hero.astro';
+import Map from '../components/Map.astro';
+import Learn from '../components/Learn.astro';
+import Work from '../components/Work.astro';
+import G from '../data/graph.built.json';
+
+// Draft marks are a render setting (DES §5.1): the threads and Related links keep `draft: true` in the data until the
+// operator approves them; production hides every draft surface. SHOW_DRAFTS=1 builds the page with them shown.
+const showDrafts = process.env.SHOW_DRAFTS === '1';
+const drafts = [
+  ['Thread names, hooks and membership', G.threads.some((t) => t.draft === true)],
+  ['the Related links', G.edges.some((e) => e.kind === 'related' && e.draft === true)],
+  ['the hero copy', G.hero.draft === true],
+].filter(([, on]) => on).map(([x]) => x);
+const draftNote = showDrafts && drafts.length
+  ? `${drafts.length > 1 ? drafts.slice(0, -1).join(', ') + ' and ' : ''}${drafts[drafts.length - 1]} ${drafts.length > 1 ? 'are' : 'is'} DRAFT FOR OPERATOR APPROVAL.`
+  : '';
+const data = JSON.stringify({ ...G, showDrafts }).replace(/</g, '\\u003c');
+---
+<Page
+  title="Wicked Agile: we write about the work and build the tools for it"
+  description={G.hero.sub}
+  bodyClass={draftNote ? 'notes' : undefined}
+>
+<a class="skip" href="#graph">Skip to the map</a>
+<Topbar here="agile" />
+<main id="main">
+<Hero G={G} />
+<Map G={G} />
+<Learn G={G} />
+<Work G={G} draftNote={draftNote} />
+</main>
+<Footer repo="https://github.com/mikeparcewski/wickedagile" />
+<script type="application/json" id="graph-data" set:html={data}></script>
+<script src="../scripts/map.js"></script>
+<script src="../scripts/braid-run.js"></script>
+</Page>

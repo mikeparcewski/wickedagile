@@ -1,0 +1,18 @@
+---
+/* The intro hero (DES-SITES-V2 §4.6): the decided copy (Q11), read from the curated file's `hero`, and the braid art
+   drawn in code: a Learn strand and a Work strand braid three times and leave as one line toward the map. */
+import { heroH1, braid } from '../lib/render.mjs';
+const { G } = Astro.props;
+const LB = G.labels;
+---
+<section class="snap hero" id="home" aria-labelledby="hh">
+ <div class="wrap">
+  <div class="copy">
+   <div class="kicker">Essays, bits and the wicked lab</div>
+   <h1 id="hh" set:html={heroH1(G.hero.h1)}></h1>
+   <p class="sub" id="heroSub">{G.hero.sub}</p>
+   <div class="ctas"><a class="btn primary" href="#graph">Follow a thread<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 5v14M6 13l6 6 6-6"/></svg></a><a class="btn" href="#learn">{LB.learn}</a><a class="btn" href="#work">{LB.work}</a></div>
+  </div>
+  <div class="art" set:html={braid(LB)}></div>
+ </div>
+</section>

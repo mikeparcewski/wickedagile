@@ -1,0 +1,5 @@
+{
+ "$comment": "Committed seed for wickedlabs.ai/data/capabilities.json (the last fallback, src/lib/sources.mjs) until the lab export is live. No thread names a capability today, so the seed lists none.",
+ "asOf": "2026-11-02",
+ "capabilities": []
+}

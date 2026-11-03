@@ -1,0 +1,411 @@
+{
+ "$comment": "The hand-curated half of the wickedagile.com graph: threads, Related links, map positions, short map labels, the door names and the hero. Essays come from the Medium feed, bits and videos from bits.wickedagile.com/bits.json, Work facts from the lab's export (src/lib/sources.mjs); topic edges are computed from the essays' own Medium categories by scripts/build-graph.mjs. Everything here is an operator choice.",
+ "asOf": "2026-11-02",
+ "topicEdgeRule": {
+  "minPosts": 2,
+  "maxPosts": 4,
+  "shape": "chain in date order, newest first"
+ },
+ "types": {
+  "essay": {
+   "label": "Article",
+   "glyph": "circle",
+   "source": "Medium feed"
+  },
+  "bit": {
+   "label": "Bit",
+   "glyph": "diamond",
+   "source": "bits.wickedagile.com"
+  },
+  "video": {
+   "label": "Video",
+   "glyph": "triangle",
+   "source": "bits.wickedagile.com (none yet)"
+  }
+ },
+ "related": [
+  {
+   "a": "all-green",
+   "b": "the-work",
+   "note": "a parable and a playable factory about the same kind of shift",
+   "draft": true
+  },
+  {
+   "a": "the-work",
+   "b": "crew",
+   "note": "Job in. Crew out.",
+   "draft": true
+  },
+  {
+   "a": "code-is-cheap",
+   "b": "crew",
+   "note": "a different agent checks the work",
+   "draft": true
+  },
+  {
+   "a": "code-is-cheap",
+   "b": "garden",
+   "note": "proof re-checked from evidence",
+   "draft": true
+  },
+  {
+   "a": "the-code-after-the-prose",
+   "b": "crew",
+   "note": "rules that run, not rules on paper",
+   "draft": true
+  },
+  {
+   "a": "the-last-engineer",
+   "b": "studio",
+   "note": "the ADE for a team of agents",
+   "draft": true
+  },
+  {
+   "a": "delete-the-screen",
+   "b": "studio",
+   "note": "see what your code does: a requirements graph per repo",
+   "draft": true
+  },
+  {
+   "a": "delete-the-screen",
+   "b": "estate",
+   "note": "what the system knows, kept apart from the screen",
+   "draft": true
+  },
+  {
+   "a": "the-work",
+   "b": "studio",
+   "note": "a shift of AI workers in the factory; a team of coding agents you run in studio",
+   "draft": true
+  },
+  {
+   "a": "the-last-engineer",
+   "b": "code-is-cheap",
+   "note": "what AI-native engineering changes: the wrong solution built faster; confidence as the expensive part",
+   "draft": true
+  },
+  {
+   "a": "code-is-cheap",
+   "b": "how-many-releases",
+   "note": "what a green build does and doesn't prove",
+   "draft": true
+  },
+  {
+   "a": "the-last-engineer",
+   "b": "people-who-go-barefoot",
+   "note": "the work before the work, and getting close to it",
+   "draft": true
+  }
+ ],
+ "threads": [
+  {
+   "id": "start",
+   "draft": true,
+   "name": "Start here",
+   "accent": "wicked",
+   "hook": "You can now build the wrong solution ten times faster than you could a year ago.",
+   "stops": [
+    "the-last-engineer",
+    "code-is-cheap",
+    "all-green",
+    "the-work",
+    "studio"
+   ],
+   "legs": [
+    "h",
+    "h",
+    "h",
+    "water"
+   ],
+   "badge": {
+    "x": 0.75,
+    "y": 2.2,
+    "anchor": "right"
+   },
+   "evidence": [
+    {
+     "essay": "the-last-engineer",
+     "quote": "You can now build the wrong solution ten times faster than you could a year ago."
+    }
+   ]
+  },
+  {
+   "id": "green",
+   "draft": true,
+   "name": "What if everything is green?",
+   "accent": "experience",
+   "hook": "Three parables about the confidence that comes from drawing a firm line, finding a pattern, and seeing everything green.",
+   "stops": [
+    "the-hard-block",
+    "lookalike",
+    "all-green"
+   ],
+   "legs": [
+    "h",
+    "hv"
+   ],
+   "badge": {
+    "x": 2.6,
+    "y": 0.3,
+    "anchor": "right"
+   },
+   "evidence": [
+    {
+     "essay": "the-hard-block",
+     "quote": "the confidence that comes from drawing a firm line"
+    },
+    {
+     "essay": "lookalike",
+     "quote": "the confidence that comes from finding a pattern"
+    },
+    {
+     "essay": "all-green",
+     "quote": "the confidence that comes from seeing everything green"
+    },
+    {
+     "essay": "all-green",
+     "quote": "what happens when all the evidence says we’re doing everything right"
+    }
+   ]
+  },
+  {
+   "id": "checks",
+   "draft": true,
+   "name": "Who checks the work?",
+   "accent": "control",
+   "hook": "Code is cheap. Confidence isn’t: knowing what correct means is still the hard part.",
+   "stops": [
+    "code-is-cheap",
+    "how-many-releases",
+    "the-code-after-the-prose",
+    "crew",
+    "garden"
+   ],
+   "legs": [
+    "v",
+    "h",
+    "water",
+    "pv"
+   ],
+   "badge": {
+    "x": 3.05,
+    "y": 2.68,
+    "anchor": "left"
+   },
+   "evidence": [
+    {
+     "essay": "code-is-cheap",
+     "quote": "Code Is Cheap. Confidence Isn’t."
+    },
+    {
+     "essay": "code-is-cheap",
+     "quote": "The Hard Part Is Still Knowing What Correct Means"
+    },
+    {
+     "essay": "the-code-after-the-prose",
+     "quote": "Independent review had to become structural"
+    }
+   ]
+  },
+  {
+   "id": "reality",
+   "draft": true,
+   "name": "How far does reality travel?",
+   "accent": "capability",
+   "hook": "Proximity changes what you notice, and the real work begins before anyone opens an IDE.",
+   "stops": [
+    "the-last-engineer",
+    "people-who-go-barefoot",
+    "whats-the-frequency"
+   ],
+   "legs": [
+    "v",
+    "h"
+   ],
+   "badge": {
+    "x": 0.25,
+    "y": 4.9,
+    "anchor": "left"
+   },
+   "evidence": [
+    {
+     "essay": "people-who-go-barefoot",
+     "quote": "How Far Does Reality Have to Travel?"
+    },
+    {
+     "essay": "people-who-go-barefoot",
+     "quote": "Proximity changes what you notice."
+    },
+    {
+     "essay": "the-last-engineer",
+     "quote": "The real work begins before anyone opens an IDE."
+    }
+   ]
+  },
+  {
+   "id": "state",
+   "draft": true,
+   "name": "What survives the screen?",
+   "accent": "foundation",
+   "hook": "The interface changes. The state survives. So what would you lose if you deleted the screen?",
+   "stops": [
+    "how-many-releases",
+    "delete-the-screen",
+    "estate"
+   ],
+   "legs": [
+    "vh",
+    "water"
+   ],
+   "badge": {
+    "x": 3.08,
+    "y": 3.78,
+    "anchor": "left"
+   },
+   "evidence": [
+    {
+     "essay": "delete-the-screen",
+     "quote": "The interface changes. The state survives."
+    },
+    {
+     "essay": "delete-the-screen",
+     "quote": "If I deleted its interface tomorrow, what would stop us from rebuilding the useful parts?"
+    },
+    {
+     "essay": "how-many-releases",
+     "quote": "A release is a controlled transition between valid system states."
+    }
+   ]
+  }
+ ],
+ "essayIds": {
+  "$comment": "Medium post id (the hex at the end of the post's link, which a title edit keeps) -> the essay's id here; a post not listed takes its link's slug",
+  "c5fa23024c5b": "all-green",
+  "c01e51c71190": "lookalike",
+  "6dfa60268706": "the-hard-block",
+  "8bd1efc785b3": "delete-the-screen",
+  "e960f1174961": "code-is-cheap",
+  "c9ca75eaf24a": "how-many-releases",
+  "0e9237ba500a": "whats-the-frequency",
+  "1b1dd39b1318": "people-who-go-barefoot",
+  "fa506bc16681": "the-code-after-the-prose",
+  "1789abdc62e5": "the-last-engineer"
+ },
+ "threadsDraft": "DRAFT FOR OPERATOR APPROVAL: thread names, hooks and membership are proposals (threads are curated, R6).",
+ "mapLabels": {
+  "the-last-engineer": "The Last Engineer",
+  "code-is-cheap": "Code Is Cheap",
+  "all-green": "All Green",
+  "the-work": "The Work",
+  "the-hard-block": "The Hard Block",
+  "lookalike": "Lookalike",
+  "how-many-releases": "No Data Changes?",
+  "the-code-after-the-prose": "After the Prose",
+  "people-who-go-barefoot": "Barefoot",
+  "whats-the-frequency": "The Frequency",
+  "delete-the-screen": "Delete the Screen"
+ },
+ "layout": {
+  "$comment": "grid units: Learn sky columns 0..6.6, rows 0..5.0; Work stations sit on a fixed right shore (rows only). Label sides are chosen so that no route ever leaves a station on its label's side. Learn items without a position (a new essay) take the next free tray slot; beyond the tray they appear in the Learn list only.",
+  "cols": 6.6,
+  "rows": 5.0,
+  "learn": {
+   "the-last-engineer": [
+    1.2,
+    2,
+    "above"
+   ],
+   "code-is-cheap": [
+    2.9,
+    2,
+    "above"
+   ],
+   "all-green": [
+    4.5,
+    2,
+    "below"
+   ],
+   "the-work": [
+    5.9,
+    2,
+    "below"
+   ],
+   "the-hard-block": [
+    2.9,
+    0.3,
+    "below"
+   ],
+   "lookalike": [
+    3.9,
+    0.3,
+    "below"
+   ],
+   "how-many-releases": [
+    2.9,
+    3.1,
+    "left"
+   ],
+   "the-code-after-the-prose": [
+    4.5,
+    3.1,
+    "below"
+   ],
+   "people-who-go-barefoot": [
+    1.2,
+    4.3,
+    "below"
+   ],
+   "whats-the-frequency": [
+    2.1,
+    4.3,
+    "below"
+   ],
+   "delete-the-screen": [
+    4.3,
+    4.3,
+    "below"
+   ]
+  },
+  "tray": [
+   [
+    5.9,
+    0.3,
+    "below"
+   ],
+   [
+    5.9,
+    1.15,
+    "below"
+   ]
+  ],
+  "work": {
+   "studio": 0.62,
+   "crew": 1.5,
+   "garden": 2.5,
+   "estate": 3.5,
+   "platform": 4.55
+  }
+ },
+ "approvalRule": "A thread or Related link is shown as approved only with \"approval\": {\"by\": \"operator\", \"on\": \"YYYY-MM-DD\"}; until then it carries \"draft\": true.",
+ "minsOverride": {
+  "$comment": "essay id -> {mins, source}; a read time the feed snapshot couldn't give. Coord default for DES Q10 (2026-11-03); the operator can override.",
+  "the-last-engineer": {
+   "mins": 3,
+   "source": "Medium full-RSS copy (medium.com/feed/@mike.parcewski, built 2026-11-03): 786 words at 230 wpm, rounded like the feed's other read times; the article page refuses scripts (403), so Medium's own read time was not compared"
+  }
+ },
+ "labels": {
+  "$comment": "the two doors' public names; change here to swap Work for Do or Build",
+  "learn": "Learn",
+  "work": "Work"
+ },
+ "hero": {
+  "$comment": "DECIDED by the operator 2026-11-02 (option 1). 'Receipts' is the family's word for a job's evidence: the hero promises no more than the receipts show. Earlier drafts A-C are in DES §13.3.",
+  "h1": "We write about the work. The tools are the receipts.",
+  "sub": "Essays and interactive pieces on AI and how software gets built, each one a thread into the wicked tools that do the work and keep the record.",
+  "approval": {
+   "by": "operator",
+   "on": "2026-11-02"
+  }
+ }
+}

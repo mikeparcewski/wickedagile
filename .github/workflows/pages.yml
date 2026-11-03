@@ -1,9 +1,14 @@
 name: Deploy site to GitHub Pages
 
-# Auto-deploys the site on every push to main; also runnable by hand.
+# Deploys the site on every push to main and nightly (DES-SITES-V2 §6.9: a new Medium post or bit publishes without a
+# PR); also runnable by hand. The build fetches the Medium feed, bits.json and the lab's exports, each falling back
+# to the file the live site last served, then the committed seed; the graph build fails on any rule break, and the
+# layout audit runs on the built page before it deploys.
 on:
   push:
     branches: [main]
+  schedule:
+    - cron: "17 5 * * *"
   workflow_dispatch:
 
 permissions:
@@ -19,6 +24,7 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -32,8 +38,14 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build
+      - name: Build (live sources, with fallbacks)
         run: npm run build
+
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Layout audit at the five viewports (the map's oracle and the frame rule)
+        run: npx playwright test tests/e2e/oracle.spec.ts tests/e2e/frames.spec.ts
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3

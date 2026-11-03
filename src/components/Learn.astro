@@ -1,0 +1,14 @@
+---
+/* Learn (DES-SITES-V2 §4.6): the newest piece featured large, then cards with covers drawn in code. Pre-rendered, so
+   it is the no-JS view and the keyboard list fallback; "Show all" and the filters are added by the map script. */
+import { learnHtml } from '../lib/render.mjs';
+const { G } = Astro.props;
+---
+<section class="snap idx learn" id="learn" aria-labelledby="lh">
+ <div class="wrap">
+  <header><div><h2 id="lh">{G.labels.learn}</h2><p>Things to read, explore or watch: articles newest first, then interactive bits.</p><p class="learnnote needs-js" id="learnNote" aria-live="polite" hidden></p></div>
+   <div class="hside"><div class="typeline"><span><i class="glyph essay" aria-hidden="true"></i>Article</span><span><i class="glyph bit" aria-hidden="true"></i>Bit, interactive</span></div><button type="button" class="btn small needs-js" id="showAll" aria-expanded="false" aria-controls="ed">Show all</button></div></header>
+  <Fragment set:html={learnHtml(G)} />
+  <div class="empty needs-js" id="learnEmpty" hidden><i class="glyph video big" aria-hidden="true"></i><p></p><button type="button" class="btn small" id="resetF3">Clear filters</button></div>
+ </div>
+</section>

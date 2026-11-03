@@ -1,0 +1,21 @@
+{
+ "$comment": "Committed seed for bits.wickedagile.com/bits.json (the last fallback, src/lib/sources.mjs) until the bits export is live: the mockup's fixture, from wicked-bits src/data/bits.js. type is bit or video.",
+ "asOf": "2026-11-02",
+ "items": [
+  {
+   "id": "the-work",
+   "type": "bit",
+   "title": "The Work: the one-shift factory",
+   "summary": "Job in. Crew out. A playable scrolling factory where you can scan jobs, wake temporary AI workers, trip the production line, and teach the next shift.",
+   "url": "https://bits.wickedagile.com/the-work-factory/",
+   "topics": [
+    "ai-agent"
+   ],
+   "source": {
+    "kind": "bits",
+    "ref": "wicked-bits src/data/bits.js (slug the-work-factory)",
+    "topicsBy": "operator tag"
+   }
+  }
+ ]
+}
