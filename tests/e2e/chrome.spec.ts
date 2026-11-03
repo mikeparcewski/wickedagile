@@ -52,7 +52,7 @@ test.describe('universal chrome', () => {
     await expect(page.locator('#projectsBtn, #projectsMenu, .dropdown-menu, .dropdown-plane')).toHaveCount(0);
   });
 
-  test('on a phone the menu opens on the hamburger and leads with Wicked Labs, then media, writing and GitHub', async ({ page }) => {
+  test('on a phone the menu opens on the hamburger and leads with Wicked Labs, then wicked bits, Medium and GitHub', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto('/', { waitUntil: 'domcontentloaded' });
     const btn = page.locator('#menuBtn');
