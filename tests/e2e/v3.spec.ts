@@ -53,3 +53,36 @@ test('header carries no section links (operator, 2026-11-03)', async ({ page }) 
   }
 });
 
+
+test('footer is the family footer the other sites carry (operator, 2026-11-03)', async ({ page }) => {
+  await page.goto('/', { waitUntil: 'networkidle' });
+  const f = page.locator('footer.footer');
+  await expect(f).toHaveCount(1);
+  await expect(page.locator('footer.byline')).toHaveCount(0);
+  for (const name of ['studio', 'crew', 'garden', 'estate', 'bits']) await expect(f.locator('.footer-links a', { hasText: name })).toHaveCount(1);
+  for (const head of ['Experience', 'Control', 'Capability', 'Foundation', 'Media']) await expect(f.locator('.footer-col-head', { hasText: head })).toHaveCount(1);
+  // it spans the page, as on the family sites
+  const box = await f.boundingBox();
+  expect(box!.x).toBeLessThanOrEqual(1);
+});
+
+for (const vp of [{ width: 1440, height: 700 }, { width: 1280, height: 660 }, { width: 390, height: 844 }]) {
+  test(`the hero's Work line runs on and ends beside "Follow a thread" at ${vp.width}x${vp.height} (operator, 2026-11-03)`, async ({ page }) => {
+    await page.setViewportSize(vp);
+    await page.goto('/', { waitUntil: 'networkidle' });
+    const end = await page.evaluate(() => {
+      const c = document.querySelector('.braid-run circle.cap') as SVGCircleElement | null;
+      const h = document.getElementById('gh')!.getBoundingClientRect();
+      if (!c) return null;
+      return { cx: +c.getAttribute('cx')!, cy: +c.getAttribute('cy')!, r: +c.getAttribute('r')!, hl: h.left + scrollX, ht: h.top + scrollY, hb: h.bottom + scrollY, d: document.querySelector('.braid-run path.tube')!.getAttribute('d') };
+    });
+    expect(end).not.toBeNull();
+    expect(end!.r).toBeGreaterThan(0);
+    expect(end!.d).toMatch(/^M[\d.]+ [\d.]+ Q/);
+    // the end sits beside the heading (left of it, within its height) or, where the gutter is too narrow, just above it
+    const beside = end!.cx < end!.hl && end!.cy >= end!.ht && end!.cy <= end!.hb;
+    const above = end!.cy < end!.ht && end!.ht - end!.cy < 40 && Math.abs(end!.cx - end!.hl) < 40;
+    expect(beside || above).toBe(true);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth)).toBeLessThanOrEqual(0);
+  });
+}
