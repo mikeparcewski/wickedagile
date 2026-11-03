@@ -137,15 +137,12 @@ const feat = list[0] || null;
 /* shared ops tokens */
 :root{
   --mc-tick:14px;          /* corner registration tick length */
-  --mc-bezel:#0c1016;      /* deep bezel */
-  --beam:#ffda19;
-  --beam-glow:rgba(255,218,25,.42);
-  --lane-k:#79c0ff;        /* knowledge */
-  --lane-q:#56d364;        /* quality   */
-  --lane-i:#ffda19;        /* infra     */
-}
-[data-theme="light"]{
-  --mc-bezel:#142a37;
+  --mc-bezel:var(--surface-rail);   /* deep bezel */
+  --beam:var(--accent);
+  --beam-glow:color-mix(in oklab,var(--accent) 42%,transparent);
+  --lane-k:var(--plane-foundation);  /* knowledge */
+  --lane-q:var(--plane-capability);  /* quality   */
+  --lane-i:var(--status-warn);       /* infra     */
 }
 
 /* The articles zone = ONE monitor wall */
@@ -208,7 +205,7 @@ const feat = list[0] || null;
 .art-steps{position:absolute;inset:0;z-index:1;pointer-events:none}
 .art-step{display:block;height:56vh;scroll-snap-align:start;scroll-snap-stop:always;scroll-margin-top:var(--topbar-h)}
 /* the scroll-selected dispatch row */
-.dispatch-row[aria-current="true"] .dispatch-row-inner{background:rgba(255,218,25,.07)}
+.dispatch-row[aria-current="true"] .dispatch-row-inner{background:color-mix(in oklab,var(--accent) 7%,transparent)}
 .dispatch-row[aria-current="true"] .dispatch-title{color:var(--ink)}
 .dispatch-row[aria-current="true"] .dispatch-tick{background:var(--beam);box-shadow:0 0 8px var(--beam-glow)}
 .content-inner{
@@ -218,14 +215,14 @@ const feat = list[0] || null;
    #content + #projects via global .zone-head). */
 .zone-head{display:flex;flex-direction:column;gap:18px}
 .zone-kicker{
-  font-family:var(--font-mono);font-size:.62rem;letter-spacing:.26em;
-  text-transform:uppercase;color:var(--muted);display:inline-flex;align-items:center;gap:9px
+  font-family: var(--font-sans);font-size: var(--text-caption);
+  color:var(--muted);display:inline-flex;align-items:center;gap:9px
 }
 .zone-kicker::before{content:'';width:18px;height:1px;background:var(--hairline-strong)}
 .content-title{
-  font-family:var(--font-display);font-weight:900;font-stretch:125%;
-  font-size:clamp(2.2rem,3.8vw,3.4rem);color:var(--ink);
-  line-height:.93;letter-spacing:-.03em;margin:0
+  font-family: var(--font-sans);font-weight: var(--weight-strong);
+  font-size: var(--text-title);color:var(--ink);
+  line-height:.93;letter-spacing: var(--tracking-title);margin:0
 }
 
 /* ── DISPATCH FEED ────────────────────────────────────────────── */
@@ -270,17 +267,18 @@ const feat = list[0] || null;
 /* ghosted index watermark for thumbless degrade */
 .ghost-index{
   position:absolute;right:14px;bottom:6px;z-index:2;pointer-events:none;
-  font-family:var(--font-mono);font-weight:700;font-size:8rem;line-height:1;
-  color:var(--ink);opacity:.05;letter-spacing:-.04em
+  font-family: var(--font-sans);font-weight: var(--weight-strong);font-size: var(--text-title);line-height:1;
+  color:var(--ink);opacity:.05;letter-spacing: var(--tracking-title)
 }
 .priority.has-thumb .ghost-index{display:none}
 .priority:not(.has-thumb){background:var(--surface-2)}
-.priority:not(.has-thumb) .priority-overlay{background:linear-gradient(to top,rgba(0,0,0,.5),transparent 60%)}
+/* a thumbless card is on the page's own ground in both themes: shade toward that ground, never black */
+.priority:not(.has-thumb) .priority-overlay{background:linear-gradient(to top,color-mix(in oklab,var(--surface-base) 60%,transparent),transparent 60%)}
 .priority-body{position:relative;z-index:3;padding:26px 24px;display:flex;flex-direction:column;gap:11px}
 .priority-hd{
   display:inline-flex;align-items:center;gap:9px;
-  font-family:var(--font-mono);font-size:.56rem;letter-spacing:.22em;
-  text-transform:uppercase;color:var(--muted)
+  font-family: var(--font-sans);font-size: var(--text-caption);
+  color:var(--muted)
 }
 /* the section's single steady beam dot */
 .beam-dot{
@@ -288,17 +286,17 @@ const feat = list[0] || null;
   background:var(--beam);box-shadow:0 0 0 0 var(--beam-glow);
   animation:beampulse 2.2s var(--ease) infinite
 }
-@keyframes beampulse{0%{box-shadow:0 0 0 0 var(--beam-glow)}70%{box-shadow:0 0 0 8px rgba(255,218,25,0)}100%{box-shadow:0 0 0 0 rgba(255,218,25,0)}}
+@keyframes beampulse{0%{box-shadow:0 0 0 0 var(--beam-glow)}70%{box-shadow:0 0 0 8px color-mix(in oklab,var(--accent) 0%,transparent)}100%{box-shadow:0 0 0 0 color-mix(in oklab,var(--accent) 0%,transparent)}}
 .priority-title{
-  font-family:var(--font-display);font-weight:900;font-stretch:125%;
-  font-size:clamp(1.4rem,2.2vw,2rem);color:#fff;line-height:1.08;letter-spacing:-.025em
+  font-family: var(--font-sans);font-weight: var(--weight-strong);
+  font-size: var(--text-title);color:#fff;line-height:1.08;letter-spacing: var(--tracking-title)
 }
 .priority:not(.has-thumb) .priority-title{color:var(--ink)}
 /* a11y: dispatch caption text was on rgba(.5) over a dark gradient — bump to AA-safe value */
-.priority-meta{font-family:var(--font-mono);font-size:.56rem;color:rgba(255,255,255,.72);letter-spacing:.04em}
+.priority-meta{font-family: var(--font-sans);font-size: var(--text-caption);color:rgba(255,255,255,.72);}
 .priority:not(.has-thumb) .priority-meta{color:var(--muted)}
 .priority-cta{
-  font-family:var(--font-mono);font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;
+  font-family: var(--font-sans);font-size: var(--text-caption);
   color:var(--beam);margin-top:2px;display:inline-flex;align-items:center;gap:5px
 }
 /* SIGNAL LOST state — composed, muted, never red */
@@ -319,8 +317,8 @@ const feat = list[0] || null;
   background:rgba(255,255,255,.025)
 }
 [data-theme="light"] .dispatch-log-hd{background:rgba(255,255,255,.05)}
-.dispatch-log-kicker{font-family:var(--font-mono);font-size:.56rem;letter-spacing:.22em;text-transform:uppercase;color:var(--muted)}
-.dispatch-log-link{font-family:var(--font-mono);font-size:.56rem;color:var(--beam);letter-spacing:.06em;transition:opacity .15s}
+.dispatch-log-kicker{font-family: var(--font-sans);font-size: var(--text-caption);color:var(--muted)}
+.dispatch-log-link{font-family: var(--font-sans);font-size: var(--text-caption);color:var(--beam);transition:opacity .15s}
 .dispatch-log-link:hover{opacity:.7}
 .dispatch-rows{list-style:none;flex:1;display:flex;flex-direction:column}
 .dispatch-row{position:relative;border-bottom:1px solid var(--hairline)}
@@ -331,7 +329,7 @@ const feat = list[0] || null;
   transition:background .18s var(--ease)
 }
 .dispatch-row.has-thumb .dispatch-row-inner{grid-template-columns:3px 3.4ch 40px 1fr}
-.dispatch-row-inner:hover,.dispatch-row-inner:focus-visible{background:rgba(255,218,25,.045)}
+.dispatch-row-inner:hover,.dispatch-row-inner:focus-visible{background:color-mix(in oklab,var(--accent) 4%,transparent)}
 /* left status-tick bar — hairline default, lights yellow on hover/focus */
 .dispatch-tick{
   width:3px;align-self:stretch;border-radius:2px;background:var(--hairline-strong);
@@ -339,7 +337,7 @@ const feat = list[0] || null;
 }
 .dispatch-row-inner:hover .dispatch-tick,
 .dispatch-row-inner:focus-visible .dispatch-tick{background:var(--beam);box-shadow:0 0 8px var(--beam-glow)}
-.dispatch-idx{font-family:var(--font-mono);font-size:.6rem;font-weight:700;color:var(--muted);letter-spacing:.02em;align-self:start;padding-top:1px}
+.dispatch-idx{font-family: var(--font-sans);font-size: var(--text-caption);font-weight: var(--weight-strong);color:var(--muted);align-self:start;padding-top:1px}
 .dispatch-thumb{
   width:40px;height:40px;border-radius:4px;background:var(--surface-2);
   background-size:cover;background-position:center;flex-shrink:0;
@@ -347,27 +345,21 @@ const feat = list[0] || null;
 }
 .dispatch-body{display:flex;flex-direction:column;gap:4px;min-width:0}
 .dispatch-title{
-  font-size:.82rem;font-weight:700;color:var(--ink);line-height:1.3;
+  font-size: var(--text-body);font-weight: var(--weight-strong);color:var(--ink);line-height:1.3;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis
 }
 /* a11y FIX: contract-required date · N min read meta must clear AA.
    Was --faint (near-invisible). Now --muted in BOTH themes. */
-.dispatch-row-meta{font-family:var(--font-mono);font-size:.52rem;color:var(--muted);letter-spacing:.02em}
-/* a11y FIX (light): --muted (rgba .58) only reaches ~3.63:1 on the harbor-blue
-   surface for this .52rem mono text. Bump to an opaque AA tone (>=4.5:1 on every
-   light surface: .78 alpha -> ~5.2:1 worst case). Scoped to the light override only.
-   (The source's .sw-tele selector is dropped — the service grid was removed.) */
-[data-theme="light"] .dispatch-row-meta,
-[data-theme="light"] .priority:not(.has-thumb) .priority-meta{color:rgba(234,229,182,.78)}
+.dispatch-row-meta{font-family: var(--font-sans);font-size: var(--text-caption);color:var(--muted);}
 /* 1px inset highlight + sliding OPEN tag */
 .dispatch-row::after{
   content:'';position:absolute;inset:0;border-radius:2px;pointer-events:none;
-  box-shadow:inset 0 0 0 1px rgba(255,218,25,0);transition:box-shadow .2s var(--ease)
+  box-shadow:inset 0 0 0 1px color-mix(in oklab,var(--accent) 0%,transparent);transition:box-shadow .2s var(--ease)
 }
-.dispatch-row:hover::after,.dispatch-row:focus-within::after{box-shadow:inset 0 0 0 1px rgba(255,218,25,.18)}
+.dispatch-row:hover::after,.dispatch-row:focus-within::after{box-shadow:inset 0 0 0 1px color-mix(in oklab,var(--accent) 18%,transparent)}
 .dispatch-open{
   position:absolute;top:50%;right:13px;transform:translate(14px,calc(-50% + 13px));
-  font-family:var(--font-mono);font-size:.5rem;letter-spacing:.12em;text-transform:uppercase;
+  font-family: var(--font-sans);font-size: var(--text-caption);
   color:var(--beam);opacity:0;transition:transform .22s var(--ease),opacity .22s var(--ease);
   pointer-events:none;z-index:4
 }
@@ -420,19 +412,19 @@ const feat = list[0] || null;
 }
 .artm-card{display:flex;flex-direction:column;border:1px solid var(--hairline-strong);border-radius:12px;overflow:hidden;background:var(--surface);text-decoration:none;color:inherit}
 .artm-shot{position:relative;aspect-ratio:16/9;background-size:cover;background-position:center top;background-color:var(--surface-2)}
-.artm-idx{position:absolute;top:8px;left:10px;font-family:var(--font-mono);font-size:.6rem;font-weight:700;color:#fff;background:rgba(0,0,0,.55);padding:2px 7px;border-radius:5px;letter-spacing:.08em}
+.artm-idx{position:absolute;top:8px;left:10px;font-family: var(--font-sans);font-size: var(--text-caption);font-weight: var(--weight-strong);color:#fff;background:rgba(0,0,0,.55);padding:2px 7px;border-radius:5px;}
 .artm-body{padding:13px 15px 15px}
-.artm-title{font-family:var(--font-display);font-weight:900;font-stretch:115%;font-size:clamp(1.05rem,4.6vw,1.4rem);line-height:1.12;letter-spacing:-.02em;color:var(--ink)}
-.artm-meta{font-family:var(--font-mono);font-size:.62rem;color:var(--muted);letter-spacing:.04em;margin-top:8px}
+.artm-title{font-family: var(--font-sans);font-weight: var(--weight-strong);font-size: var(--text-section);line-height:1.12;color:var(--ink)}
+.artm-meta{font-family: var(--font-sans);font-size: var(--text-caption);color:var(--muted);margin-top:8px}
 /* compact list row = the non-featured articles: small hero thumbnail + title + intro.
    Lives inside .art-mobile, so it only renders on phones (≤640). */
 .artm-row{display:flex;gap:12px;align-items:flex-start;border:1px solid var(--hairline-strong);border-radius:10px;padding:11px;background:var(--surface);text-decoration:none;color:inherit;transition:border-color .18s var(--ease)}
-.artm-row:hover,.artm-row:focus-visible{border-color:rgba(255,218,25,.4)}
+.artm-row:hover,.artm-row:focus-visible{border-color:color-mix(in oklab,var(--accent) 40%,transparent)}
 .artm-row-thumb{flex-shrink:0;width:64px;height:64px;border-radius:7px;background:var(--surface-2);background-size:cover;background-position:center top;border:1px solid var(--hairline-strong)}
 .artm-row-thumb.is-empty{background:var(--surface-2)}
 .artm-row-body{display:flex;flex-direction:column;gap:5px;min-width:0}
-.artm-row-title{font-family:var(--font-display);font-weight:800;font-stretch:110%;font-size:1rem;line-height:1.16;letter-spacing:-.01em;color:var(--ink);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.artm-row-intro{font-size:.78rem;line-height:1.4;color:var(--muted);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.artm-row-title{font-family: var(--font-sans);font-weight: var(--weight-strong);font-size: var(--text-lead);line-height:1.16;color:var(--ink);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.artm-row-intro{font-size: var(--text-caption);line-height:1.4;color:var(--muted);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 </style>
 
 <script>

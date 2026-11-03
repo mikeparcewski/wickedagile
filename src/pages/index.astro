@@ -2,7 +2,8 @@
 /**
  * index.astro — the wickedagile.com landing page: the wicked FAMILY FRONT DOOR
  * and the builder's showcase. The platform leads — hero (the family one-liner)
- * → how it works (five steps) → the platform (the four-plane stack) → built by
+ * → how it works (five steps) → what you can do (eight tiles, one coming-soon
+ * line) → the platform (the four-plane stack) → built by
  * (who, why, the hard problems, more of his work) → the dispatch feed → the
  * career chapters. Product deep dives live on the per-product sites (wc/we/wg/ws).
  * Articles are fetched at BUILD TIME and baked in (no client-side RSS).
@@ -13,6 +14,7 @@ import Topbar from 'wicked-web/components/Topbar.astro';
 import Hero from '../components/Hero.astro';
 import Articles from '../components/Articles.astro';
 import Story from '../components/Story.astro';
+import CanDo from '../components/CanDo.astro';
 import Shipped from '../components/Shipped.astro';
 import Builder from '../components/Builder.astro';
 import About from '../components/About.astro';
@@ -33,6 +35,7 @@ const articlesJson = JSON.stringify(articles).replace(/</g, '\\u003c');
   <Topbar repo="https://github.com/mikeparcewski" />
   <Hero />
   <Story />
+  <CanDo />
   <Shipped />
   <Builder />
   <Articles articles={articles} />

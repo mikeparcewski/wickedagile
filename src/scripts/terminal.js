@@ -41,7 +41,7 @@ function boot(){
     commitLine('<span class="t-d">  your coding agents do the work.</span>');
     commitLine('<span class="t-d">  a different agent checks it against your rules.</span>');
     commitLine('<span class="t-d">  you get the evidence.</span>');
-    appendTxt('\n');commitLine('<span style="opacity:.2;font-size:.68em">  type / to explore  ·  or watch this run</span>');appendTxt('\n');await delay(1500);
+    appendTxt('\n');commitLine('<span style="opacity:.45;font-size:var(--text-caption)">  type / to explore  ·  or watch this run</span>');appendTxt('\n');await delay(1500);
     await typeCmd('/');showMenu('articles');await delay(920);hideMenu();
     await typeCmd('articles');await delay(140);commitCmd('articles');await delay(160);
     await typeOut('\n'+randFrom(ART_I)+'\n\n',17);
@@ -65,7 +65,7 @@ function boot(){
     var repos=await Promise.race([reposPromise,delay(3500).then(function(){return null})]);
     var STARS={};(repos||[]).forEach(function(r){STARS[r.name]=r.stargazers_count||0});
     /* planes + copy from the ONE family manifest (wicked-web/data/family.js) */
-    var CLS={experience:'t-o',control:'t-v',capability:'t-g',foundation:'t-c'};
+    var CLS={experience:'t-o',control:'t-v',capability:'t-g',foundation:'t-f'};
     var PLANES=FAMILY_PLANES.map(function(p){return {name:p.name.toUpperCase(),cls:CLS[p.key],note:p.role.toLowerCase(),
       items:p.products.map(function(s){return {label:s.name,repo:s.name,desc:s.blurb}})}});
     commitLine('<span class="t-d">'+esc(SEP)+'</span>');appendTxt('\n');
