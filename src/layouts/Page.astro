@@ -1,0 +1,38 @@
+---
+/* The document shell for wickedagile.com v3. The faces, the Wicked Dark / Light tokens and the family aliases the
+   shared header and footer read come from wicked-web (styles/tokens.css); the page's own CSS follows (unlayered, so
+   it wins over the shared layers). Two small inline
+   scripts run before first paint: the theme (the family key `wa-theme-v3`, Wicked Dark by default; `?theme=` wins)
+   with the `js` class, and the hyphen fix for Wicked Sans (DES R17). */
+import 'wicked-web/styles/tokens.css';
+import '../styles/site.css';
+import favicon from 'wicked-web/design/brand/favicon.svg?url';
+import hyphenFix from '../scripts/hyphen.inline.js?raw';
+
+interface Props { title: string; description: string; bodyClass?: string }
+const { title, description, bodyClass } = Astro.props;
+const boot = `(function(){var d=document.documentElement;d.classList.remove('no-js');d.classList.add('js');`
+  + `try{var q=new URLSearchParams(location.search).get('theme'),t=q==='light'||q==='dark'?q:(localStorage.getItem('wa-theme-v3')==='light'?'light':'dark');`
+  + `d.setAttribute('data-theme',t);var m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute('content',t==='light'?'#f5f5f4':'#121212');}catch(e){}`
+  // links to the old apex's sections land on their successors (DES §7.1): the writing is Learn now, the about and
+  // career chapters are gone (the map is where the threads start)
+  + `var h=location.hash,a=h==='#content'?'#learn':(h==='#about'||/^#chapter-[0-4]$/.test(h))?'#graph':null;`
+  + `if(a&&history.replaceState)history.replaceState(null,'',location.pathname+location.search+a);})();`;
+---
+<!doctype html>
+<html lang="en" data-theme="dark" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{title}</title>
+<meta name="description" content={description}>
+<meta name="theme-color" content="#121212">
+<link rel="canonical" href="https://wickedagile.com/">
+<link rel="icon" href={favicon} type="image/svg+xml">
+<script is:inline set:html={boot}></script>
+<script is:inline set:html={hyphenFix}></script>
+</head>
+<body class={bodyClass}>
+<slot />
+</body>
+</html>

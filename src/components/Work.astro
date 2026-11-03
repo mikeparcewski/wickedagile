@@ -1,0 +1,13 @@
+---
+/* Work (DES-SITES-V2 §4.6): a showcase read from the lab's export: studio and the Platform placeholder, then crew,
+   garden and estate, Get started (with Copy) and Under the hood. */
+import { workHtml } from '../lib/render.mjs';
+const { G, draftNote } = Astro.props;
+---
+<section class="snap idx work" id="work" aria-labelledby="wh">
+ <div class="wrap">
+  <header><div><h2 id="wh">{G.labels.work}</h2><p>The lab at <a href="https://wickedlabs.ai/">wickedlabs.ai</a>: the wicked tools for working with coding agents.</p></div><a target="_blank" rel="noopener" class="btn" href="https://wickedlabs.ai/">Visit the lab ↗<span class="sr"> (opens in a new tab)</span></a></header>
+  <Fragment set:html={workHtml(G)} />
+  {draftNote && <div class="note">{draftNote}</div>}
+ </div>
+</section>
