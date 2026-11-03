@@ -86,3 +86,11 @@ for (const vp of [{ width: 1440, height: 700 }, { width: 1280, height: 660 }, { 
     expect(await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth)).toBeLessThanOrEqual(0);
   });
 }
+
+test('the map has no Video filter and no video placeholders (operator, 2026-11-03)', async ({ page }) => {
+  await page.goto('/', { waitUntil: 'networkidle' });
+  await expect(page.locator('[data-pill="video"]')).toHaveCount(0);
+  for (const id of ['article', 'bit', 'repository', 'other']) await expect(page.locator(`[data-pill="${id}"]`)).toHaveCount(1);
+  expect(await page.evaluate(() => /Video/.test(document.querySelector('#graph')!.textContent || '') || /none yet/i.test(document.body.innerText))).toBe(false);
+});
+
