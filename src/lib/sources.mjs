@@ -19,6 +19,10 @@ import { readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 
 export const SITE = 'https://wickedagile.com';
+/** The lab is one page that routes by hash: a product's view is `#/<id>` (studio, crew, garden, estate). A path under
+    it (wickedlabs.ai/crew/) is GitHub Pages' 404, so the shape check below takes a product link only in this form. */
+export const LAB = 'https://wickedlabs.ai/';
+export const labHref = (id) => `${LAB}#/${id}`;
 const ROOT = fileURLToPath(new URL('../../', import.meta.url));
 
 export const SOURCES = {
@@ -79,7 +83,9 @@ export function parseFeed(xml) {
 
 /* ---------- shape checks: a source that fails its check falls through to the next one. They cover everything the
    graph build and the page read, so a malformed export is never half-used: ids are slugs, links are https URLs with
-   no quote or angle bracket, dates are real, read times are numbers ---------- */
+   no quote or angle bracket, a lab product's link is its lab view (labHref), dates are real, read times are numbers.
+   So a copy carrying the old path links (wickedlabs.ai/crew/, which 404) is not used, the last served file included,
+   and the build falls through to the seed ---------- */
 const isStr = (s) => typeof s === 'string' && s.trim().length > 0;
 const isDate = (d) => { if (typeof d !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(d)) return false; const t = new Date(d + 'T00:00:00Z'); return !Number.isNaN(t.getTime()) && t.toISOString().slice(0, 10) === d; };
 export const isId = (s) => typeof s === 'string' && /^[a-z0-9][a-z0-9-]{0,79}$/.test(s);
@@ -94,7 +100,7 @@ export const VALID = {
     && (b.date == null || isDate(b.date)) && Array.isArray(b.topics) && b.topics.every(isStr)),
   labProducts: (d) => d && isStr(d.platformBadge) && Array.isArray(d.products) && d.products.length > 0
     && rows(d.products, (c) => isId(c.id) && isStr(c.name) && (c.tier === 'featured' || c.tier === 'component')
-      && (c.experiment ? (c.eyebrow == null || isStr(c.eyebrow)) : isStr(c.ver) && isStr(c.release) && isStr(c.headline) && isUrl(c.url) && isStr(c.tag)))
+      && (c.experiment ? (c.eyebrow == null || isStr(c.eyebrow)) : isStr(c.ver) && isStr(c.release) && isStr(c.headline) && isUrl(c.url) && c.url === labHref(c.id) && isStr(c.tag)))
     && rows(d.underTheHood, (u) => isId(u.id) && isStr(u.name) && isStr(u.line))
     && d.getStarted && isStr(d.getStarted.cmd) && isStr(d.getStarted.line)
     && rows(d.relations, (r) => isId(r.a) && isId(r.b) && isStr(r.sentence)),
