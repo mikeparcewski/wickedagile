@@ -16,7 +16,7 @@
           node scripts/build-graph.mjs --selftest prove the build rules on broken copies of the inputs */
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
-import { loadSources, parseFeed, isId, isUrl, postId } from '../src/lib/sources.mjs';
+import { loadSources, parseFeed, isId, isUrl, postId, labHref } from '../src/lib/sources.mjs';
 
 const ROOT = fileURLToPath(new URL('../', import.meta.url));
 const clone = (x) => structuredClone(x);
@@ -333,6 +333,15 @@ async function selftest() {
   const noSlash = clone(lab); noSlash.products[1].url = 'https:wickedlabs.ai/crew/';
   const s10 = await loadSources({ mode: 'live', read: seedRead, fetch: async (u) => (u === 'https://wickedlabs.ai/data/products.json' ? { ok: true, json: async () => noSlash } : { ok: false, status: 404 }) });
   expect('an export with a link missing its slashes (https:host/...) is not used', s10.labProducts.from === 'seed');
+  // the lab routes by hash: wickedlabs.ai/crew/ is a 404. The copy the site last served carried those paths, so it is
+  // not used either, and the deploy build falls through to the seed (and publishes the seed's links from then on)
+  const pathLinks = clone(lab); for (const c of pathLinks.products) if (c.url) c.url = `https://wickedlabs.ai/${c.id}/`;
+  const s11 = await loadSources({ mode: 'live', read: seedRead, fetch: async (u) => (u === 'https://wickedagile.com/data/lab-products.json' ? { ok: true, json: async () => pathLinks } : { ok: false, status: 404 }) });
+  expect('a served copy whose lab links are paths (wickedlabs.ai/crew/, a 404) is not used; the seed is', s11.labProducts.from === 'seed' && s11.labProducts.data.products.filter((c) => c.url).every((c) => c.url === labHref(c.id)));
+  const otherRoute = clone(lab); otherRoute.products[1].url = labHref('garden');
+  const s12 = await loadSources({ mode: 'live', read: seedRead, fetch: async (u) => (u === 'https://wickedlabs.ai/data/products.json' ? { ok: true, json: async () => otherRoute } : { ok: false, status: 404 }) });
+  expect("an export whose product links another product's lab view is not used", s12.labProducts.from === 'seed');
+  expect('the seed links each product to its lab view (https://wickedlabs.ai/#/<id>)', lab.products.filter((c) => !c.experiment).map((c) => c.url).join() === ['studio', 'crew', 'garden', 'estate'].map((id) => `https://wickedlabs.ai/#/${id}`).join());
   const parsed = parseFeed(rss([newest, ...seedItems.slice(0, 9)]));
   expect('the feed parser reads title, link, date, subtitle, read time and categories', parsed.length === 10 && parsed[0].link === newest.link && parsed[0].date === '2026-11-03' && parsed[0].sub === newest.sub && parsed[0].tags.join() === newest.tags.join() && parsed[0].mins >= 1);
   console.log(ok ? 'selftest: all rules hold' : 'selftest: FAILED');

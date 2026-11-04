@@ -13,7 +13,7 @@
    "ver": "0.14.0",
    "release": "v0.14.0",
    "headline": "The ADE for running a team of coding agents.",
-   "url": "https://wickedlabs.ai/studio/"
+   "url": "https://wickedlabs.ai/#/studio"
   },
   {
    "id": "crew",
@@ -23,7 +23,7 @@
    "ver": "0.16.12",
    "release": "v0.16.12",
    "headline": "The harness for the coding agents you already use.",
-   "url": "https://wickedlabs.ai/crew/"
+   "url": "https://wickedlabs.ai/#/crew"
   },
   {
    "id": "garden",
@@ -33,7 +33,7 @@
    "ver": "12.62.0",
    "release": "v12.62.0",
    "headline": "The tools your coding agent can’t build alone.",
-   "url": "https://wickedlabs.ai/garden/"
+   "url": "https://wickedlabs.ai/#/garden"
   },
   {
    "id": "estate",
@@ -43,7 +43,7 @@
    "ver": "0.31.0",
    "release": "v0.31.0",
    "headline": "What your agents know about your system.",
-   "url": "https://wickedlabs.ai/estate/"
+   "url": "https://wickedlabs.ai/#/estate"
   },
   {
    "id": "platform",
