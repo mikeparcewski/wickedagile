@@ -1,6 +1,6 @@
 {
- "$comment": "Committed seed for wickedlabs.ai/data/products.json (the last fallback, src/lib/sources.mjs) until the lab export is live: the mockup's fixture. Values are the released versions and the approved COPY rev 5 headlines.",
- "asOf": "2026-11-02",
+ "$comment": "Committed seed for wickedlabs.ai/data/products.json (the last fallback, src/lib/sources.mjs): a copy of the lab's own export (wickedlabs data/products.json, generated from its page) at the release it describes. Update it when the lab's export changes.",
+ "asOf": "2026-11-04",
  "platformBadge": "Experiment",
  "products": [
   {
@@ -10,8 +10,8 @@
    "eyebrow": "the ADE",
    "expansion": "agentic development environment",
    "tag": "the ADE: agentic development environment",
-   "ver": "0.14.0",
-   "release": "v0.14.0",
+   "ver": "0.15.0",
+   "release": "v0.15.0",
    "headline": "The ADE for running a team of coding agents.",
    "url": "https://wickedlabs.ai/#/studio"
   },
@@ -20,8 +20,8 @@
    "name": "wicked-crew",
    "tier": "component",
    "tag": "runs and checks jobs",
-   "ver": "0.16.12",
-   "release": "v0.16.12",
+   "ver": "0.17.0",
+   "release": "v0.17.0",
    "headline": "The harness for the coding agents you already use.",
    "url": "https://wickedlabs.ai/#/crew"
   },
@@ -30,8 +30,8 @@
    "name": "wicked-garden",
    "tier": "component",
    "tag": "skills and tools",
-   "ver": "12.62.0",
-   "release": "v12.62.0",
+   "ver": "12.64.0",
+   "release": "v12.64.0",
    "headline": "The tools your coding agent can’t build alone.",
    "url": "https://wickedlabs.ai/#/garden"
   },
@@ -40,8 +40,8 @@
    "name": "wicked-estate",
    "tier": "component",
    "tag": "what agents know",
-   "ver": "0.31.0",
-   "release": "v0.31.0",
+   "ver": "0.32.0",
+   "release": "v0.32.0",
    "headline": "What your agents know about your system.",
    "url": "https://wickedlabs.ai/#/estate"
   },
@@ -58,7 +58,7 @@
    "id": "core",
    "name": "wicked-core",
    "line": "The execution engine behind wicked-crew.",
-   "release": "core-ts-v0.15.20",
+   "release": "core-ts-v0.15.24",
    "ref": "wicked-core README (bold line, first clause)"
   },
   {
@@ -72,7 +72,7 @@
    "id": "interactive",
    "name": "wicked-interactive",
    "line": "The wicked family’s document engine.",
-   "release": "v0.14.1",
+   "release": "v0.15.0",
    "ref": "wicked-interactive README (opening line)"
   }
  ],
