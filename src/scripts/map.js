@@ -24,7 +24,7 @@ var PILLS=[{id:'article',label:'Article',of:function(n){return n.type==='essay';
  {id:'other',label:'Other',of:function(n){return !(n.type==='essay'||n.type==='bit'||n.type==='component');}}];
 var GLYPH={article:'essay',video:'video',bit:'bit',repository:'component',other:'experiment'};
 var MQ=window.matchMedia?window.matchMedia('(prefers-reduced-motion: reduce)'):null,reduced=!!(MQ&&MQ.matches);
-var stillT=null,mapIn=false,implicit=false,restoring=false,howOpen=false,M={},FR={from:{mx:null,my:null},to:{mx:null,my:null},e:1},anim=null,lightT=null,pulseRaf=null,tour={on:false,t:null,i:0,idle:null,prev:null};
+var stillT=null,stillUntil=0,stillLeft=0,mapIn=false,mapLive=false,lightHeld=false,implicit=false,restoring=false,howOpen=false,M={},FR={from:{mx:null,my:null},to:{mx:null,my:null},e:1},anim=null,lightT=null,pulseRaf=null,tour={on:false,t:null,i:0,idle:null,prev:null};
 function $(id){return document.getElementById(id);}
 function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
 function other(e,id){return e.a===id?e.b:e.a;}
@@ -149,7 +149,7 @@ function apply(){
  var anyMap=MAPPED.some(visible);$('mapEmpty').hidden=anyMap;
  if(!g.classList.contains('moving')&&$('hulls'))drawHulls();[].forEach.call($('svg').querySelectorAll('.route,.ambient'),function(p){p.classList.toggle('part',partial(thById[p.getAttribute('data-t')]));});syncTab();litRoute();drawNeighbours();panel();}
 function litRoute(){[].forEach.call($('svg').querySelectorAll('.lit-route'),function(p){var t=thById[p.getAttribute('data-t')];var on=S.thread===t.id&&S.step>1;p.classList.toggle('on',on);p.setAttribute('d',on?threadD(t,S.step):'');});runPulse();}
-function runPulse(){cancelAnimationFrame(pulseRaf);var pu=$('pulse'),p=S.thread&&$('svg').querySelector('.lit-route.on');if(!p||reduced){pu.classList.remove('on');pu.style.opacity='';return;}
+function runPulse(){cancelAnimationFrame(pulseRaf);var pu=$('pulse'),p=S.thread&&$('svg').querySelector('.lit-route.on');if(!p||reduced||!mapLive){pu.classList.remove('on');pu.style.opacity='';return;}
  var len=p.getTotalLength();if(!len){pu.classList.remove('on');return;}pu.classList.add('on');var t0=performance.now();
  (function tick(now){if(now-t0>5000){pu.classList.remove('on');pu.style.opacity='';return;}var L=((now-t0)*0.16)%(len+60);var q=p.getPointAtLength(Math.min(L,len));pu.style.transform='translate('+q.x.toFixed(1)+'px,'+q.y.toFixed(1)+'px)';pu.style.opacity=L>len?Math.max(0,1-(L-len)/60):1;pulseRaf=requestAnimationFrame(tick);})(t0);}
 /* ---------------- panel ---------------- */
@@ -180,9 +180,11 @@ function filterCard(){var ms=MAPPED.filter(visible);   /* marks on the map (a li
 function focusKey(){var a=document.activeElement,p=$('panel');if(!a||!p.contains(a))return null;if(a===p)return 'panel';if(a.id)return '#'+a.id;if(a.tagName==='A'&&a.getAttribute('href'))return 'a[href="'+a.getAttribute('href').replace(/"/g,'\\"')+'"]';var ks=['data-jump','data-pick'];for(var i=0;i<ks.length;i++)if(a.hasAttribute(ks[i]))return '['+ks[i]+'="'+a.getAttribute(ks[i])+'"]';return 'panel';}
 /* one short line for screen readers when the selection, the thread, its stop or the filters change; settled for 700 ms so a
    route lighting stop by stop, or the tour, says one thing, not ten */
-var IDLE_SAY='Nothing selected on the map.',annT=null,annLast=IDLE_SAY;
+var IDLE_SAY='Nothing selected on the map.',annT=null,annMsg=null,annLast=IDLE_SAY;
 function announce(n,t){var vis=MAPPED.filter(visible).length,msg=n?n.title:t?t.name+', stop '+S.step+' of '+t.stops.length:filtered()?vis+' of '+MAPPED.length+' marks shown':IDLE_SAY;
- if(tour.on)return;clearTimeout(annT);annT=setTimeout(function(){if(msg!==annLast){annLast=msg;$('mapStatus').textContent=msg;}},700);}
+ if(tour.on)return;clearTimeout(annT);annMsg=msg;annT=setTimeout(sayNow,700);}
+/* the pending status line is said at once when the map is held, never later while the reader is elsewhere */
+function sayNow(){clearTimeout(annT);annT=null;var msg=annMsg;annMsg=null;if(msg!==null&&msg!==annLast){annLast=msg;$('mapStatus').textContent=msg;}}
 function panel(){var p=$('panel'),t=S.thread?thById[S.thread]:null,n=S.node?byId[S.node]:null,h='',fk=focusKey();
  if(n)h=nodeCard(n);
  else if(t)h=threadCard(t);
@@ -190,20 +192,35 @@ function panel(){var p=$('panel'),t=S.thread?thById[S.thread]:null,n=S.node?byId
  else h='<div class="k">The map</div><h2>'+TH.length+' threads through '+LEARN.length+' pieces</h2><p class="more">'+esc(LB.learn)+' is on the left and '+esc(LB.work)+' is on the right. Pick a question above, or hover a piece to see what it shares.</p><p class="mob">Swipe the questions above; tap a number for its piece (the list below has the same numbers).</p><details class="howto more"'+(howOpen?' open':'')+'><summary>How to read the map</summary>'+legend()+'<p class="meta">A ringed mark is a crossroads, in more than one thread.</p></details>'+(TH.some(isDraft)?'<p class="meta more">Thread names and hooks are drafts for the operator.</p>':'')+'<div class="acts">'+moreBtn()+'</div>';
  p.classList.toggle('idle',!n&&!t&&!filtered());p.innerHTML=h;announce(n,t);if(fk){var el=fk==='panel'?null:p.querySelector(fk);(el&&!el.disabled?el:p).focus({preventScroll:true});}}
 /* ---------------- frame animation (labels, badges and hulls hidden while the lens moves) ---------------- */
+/* off screen the lens jumps (no glide, no transition): nothing moves where nobody can see it */
+function jumpTo(to){var g=$('gwrap'),els=$('stations').querySelectorAll('.st,.endbar');cancelAnimationFrame(anim);[].forEach.call(els,function(b){b.style.transition='none';});
+ FR={from:to,to:to,e:1};g.classList.remove('moving');place();void g.offsetWidth;[].forEach.call(els,function(b){b.style.transition='';});drawNeighbours();}
 function frameTo(t,instant){var to=frameFor(t),g=$('gwrap');cancelAnimationFrame(anim);
+ if(!mapLive&&!instant&&!reduced&&FR.to){jumpTo(to);return;}
  if(instant||reduced||!FR.to){FR={from:to,to:to,e:1};g.classList.remove('moving');place();return;}
  FR={from:FR.to,to:to,e:0};g.classList.add('moving');var t0=performance.now(),D=520,els=$('stations').querySelectorAll('.st,.endbar');
  [].forEach.call(els,function(b){b.style.transition='none';});
  (function step(now){var k=Math.min(1,(now-t0)/D);FR.e=1-Math.pow(1-k,3);place();
   if(k<1)anim=requestAnimationFrame(step);else{[].forEach.call(els,function(b){b.style.transition='';});FR={from:to,to:to,e:1};g.classList.remove('moving');place();drawNeighbours();}})(t0);}
 /* ---------------- actions ---------------- */
-function lightUp(){clearInterval(lightT);var t=thById[S.thread];if(!t)return;if(reduced){S.step=t.stops.length;apply();return;}
- S.step=1;apply();lightT=setInterval(function(){if(!S.thread||S.step>=thById[S.thread].stops.length){clearInterval(lightT);return;}S.step++;apply();if(!tour.on)sync();},420);}
+function clearLight(){clearInterval(lightT);lightT=null;lightHeld=false;}
+function lightTick(){if(!S.thread||S.step>=thById[S.thread].stops.length){clearLight();lightT=null;return;}S.step++;apply();if(!tour.on)sync();}
+function lightUp(){clearLight();lightT=null;lightHeld=false;var t=thById[S.thread];if(!t)return;if(reduced){S.step=t.stops.length;apply();return;}
+ S.step=1;apply();if(mapLive)lightT=setInterval(lightTick,420);else lightHeld=true;}
+/* off screen (under a quarter of the map showing) or in a hidden tab, a thread lighting up holds on its stop and the
+   pulse along it ends; back on screen the lighting carries on from that stop. Nothing here moves the page. */
+/* one-shot animations (the routes drawing in) land on their end; the drift and the twinkle still (.still) */
+function settleAnims(el){if(!el||!el.getAnimations)return;el.getAnimations({subtree:true}).forEach(function(a){var t=a.effect&&a.effect.getComputedTiming?a.effect.getComputedTiming():null;if(t&&t.endTime!==Infinity&&a.playState==='running'){try{a.finish();}catch(e){}}});}
+var STEPS=[];for(var si=0;si<=100;si++)STEPS.push(si/100);
+function mapHold(){var g=$('gwrap');if(g.classList.contains('moving'))jumpTo(FR.to);if(annT)sayNow();
+ if(stillT){clearTimeout(stillT);stillT=null;stillLeft=Math.max(0,stillUntil-Date.now());}g.classList.add('still');if(lightT){clearLight();lightT=null;lightHeld=true;}cancelAnimationFrame(pulseRaf);var pu=$('pulse');if(pu.classList.contains('on')){pu.classList.remove('on');pu.style.opacity='';}settleAnims(g);requestAnimationFrame(function(){if(!mapLive)settleAnims(g);});}
+function mapResume(){if(mapIn&&stillLeft>0){var g=$('gwrap');g.classList.remove('still');stillUntil=Date.now()+stillLeft;stillT=setTimeout(function(){stillT=null;g.classList.add('still');},stillLeft);stillLeft=0;}
+ if(lightHeld){lightHeld=false;if(!lightT&&!reduced)lightT=setInterval(lightTick,420);}}
 function chooseThread(id,opts){opts=opts||{};if(!opts.keepImplicit)implicit=false;S.thread=id||null;S.node=null;S.step=id?Math.min(S.step||1,thById[id].stops.length):0;if(id&&!opts.keepFilters)resetFilters();
- frameTo(id?thById[id]:null,opts.instant);if(id&&opts.step){clearInterval(lightT);S.step=opts.step;apply();}else if(id)lightUp();else{clearInterval(lightT);S.step=0;apply();}
+ frameTo(id?thById[id]:null,opts.instant);if(id&&opts.step){clearLight();S.step=opts.step;apply();}else if(id)lightUp();else{clearLight();S.step=0;apply();}
  if(!tour.on)sync();controls();}
 function select(id){S.node=id;var left=false;if(id&&S.thread&&thById[S.thread].stops.indexOf(id)<0){S.thread=null;S.step=0;frameTo(null);left=true;}apply();if(left)controls();sync();}
-function filterChanged(){if(S.thread){S.thread=null;S.step=0;clearInterval(lightT);frameTo(null);}if(S.node&&!visible(byId[S.node]))S.node=null;apply();controls();sync();}
+function filterChanged(){if(S.thread){S.thread=null;S.step=0;clearLight();frameTo(null);}if(S.node&&!visible(byId[S.node]))S.node=null;apply();controls();sync();}
 var CHK='<svg viewBox="0 0 24 24" fill="none" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
 /* each side's mark, from the hero's braid: Learn's strand, Work's route into a component */
 var SIDEMARK={learn:'<svg class="mk" viewBox="0 0 40 16" aria-hidden="true" focusable="false"><path class="mkl" pathLength="1" d="M2 12C9 2 15 2 20 8S31 14 38 4"/></svg>',
@@ -245,7 +262,7 @@ document.addEventListener('pointermove',function(e){if(Math.abs(e.movementX)+Mat
 window.addEventListener('scroll',function(){stopTour();armIdle();},{passive:true});
 document.addEventListener('visibilitychange',function(){if(document.hidden)stopTour();else armIdle();motionClass();});
 /* reduced motion can change while the page is open: settle everything at once */
-function onMotionPref(){reduced=!!(MQ&&MQ.matches);motionClass();if(reduced){stopTour();clearTimeout(tour.idle);clearInterval(lightT);cancelAnimationFrame(anim);$('gwrap').classList.remove('moving');if(S.thread)S.step=thById[S.thread].stops.length;FR={from:FR.to,to:FR.to,e:1};}
+function onMotionPref(){reduced=!!(MQ&&MQ.matches);motionClass();if(reduced){stopTour();clearTimeout(tour.idle);clearLight();cancelAnimationFrame(anim);$('gwrap').classList.remove('moving');if(S.thread)S.step=thById[S.thread].stops.length;FR={from:FR.to,to:FR.to,e:1};}
  var fk=markFocus();build();measure();place();apply();restoreFocus(fk);if(!tour.on)sync();if(!reduced)armIdle();}
 /* a rebuild replaces the marks, badges and phone cards: keep the focused one by its id (a thread control maps to the badge or the phone card, whichever the layout shows) */
 function markFocus(){var a=document.activeElement;if(!a||!a.closest)return null;var st=a.closest('#stations .st');if(st)return {id:st.getAttribute('data-id')};var tb=a.closest('.tcard,.q');if(tb)return {thread:tb.getAttribute('data-thread')};if(a.id==='qClear'&&S.thread)return {thread:S.thread};return null;}
@@ -265,8 +282,8 @@ document.addEventListener('click',function(e){var t=e.target.closest('button,a')
  if(t.hasAttribute('data-pill')){if(t.disabled)return;var pid=t.getAttribute('data-pill');S.off[pid]=!S.off[pid];if(!S.off[pid])delete S.off[pid];filterChanged();t.focus({preventScroll:true});return;}
  if(t.hasAttribute('data-jump')){chooseThread(t.getAttribute('data-jump'));var tb=document.querySelector((phone()?'.tcard':'.q')+'[data-thread="'+S.thread+'"]');if(tb)tb.focus({preventScroll:true});return;}
  if(t.hasAttribute('data-pick')){select(t.getAttribute('data-pick'));var pb=document.querySelector('.st[data-id="'+S.node+'"]');if(pb&&!$('panel').classList.contains('sheet'))pb.focus({preventScroll:true});return;}
- if(t.hasAttribute('data-show')){var sid=t.getAttribute('data-show');resetFilters();S.thread=null;S.step=0;clearInterval(lightT);frameTo(null,true);S.node=sid;apply();controls();sync('#graph');$('graph').scrollIntoView({behavior:reduced?'auto':'smooth'});setTimeout(function(){var b=document.querySelector('.st[data-id="'+sid+'"]');if(b)b.focus({preventScroll:true});},reduced?0:450);return;}
- if(t.id==='tPrev'||t.id==='tNext'){clearInterval(lightT);var th=thById[S.thread];S.step=Math.max(1,Math.min(th.stops.length,S.step+(t.id==='tNext'?1:-1)));apply();sync();var k=$(t.id);if(!k||k.disabled)k=$(t.id==='tNext'?'tPrev':'tNext');if(k)k.focus();return;}
+ if(t.hasAttribute('data-show')){var sid=t.getAttribute('data-show');resetFilters();S.thread=null;S.step=0;clearLight();frameTo(null,true);S.node=sid;apply();controls();sync('#graph');$('graph').scrollIntoView({behavior:reduced?'auto':'smooth'});setTimeout(function(){var b=document.querySelector('.st[data-id="'+sid+'"]');if(b)b.focus({preventScroll:true});},reduced?0:450);return;}
+ if(t.id==='tPrev'||t.id==='tNext'){clearLight();var th=thById[S.thread];S.step=Math.max(1,Math.min(th.stops.length,S.step+(t.id==='tNext'?1:-1)));apply();sync();var k=$(t.id);if(!k||k.disabled)k=$(t.id==='tNext'?'tPrev':'tNext');if(k)k.focus();return;}
  if(t.id==='moreBtn'){var p=$('panel'),open=!p.classList.contains('sheet');p.classList.toggle('sheet',open);panel();var mb=$('moreBtn');if(mb)mb.focus();return;}
  if(t.id==='clearThread'){var was=S.thread;chooseThread(null);var wb=document.querySelector((phone()?'.tcard':'.q')+'[data-thread="'+was+'"]');if(wb&&wb.offsetParent)wb.focus();return;}
  if(t.id==='resetF'||t.id==='resetF2'||t.id==='resetF3'||t.id==='resetF4'){var inL=!!t.closest('#learn');resetFilters();filterChanged();(inL?$('showAll'):$('cb-learn')).focus({preventScroll:true});return;}
@@ -337,16 +354,24 @@ else{var f1=frameFor(null);FR={from:f1,to:f1,e:1};place();apply();}
 controls();sync();armIdle();
 if(window.ResizeObserver){var lastWH='';new ResizeObserver(function(){var g=$('gwrap'),wh=g.clientWidth+'x'+g.clientHeight;if(wh===lastWH)return;lastWH=wh;relayout();}).observe($('gwrap'));}
 /* ---------------- the hero: the braid settles for reduced motion and pauses in a hidden tab ---------------- */
-var braidDone=false;
-function motionClass(){document.documentElement.classList.toggle('reduced',reduced);var b=document.querySelector('.braid');if(b&&b.pauseAnimations){if(reduced||document.hidden||braidDone)b.pauseAnimations();else b.unpauseAnimations();}}
+var braidDone=false,braidIn=true,braidLeft=5000,braidAt=0,braidT=null;
+/* the hero's braid: its dots travel for 5 s of time on screen, then rest on their strands (WCAG 2.2.2). Off screen
+   (under a quarter of the hero showing), in a hidden tab or under reduced motion they hold where they are. */
+function motionClass(){document.documentElement.classList.toggle('reduced',reduced);var b=document.querySelector('.braid');if(!b||!b.pauseAnimations)return;
+ var run=!(reduced||document.hidden||braidDone||!braidIn);
+ if(run&&!braidT){braidAt=Date.now();braidT=setTimeout(function(){braidT=null;braidDone=true;motionClass();},braidLeft);}
+ else if(!run&&braidT){clearTimeout(braidT);braidT=null;braidLeft=Math.max(0,braidLeft-(Date.now()-braidAt));}
+ if(run)b.unpauseAnimations();else{b.pauseAnimations();settleAnims(b);settleAnims(document.querySelector('svg.braid-run'));}}
 motionClass();
 /* ---------------- the map: routes draw in the first time it is in view; the idle tour runs only while it is in view ---------------- */
-/* the hero's braid: its dots travel for 5 s after load, then rest on their strands (WCAG 2.2.2) */
-setTimeout(function(){braidDone=true;var bz=document.querySelector('svg.braid');if(bz&&bz.pauseAnimations)bz.pauseAnimations();},5000);
+(function(){var bz=document.querySelector('svg.braid');if(!bz||!window.IntersectionObserver)return;
+ new IntersectionObserver(function(es){var e=es[es.length-1];braidIn=e.isIntersecting&&Math.max(e.intersectionRatio,e.intersectionRect.height/Math.max(1,innerHeight))>=0.25;motionClass();},{threshold:STEPS}).observe(bz);})();
 var drawn=false;function drawIn(){if(drawn||reduced)return;drawn=true;[].forEach.call($('svg').querySelectorAll('.route'),function(p,i){var len=p.getTotalLength();if(!len||!p.animate)return;p.animate([{strokeDasharray:len+' '+len,strokeDashoffset:len},{strokeDasharray:len+' '+len,strokeDashoffset:0}],{duration:1300,delay:120+i*140,easing:(getComputedStyle(document.documentElement).getPropertyValue('--ease-out').trim()||'ease-out'),fill:'backwards'});});}
-if(window.IntersectionObserver){new IntersectionObserver(function(es){es.forEach(function(e){mapIn=e.isIntersecting&&e.intersectionRatio>=0.6;$('gwrap').classList.toggle('still',!mapIn);clearTimeout(stillT);if(mapIn)stillT=setTimeout(function(){$('gwrap').classList.add('still');},5000);if(mapIn){drawIn();armIdle();if(implicit){implicit=false;sync();}}else{stopTour();var pn=$('panel');if(pn.classList.contains('sheet')){pn.classList.remove('sheet');panel();}}});},{threshold:[0,0.6,1]}).observe($('graph'));}else mapIn=true;
+if(window.IntersectionObserver){new IntersectionObserver(function(es){var e=es[es.length-1],live=e.isIntersecting&&!document.hidden&&Math.max(e.intersectionRatio,e.intersectionRect.height/Math.max(1,innerHeight))>=0.25;if(live!==mapLive){mapLive=live;if(live)mapResume();else mapHold();}},{threshold:STEPS}).observe($('graph'));
+ document.addEventListener('visibilitychange',function(){var r=$('graph').getBoundingClientRect(),seen=Math.max(0,Math.min(r.bottom,innerHeight)-Math.max(r.top,0)),live=!document.hidden&&Math.max(seen/Math.max(1,r.height),seen/innerHeight)>=0.25;if(live!==mapLive){mapLive=live;if(live)mapResume();else mapHold();}});
+ new IntersectionObserver(function(es){es.forEach(function(e){mapIn=e.isIntersecting&&e.intersectionRatio>=0.6;$('gwrap').classList.toggle('still',!mapIn);clearTimeout(stillT);stillT=null;stillLeft=0;if(mapIn){stillUntil=Date.now()+5000;stillT=setTimeout(function(){stillT=null;$('gwrap').classList.add('still');},5000);}if(mapIn){drawIn();armIdle();if(implicit){implicit=false;sync();}}else{stopTour();var pn=$('panel');if(pn.classList.contains('sheet')){pn.classList.remove('sheet');panel();}}});},{threshold:[0,0.6,1]}).observe($('graph'));}else{mapIn=true;mapLive=true;}
 /* Back/Forward: restore the state the URL names */
-window.addEventListener('popstate',function(){var href=location.href;restoring=true;tour.on=false;clearTimeout(tour.t);clearInterval(lightT);
+window.addEventListener('popstate',function(){var href=location.href;restoring=true;tour.on=false;clearTimeout(tour.t);clearLight();
  S.node=null;S.hover=null;var st=readURL(),nd=S.node;
  if(st)chooseThread(st.thread,{instant:true,step:st.step,keepFilters:true});else chooseThread(null,{instant:true,keepFilters:true});
  if(nd){S.node=nd;apply();}controls();restoring=false;if(location.href!==href)history.replaceState(null,'',href);});

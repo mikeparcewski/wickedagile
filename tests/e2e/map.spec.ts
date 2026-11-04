@@ -247,16 +247,17 @@ test('motion: the ambient flow, the pulse, the draw-in and the idle tour', async
   c.check('motion: ambient flow drawn', (await ev(pg, "return document.querySelectorAll('#svg .ambient').length")) === 5);
   await ev(pg, "document.getElementById('cb-work').click();document.getElementById('cb-work').click()"); await pg.waitForTimeout(30);
   c.check('motion: switching a side on draws its mark in', (await ev(pg, "return document.querySelector('.cbx[data-door=work] .mkl').getAnimations().length")) > 0);
-  await ev(pg, "__map.choose('checks',5)"); await pg.waitForTimeout(120);
-  const a = await ev(pg, "return document.getElementById('pulse').style.transform"); await pg.waitForTimeout(300); const b = await ev(pg, "return document.getElementById('pulse').style.transform");
-  c.check('motion: a pulse travels along the lit path', a !== b && await ev(pg, "return document.getElementById('pulse').classList.contains('on')"), [a, b]);
-  await ev(pg, '__map.choose(null)'); await pg.waitForTimeout(50);
   c.check('idle tour waits while the map is out of view (the page opens on the hero)', (await ev(pg, 'return __map.tour()')) === false);
   await ev(pg, "document.getElementById('graph').scrollIntoView()"); await pg.waitForTimeout(250);
   c.check('the routes draw in the first time the map is in view', (await ev(pg, "return document.querySelector('#svg .route').getAnimations().length")) > 0);
   c.check('idle tour starts when idle', (await ev(pg, 'return __map.tour()')) === true && await ev(pg, 'return __map.touring()'));
   await pg.keyboard.press('Shift'); await pg.waitForTimeout(50);
   c.check('idle tour stops on input', !(await ev(pg, 'return __map.touring()')) && (await ev(pg, 'return __map.S.thread')) === null);
+  // the pulse travels only where it can be seen: the map is on screen here (off screen it ends, offscreen.spec.ts)
+  await ev(pg, "__map.choose('checks',5)"); await pg.waitForTimeout(120);
+  const a = await ev(pg, "return document.getElementById('pulse').style.transform"); await pg.waitForTimeout(300); const b = await ev(pg, "return document.getElementById('pulse').style.transform");
+  c.check('motion: a pulse travels along the lit path', a !== b && await ev(pg, "return document.getElementById('pulse').classList.contains('on')"), [a, b]);
+  await ev(pg, '__map.choose(null)'); await pg.waitForTimeout(50);
   await ev(pg, "Object.defineProperty(document,'hidden',{configurable:true,get:()=>true})");
   c.check('idle tour is off when the tab is hidden', (await ev(pg, 'return __map.tour()')) === false);
   await o.ctx.close();

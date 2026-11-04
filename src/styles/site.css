@@ -43,6 +43,9 @@ body.notes .note{display:block}
 [tabindex="-1"]:focus{outline:none}
 
 html{scroll-snap-type:y mandatory;scroll-padding-top:var(--header-h)}
+/* The page never follows content that swaps on its own: Chromium's scroll anchoring would pick a part of the map
+   (its panel changes as a thread lights up or the tour steps) as its anchor and scroll the page whenever it moved. */
+html{overflow-anchor:none}
 .no-js .needs-js{display:none!important}
 .no-js .braid .dotm{display:none}
 .js .nojs{display:none}
