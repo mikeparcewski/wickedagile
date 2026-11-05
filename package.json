@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "astro": "^7.3.2",
-    "wicked-web": "github:mikeparcewski/wicked-web#9b73714d63778ab54cef667ab5639a8636695b99"
+    "wicked-web": "github:mikeparcewski/wicked-web#304492b63505e92c414ad2c09272f867d44ed77c"
   },
   "devDependencies": {
     "@playwright/test": "^1.62.1"

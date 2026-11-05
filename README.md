@@ -38,8 +38,10 @@ build of the approved design (`DES-SITES-V2` rev 10.2-final, build brief B3).
   served (the build publishes what it used under `/data/`), then to a committed seed in `src/data/seed/`. The Medium
   feed carries only the newest ten posts, so the writing is the union of the live feed, the last served file and the
   seed; a post the feed cuts short keeps the text of its last complete copy. Each source passes a shape check of
-  everything the build reads (ids are slugs, links plain https URLs, dates real) or the next one is used. Until the
-  lab and bits exports are live, the seeds are the design's fixtures. Medium essays are keyed by their post id (the hex
+  everything the build reads (ids are slugs, links plain https URLs, dates real) or the next one is used. The lab
+  publishes its exports (wickedlabs.ai/data/products.json and capabilities.json, generated from the lab page), so the
+  lab products seed is a snapshot of that export, kept as the last fallback; until bits publishes bits.json, its seed is
+  the design's fixture. Medium essays are keyed by their post id (the hex
   at the end of the link), so a title edit keeps an essay's threads and links.
 - **The build fails on any rule break**: unique ids, a position for every placed piece and a row for every Work mark,
   one edge kind per pair, the Platform placeholder with no edges and nothing but its name, a thread's Learn stops
