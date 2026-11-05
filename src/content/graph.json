@@ -400,12 +400,12 @@
   "work": "Work"
  },
  "hero": {
-  "$comment": "DECIDED by the operator 2026-11-02 (option 1). 'Receipts' is the family's word for a job's evidence: the hero promises no more than the receipts show. Earlier drafts A-C are in DES §13.3.",
-  "h1": "We write about the work. The tools are the receipts.",
+  "$comment": "DECIDED by the operator 2026-11-05, in their words: 'Not just explaining agentic, but bringing the receipts' (replaces 2026-11-02's option 1, 'We write about the work. The tools are the receipts.'). 'Receipts' is the family's word for a job's evidence: the hero promises no more than the receipts show. Earlier drafts A-C are in DES §13.3.",
+  "h1": "Not just explaining agentic, but bringing the receipts.",
   "sub": "Essays and interactive pieces on AI and how software gets built, each one a thread into the wicked tools that do the work and keep the record.",
   "approval": {
    "by": "operator",
-   "on": "2026-11-02"
+   "on": "2026-11-05"
   }
  }
 }
