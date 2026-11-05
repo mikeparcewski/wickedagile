@@ -32,7 +32,7 @@ test('data: the built graph keeps the design rules', async () => {
   c.check('at least one thread stays in Learn', G.threads.some((t: any) => t.stops.every((s: string) => ids[s].door === 'learn')));
   c.check('crossroads exist (pieces in 2+ threads)', G.nodes.filter((x: any) => (x.threads || []).length > 1).length >= 3);
   c.check('the door names are one data string each', ['learn', 'work'].every((k) => typeof G.labels[k] === 'string' && G.labels[k].trim()) && G.nodes.every((x: any) => x.door === 'learn' || x.door === 'work'));
-  c.check('one hero, decided by the operator (no option sets)', !('options' in G.hero) && G.hero.h1 === 'We write about the work. The tools are the receipts.' && G.hero.approval?.by === 'operator');
+  c.check('one hero, decided by the operator (no option sets)', !('options' in G.hero) && G.hero.h1 === 'Not just explaining agentic, but bringing the receipts.' && G.hero.approval?.by === 'operator');
   // the reference checked its template; here it is the site's own markup and scripts
   const files = [...readdirSync(ROOT + 'src/components').map((f: string) => 'src/components/' + f), 'src/pages/index.astro', 'src/scripts/map.js', 'src/lib/render.mjs'];
   const hits: string[] = [];

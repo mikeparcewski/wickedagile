@@ -9,7 +9,7 @@ __      _(_) ___| | _____  __| | __ _  __ _(_) | ___
 
 # wickedagile.com
 
-The company site: **we write about the work, and the tools are the receipts.** Essays and interactive pieces on AI
+The company site: **not just explaining agentic, but bringing the receipts.** Essays and interactive pieces on AI
 and how software gets built, each one a thread into the wicked tools that do the work and keep the record. Four
 frames that snap:
 
