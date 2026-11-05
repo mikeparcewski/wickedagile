@@ -29,13 +29,15 @@ for (const vp of VIEWPORTS) {
   });
 }
 
-test('production page carries no mockup or draft wording', async ({ page }) => {
+test('production page carries no mockup or draft wording', async ({ page, request }) => {
   await page.goto('/', { waitUntil: 'networkidle' });
   await expect(page).toHaveTitle('Wicked Agile: not just explaining agentic, but bringing the receipts');
   const text = await page.evaluate(() => document.body.innerText);
   expect(text).not.toMatch(/mockup|drafts for the operator|\(draft\)|Related, draft/i);
   // the 2026-11-02 hero is gone (the operator, 2026-11-05)
   expect(text).not.toMatch(/we write about the work|the tools are the receipts/i);
+  // nor in the page's data (the graph JSON the map reads ships the hero's comment too)
+  expect(await (await request.get('/')).text()).not.toMatch(/we write about the work|the tools are the receipts/i);
   await expect(page.locator('.draft')).toHaveCount(0);
 });
 
