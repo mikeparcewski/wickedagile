@@ -299,7 +299,7 @@ test('folds: the review folds of rev 8 to 10', async ({ browser, baseURL }) => {
   await ev(pg, "__map.select('estate')");
   const est: string = await ev(pg, "return document.getElementById('panel').innerText");
   c.check('lab relations read as directional sentences', est.includes('wicked-garden reads wicked-estate’s code graph'));
-  c.check('versions read "v0.32.0" in the map panel as on the Work cards (final review P3)', est.includes('v0.32.0'), est.slice(0, 200));
+  c.check('versions read "v0.32.1" in the map panel as on the Work cards (final review P3)', est.includes('v0.32.1'), est.slice(0, 200));
   await ev(pg, "__map.choose('checks')"); await ev(pg, "document.querySelector('.pill[data-pill=bit]').click()"); await pg.waitForTimeout(50);
   c.check('a filter change clears the framed thread', await ev(pg, "return __map.S.thread===null&&!document.getElementById('gwrap').classList.contains('framed')"));
   await ev(pg, "document.querySelector('.pill[data-pill=bit]').click();document.querySelector('.pill[data-pill=article]').click()"); await pg.waitForTimeout(50);
