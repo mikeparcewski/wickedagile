@@ -10,8 +10,8 @@
    "eyebrow": "the ADE",
    "expansion": "agentic development environment",
    "tag": "the ADE: agentic development environment",
-   "ver": "0.16.0",
-   "release": "v0.16.0",
+   "ver": "0.16.1",
+   "release": "v0.16.1",
    "headline": "The ADE for running a team of coding agents.",
    "url": "https://wickedlabs.ai/#/studio"
   },
@@ -20,8 +20,8 @@
    "name": "wicked-crew",
    "tier": "component",
    "tag": "runs and checks jobs",
-   "ver": "0.18.0",
-   "release": "v0.18.0",
+   "ver": "0.18.1",
+   "release": "v0.18.1",
    "headline": "The harness for the coding agents you already use.",
    "url": "https://wickedlabs.ai/#/crew"
   },
@@ -78,17 +78,17 @@
  ],
  "getStarted": {
   "cmd": "npx wicked-installer",
-  "release": "v0.8.2",
+  "release": "v0.9.0",
   "ref": "wicked-installer README (Quick start)",
   "line": "It installs the products you pick, for the coding CLIs you use.",
-  "lineRef": "wicked-installer README at v0.8.2, Quick start: pick a bundle or select products individually; it detects which AI coding CLIs you have installed"
+  "lineRef": "wicked-installer README at v0.9.0, Quick start: pick a bundle or select products individually; it detects which AI coding CLIs you have installed"
  },
  "relations": [
   {
    "a": "crew",
    "b": "studio",
    "sentence": "wicked-crew ships wicked-studio as its UI",
-   "ref": "lab products.json: studio via wicked-crew (npx wicked-crew serve bundles studio)"
+   "ref": "lab products.json: studio via wicked-crew (wicked-crew serve bundles studio)"
   },
   {
    "a": "garden",
